@@ -100,8 +100,6 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 
 **Healthcare Operator.** An employee of the National Healthcare Service who is authorised to facilitate the upload of the user’s TEKs by authorising an OTP generated on the Mobile Client.
 
-**Province of Domicile.** Different areas in Italy are managing the emergency differently, and the advice users receive may vary based on where they are located. To protect the user’s privacy, the App only asks for the province in which they live. This happens during the onboarding process.
-
 **Immuni.** The sum of all the parts underlying the exposure detection and notification system described in this document, including Mobile Clients, Backend Services, Healthcare Operators, and HIS.
 
 **Match.** The Mobile Client can determine whether an RPI which was stored locally after a Contact has been generated from a given TEK. When this is the case, for simplicity, we will say that 'the TEK Matches the RPI', 'the RPI Matches the TEK', 'there is a Match for the TEK', or we will use similar expressions.
@@ -113,6 +111,8 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 **One Time Password (OTP).** A random, ten-character code used to authenticate calls between the Mobile Client and the Exposure Ingestion Service while uploading TEKs, Exposure Detection Summaries, Exposure Infos, and the user’s Province of Domicile. The code is generated on the Mobile Client and then authorised by a Healthcare Operator via the OTP Service. It expires after a defined interval.
 
 **OTP Service.** See [Architecture](#architecture).
+
+**Province of Domicile.** Different areas in Italy are managing the emergency differently, and the advice users receive may vary based on where they are located. To protect the user’s privacy, the App only asks for the province in which they live. This happens during the onboarding process.
 
 **Received Signal Strength Indicator (RSSI).** The power of a radio signal as measured at the receiving end of the transmission.
 
