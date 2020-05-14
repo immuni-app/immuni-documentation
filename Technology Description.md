@@ -2,43 +2,41 @@
 
 ## Table of contents
 
-* [Context](#context)
-* [Glossary](#glossary)
-* [Exposure detection and notification flow](#exposure-detection-and-notification-flow)
-* [Architecture](#architecture)
-* [Mobile Client](#mobile-client)
-	* [Features](#features)
-		* [Onboarding](#onboarding)
-		* [Transmission Risk Assessment](#transmission-risk-assessment)
-		* [TEKs upload](#teks-upload)
-		* [Analytics](#analytics)
-	* [A/G Framework](#ag-framework)
-	* [iOS App](#ios-app)
-		* [iOS App technologies](#ios-app-technologies)
-		* [iOS App security](#ios-app-security)
-	* [Android App](#android-app)
-		* [Android App technologies](#android-app-technologies)
-		* [Android App security](#android-app-security)
-	* [App build verification](#app-build-verification)
-		* [Open build process](#open-build-process)
-		* [Reproducible builds](#reproducible-builds)
-* [Backend Services](#backend-services)
-	* [Backend Services technologies](#backend-services-technologies)
-	* [App Configuration Service](#app-configuration-service)
-		* [API - Fetch Configuration Settings](#api-fetch-configuration-settings)
-	* [OTP Service](#otp-service)
-		* [OTP format](#otp-format)
-		* [API - Authorise OTP](#api-authorise-otp)
-	* [Exposure Ingestion Service](#exposure-ingestion-service)
-		* [API - Validate OTP](#api-validate-otp)
-		* [API - Upload TEKs](#api-upload-teks)
-		* [Data model - Uploads](#data-model-uploads)
-		* [Data model - TEKChunks](#data-model-tekchunks)
-	* [Exposure Reporting Service](#exposure-reporting-service)
-		* [API - Fetch TEK Chunk indexes](#api-fetch-tek-chunk-indexes)
-		* [API - Download TEKs](#api-download-teks)
-	* [Analytics Service](#analytics-service)
-* [Open points](#open-points)
+- [Context](#context)
+- [Glossary](#glossary)
+- [Exposure detection and notification flow](#exposure-detection-and-notification-flow)
+- [Architecture](#architecture)
+- [Mobile Client](#mobile-client)
+  _ [Features](#features)
+  _ [Onboarding](#onboarding)
+  _ [Transmission Risk Assessment](#transmission-risk-assessment)
+  _ [TEKs upload](#teks-upload)
+  _ [Analytics](#analytics)
+  _ [A/G Framework](#ag-framework)
+  _ [iOS App](#ios-app)
+  _ [iOS App technologies](#ios-app-technologies)
+  _ [iOS App security](#ios-app-security)
+  _ [Android App](#android-app)
+  _ [Android App technologies](#android-app-technologies)
+  _ [Android App security](#android-app-security)
+  _ [App build verification](#app-build-verification)
+  _ [Open build process](#open-build-process) \* [Reproducible builds](#reproducible-builds)
+- [Backend Services](#backend-services)
+  _ [Backend Services technologies](#backend-services-technologies)
+  _ [App Configuration Service](#app-configuration-service)
+  _ [API - Fetch Configuration Settings](#api-fetch-configuration-settings)
+  _ [OTP Service](#otp-service)
+  _ [OTP format](#otp-format)
+  _ [API - Authorise OTP](#api-authorise-otp)
+  _ [Exposure Ingestion Service](#exposure-ingestion-service)
+  _ [API - Validate OTP](#api-validate-otp)
+  _ [API - Upload TEKs](#api-upload-teks)
+  _ [Data model - Uploads](#data-model-uploads)
+  _ [Data model - TEKChunks](#data-model-tekchunks)
+  _ [Exposure Reporting Service](#exposure-reporting-service)
+  _ [API - Fetch TEK Chunk indexes](#api-fetch-tek-chunk-indexes)
+  _ [API - Download TEKs](#api-download-teks) \* [Analytics Service](#analytics-service)
+- [Open points](#open-points)
 
 ## Context
 
@@ -74,21 +72,21 @@ For ease of reference, the following list defines some of the terms used through
 
 **Exposure Detection Summary.** A summary of aggregate information related to the Exposures of a Mobile Client for a set of TEKs. When the A/G Framework on the Mobile Client is provided with these TEKs, it can check whether they Match any of the locally stored RPIs. After completing this check, the Mobile Client will generate an Exposure Detection Summary. Calculated for the given set of TEKs and their respective Exposures, the Exposure Detection Summary includes the following:
 
-* The number of TEKs Matching any of the locally stored RPIs, which is also the number of Exposures for that set of TEKs
-* The number of days since the most recent Exposure to any Matching TEK of the given set
-* The sum of the durations of those Exposures, grouped by two ranges of minimum Attenuation (each measured in five-minute increments and capped at 30 minutes)
-* The highest Total Risk Score among those of the various Exposures
+- The number of TEKs Matching any of the locally stored RPIs, which is also the number of Exposures for that set of TEKs
+- The number of days since the most recent Exposure to any Matching TEK of the given set
+- The sum of the durations of those Exposures, grouped by two ranges of minimum Attenuation (each measured in five-minute increments and capped at 30 minutes)
+- The highest Total Risk Score among those of the various Exposures
 
 Note that the Exposure Detection Summary does not contain either the TEKs that Matched a locally stored RPI, or the Matched RPIs.
 
 **Exposure Info.** Information related to a specific Exposure. For each TEK Matching at least one locally stored RPI—which is to say, for each Exposure—the A/G Framework on the Mobile Client can generate an Exposure Info containing the following information:
 
-* The day the Exposure occurred
-* The duration of the Exposure (measured in five-minute increments and capped at 30 minutes)
-* The minimum Attenuation during the Exposure
-* The sum of the durations of the Exposure’s Contacts, grouped by two ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
-* The Transmission Risk for the relevant TEK
-* The Total Risk Score for the Exposure
+- The day the Exposure occurred
+- The duration of the Exposure (measured in five-minute increments and capped at 30 minutes)
+- The minimum Attenuation during the Exposure
+- The sum of the durations of the Exposure’s Contacts, grouped by two ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
+- The Transmission Risk for the relevant TEK
+- The Total Risk Score for the Exposure
 
 Note that the Exposure Info does not contain either the TEK for which it was computed, or the RPI that Matched the TEK.
 
@@ -106,7 +104,7 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 
 **Mobile Client.** See [Architecture](#architecture).
 
-**National Healthcare Service.** The Italian national healthcare system, known as the *Servizio Sanitario Nazionale.*
+**National Healthcare Service.** The Italian national healthcare system, known as the _Servizio Sanitario Nazionale._
 
 **One Time Password (OTP).** A random, ten-character code used to authenticate calls between the Mobile Client and the Exposure Ingestion Service while uploading TEKs, Exposure Detection Summaries, Exposure Infos, and the user’s Province of Domicile. The code is generated on the Mobile Client and then authorised by a Healthcare Operator via the OTP Service. It expires after a defined interval.
 
@@ -122,10 +120,10 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 
 **Technical Info.** Data on the Mobile Client’s working condition, useful to estimate the adoption of the App among the population and inform the decision making process of the National Healthcare Service in a number of areas, including product development, engineering, and communications. The data include:
 
-* Whether the device runs iOS or Android
-* Whether permission to leverage the A/G Framework is on
-* Whether the device’s Bluetooth is on
-* Whether permission to send local notifications is on
+- Whether the device runs iOS or Android
+- Whether permission to leverage the A/G Framework is on
+- Whether the device’s Bluetooth is on
+- Whether permission to send local notifications is on
 
 The data are periodically uploaded to the Analytics Service without asking the user to authenticate or leveraging any user or device identifier, which helps protect user privacy.
 
@@ -135,10 +133,10 @@ The data are periodically uploaded to the Analytics Service without asking the u
 
 **Total Risk Score.** For a specific Exposure, the assessed risk that a SARS-CoV-2 transmission may have occurred. This is expressed as a value from 1 to 8 and calculated through a risk model. The model is a weighted average of contributions from different factors:
 
-* The number of days since the Exposure occurred
-* The duration of the Exposure
-* The minimum Attenuation
-* The Transmission Risk associated to that specific TEK
+- The number of days since the Exposure occurred
+- The duration of the Exposure
+- The minimum Attenuation
+- The Transmission Risk associated to that specific TEK
 
 More detailed information on how the Total Risk Score is calculated can be found [here](https://developer.apple.com/documentation/exposurenotification/enexposureconfiguration).
 
@@ -164,28 +162,28 @@ The Immuni system includes Mobile Client and Backend Services.
 
 **Mobile Client.** The user’s mobile device and all the software running on it. Within the context of Immuni, its core functions include:
 
-* Generating the TEKs on a daily basis
-* Generating the RPIs from the daily TEK
-* Broadcasting the RPIs through BLE signals
-* Collecting RPIs broadcast by other Mobile Clients
-* Periodically downloading the TEKs of users who tested positive for SARS-CoV-2 and decided to make them available for download
-* Computing Exposure Detection Summaries and Exposure Infos
-* Notifying the user if relevant
-* Allowing the user to upload their recent TEKs in the case that they test positive for the virus
-* Collecting and uploading the user’s Province of Domicile, Epidemiological Infos (if any), and Technical Infos
+- Generating the TEKs on a daily basis
+- Generating the RPIs from the daily TEK
+- Broadcasting the RPIs through BLE signals
+- Collecting RPIs broadcast by other Mobile Clients
+- Periodically downloading the TEKs of users who tested positive for SARS-CoV-2 and decided to make them available for download
+- Computing Exposure Detection Summaries and Exposure Infos
+- Notifying the user if relevant
+- Allowing the user to upload their recent TEKs in the case that they test positive for the virus
+- Collecting and uploading the user’s Province of Domicile, Epidemiological Infos (if any), and Technical Infos
 
 The Mobile Client includes the following parts:
 
-* **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement contact tracing apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
-* **App (iOS App and Android App).** The Immuni iOS or Android apps that users download from the App Store and Google Play respectively. The App is responsible for handling user interactions (including notifying users that they may be at risk) and for implementing the business logic (including all communications with the Backend Services).
+- **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement contact tracing apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
+- **App (iOS App and Android App).** The Immuni iOS or Android apps that users download from the App Store and Google Play respectively. The App is responsible for handling user interactions (including notifying users that they may be at risk) and for implementing the business logic (including all communications with the Backend Services).
 
 **Backend Services.** Immuni’s backend software and infrastructure, which include the following services:
 
-* **App Configuration Service.** This serves the Configuration Settings used by the App.
-* **OTP Service.** This facilitates the authorisation of the OTP used by the Mobile Client for authenticating with the Exposure Ingestion Service. The Healthcare Operator will collect the OTP from a consenting user who tested positive for SARS-CoV-2, and enter it into the HIS. The HIS will then record the OTP in a database, authorising it and making it accessible to the Exposure Ingestion Service.
-* **Exposure Ingestion Service.** When a Healthcare Operator informs a user that they tested positive for SARS-CoV-2, this service allows the user’s Mobile Client to start an upload of the TEKs it generated over the previous 14 days and their Province of Domicile. If any Epidemiological Infos from the previous 14 days are available, the Mobile Client will upload them too.
-* **Exposure Reporting Service.** This provides a scalable system to serve the TEKs of SARS-CoV-2 positive users to the Mobile Clients, after they were uploaded through the Exposure Ingestion Service.
-* **Analytics Service.** The National Healthcare Service needs to have some visibility into the number of devices the app is correctly functioning on, and the number of users Immuni is notifying. This helps it operate the system effectively, thereby minimising the epidemic’s health toll. The Analytics Service allows the upload of Province of Domicile, Epidemiological Infos (if any), and Technical Infos by the Mobile Client without identifying users. The data have certain limitations enforced by the A/G Framework to protect user privacy. Further protection to user privacy is achieved by uploading such data without asking the user to authenticate, and without leveraging a user identifier or device identifier.
+- **App Configuration Service.** This serves the Configuration Settings used by the App.
+- **OTP Service.** This facilitates the authorisation of the OTP used by the Mobile Client for authenticating with the Exposure Ingestion Service. The Healthcare Operator will collect the OTP from a consenting user who tested positive for SARS-CoV-2, and enter it into the HIS. The HIS will then record the OTP in a database, authorising it and making it accessible to the Exposure Ingestion Service.
+- **Exposure Ingestion Service.** When a Healthcare Operator informs a user that they tested positive for SARS-CoV-2, this service allows the user’s Mobile Client to start an upload of the TEKs it generated over the previous 14 days and their Province of Domicile. If any Epidemiological Infos from the previous 14 days are available, the Mobile Client will upload them too.
+- **Exposure Reporting Service.** This provides a scalable system to serve the TEKs of SARS-CoV-2 positive users to the Mobile Clients, after they were uploaded through the Exposure Ingestion Service.
+- **Analytics Service.** The National Healthcare Service needs to have some visibility into the number of devices the app is correctly functioning on, and the number of users Immuni is notifying. This helps it operate the system effectively, thereby minimising the epidemic’s health toll. The Analytics Service allows the upload of Province of Domicile, Epidemiological Infos (if any), and Technical Infos by the Mobile Client without identifying users. The data have certain limitations enforced by the A/G Framework to protect user privacy. Further protection to user privacy is achieved by uploading such data without asking the user to authenticate, and without leveraging a user identifier or device identifier.
 
 ## Mobile Client
 
@@ -201,11 +199,11 @@ The onboarding process has been designed to limit the information asked of the u
 
 The onboarding process guides the user through the following steps:
 
-* **Privacy Policy, terms of service, and minimum age.** The user must accept the Privacy Policy and terms of service and confirm they are 14 or older if they wish to use the App.
-* **A/G Framework.** The A/G Framework requires the user’s permission before it can be used.
-* **Location (Android only).** On Android devices, *Location* needs to be on to detect nearby devices, although the A/G Framework’s documentation explicitly states that it does not actually use location data. This may be quite confusing for the user, but unfortunately it is outside of the Android App’s control. Please note that this does not mean that the Android App will request the Location permission, but only that Location needs to be activated at system level in order for the A/G Framework to work properly.
-* **Bluetooth.** Understandably, the A/G Framework requires the device’s Bluetooth to be turned on.
-* **Local notifications (iOS only).** The user is asked to give permission to the iOS App for it to show a notification whenever it detects that the user is at risk of having been infected with SARS-CoV-2. On Android this permission is on by default, so the Android App does not need to ask for it during the onboarding. Note that these notifications are generated locally, not sent from a server.
+- **Privacy Policy, terms of service, and minimum age.** The user must accept the Privacy Policy and terms of service and confirm they are 14 or older if they wish to use the App.
+- **A/G Framework.** The A/G Framework requires the user’s permission before it can be used.
+- **Location (Android only).** On Android devices, _Location_ needs to be on to detect nearby devices, although the A/G Framework’s documentation explicitly states that it does not actually use location data. This may be quite confusing for the user, but unfortunately it is outside of the Android App’s control. Please note that this does not mean that the Android App will request the Location permission, but only that Location needs to be activated at system level in order for the A/G Framework to work properly.
+- **Bluetooth.** Understandably, the A/G Framework requires the device’s Bluetooth to be turned on.
+- **Local notifications (iOS only).** The user is asked to give permission to the iOS App for it to show a notification whenever it detects that the user is at risk of having been infected with SARS-CoV-2. On Android this permission is on by default, so the Android App does not need to ask for it during the onboarding. Note that these notifications are generated locally, not sent from a server.
 
 #### Transmission Risk Assessment
 
@@ -221,9 +219,9 @@ The Mobile Client periodically checks whether a Contact with a SARS-CoV-2 positi
 
 If a user is found to be SARS-CoV-2 positive, they can decide to upload the following information to the Exposure Ingestion Service:
 
-* The TEKs generated by user’s Mobile Client in the previous 14 days
-* The user’s Province of Domicile
-* The Epidemiological Infos computed in the previous 14 days, if any
+- The TEKs generated by user’s Mobile Client in the previous 14 days
+- The user’s Province of Domicile
+- The Epidemiological Infos computed in the previous 14 days, if any
 
 A Healthcare Operator will assist the user with this operation. The upload process can be summarised as follows:
 
@@ -249,15 +247,15 @@ For the implementation of the [Exposure detection and notification flow](#exposu
 
 Part of the functionality is provided directly by the operating system, which results in enhanced user privacy:
 
-* The RPI Database is handled by the operating system. As such, the App does not have access to information such as which specific TEK triggered a Match, if any. Without notifying the user, the App can only access the Exposure Detection Summary for a set of TEKs. This offers high-level information on the Exposures for those TEKs. To access the Exposure Infos—which offer a bit more detail—the App has to trigger a notification to the user that is handled by the operating system and cannot be bypassed. Moreover, the operating system limits the App’s access to this information in various ways, including through aggregations and rate limits on the relevant API.
-* The App must obtain the user’s permission to get their TEKs so that it can upload them to the Exposure Ingestion Service. The entire authorisation flow is triggered by the App and handled by the operating system. The App has no way to bypass this security measure.
+- The RPI Database is handled by the operating system. As such, the App does not have access to information such as which specific TEK triggered a Match, if any. Without notifying the user, the App can only access the Exposure Detection Summary for a set of TEKs. This offers high-level information on the Exposures for those TEKs. To access the Exposure Infos—which offer a bit more detail—the App has to trigger a notification to the user that is handled by the operating system and cannot be bypassed. Moreover, the operating system limits the App’s access to this information in various ways, including through aggregations and rate limits on the relevant API.
+- The App must obtain the user’s permission to get their TEKs so that it can upload them to the Exposure Ingestion Service. The entire authorisation flow is triggered by the App and handled by the operating system. The App has no way to bypass this security measure.
 
 On top of the privacy enhancements mentioned above, electing to leverage the A/G Framework unlocks a number of other advantages that we do not believe would be achievable in a custom implementation. These include:
 
-* Allowing reliable background broadcasting and detection of RPIs, especially between two iOS Mobile Clients, which is severely constrained by iOS’s [Core Bluetooth API](https://developer.apple.com/library/archive/documentation/NetworkingInternetWeb/Conceptual/CoreBluetooth_concepts/CoreBluetoothBackgroundProcessingForIOSApps/PerformingTasksWhileYourAppIsInTheBackground.html). There are several workarounds to mitigate this limitation. In our view, however, most of them are ineffective, energy inefficient, not compliant with Apple’s [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), or all of the above.
-* Synchronising the RPI rotation with the Bluetooth MAC address rotation, so these two pieces of information cannot be cross-referenced to identify a user.
-* Ensuring the iOS App automatically resumes its normal operation after an operating system reboot.
-* Minimising battery consumption.
+- Allowing reliable background broadcasting and detection of RPIs, especially between two iOS Mobile Clients, which is severely constrained by iOS’s [Core Bluetooth API](https://developer.apple.com/library/archive/documentation/NetworkingInternetWeb/Conceptual/CoreBluetooth_concepts/CoreBluetoothBackgroundProcessingForIOSApps/PerformingTasksWhileYourAppIsInTheBackground.html). There are several workarounds to mitigate this limitation. In our view, however, most of them are ineffective, energy inefficient, not compliant with Apple’s [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), or all of the above.
+- Synchronising the RPI rotation with the Bluetooth MAC address rotation, so these two pieces of information cannot be cross-referenced to identify a user.
+- Ensuring the iOS App automatically resumes its normal operation after an operating system reboot.
+- Minimising battery consumption.
 
 ### iOS App
 
@@ -271,36 +269,36 @@ The App is written using Swift 5.2 and XCode 11.5.
 
 The development process leverages the following technologies:
 
-* **[Brew](https://brew.sh/).** A package manager for macOS, Brew is released as an open-source project under the BSD 2-Clause 'Simplified' licence.
-* **[CocoaPods](http://cocoapods.org/).** The most widespread dependency manager in the iOS community, CocoaPods is released as an open-source project under the MIT licence.
-* **[CommitLint](https://commitlint.js.org/#/).** A linter for commits, CommitLint is released as an open-source project under the MIT licence.
-* **[Danger](https://danger.systems/js/).** A system to enforce code quality and contribution rules in pull requests, Danger is released as an open-source project under the MIT licence.
-* **[SwiftFormat](https://github.com/nicklockwood/SwiftFormat/).** A formatter for Swift code, SwiftFormat is released as an open-source project under the MIT licence.
-* **[SwiftGen](https://github.com/SwiftGen/SwiftGen).** A tool that generates type-safe Swift code for accessing project resources, SwiftGen is released as an open-source project under the MIT licence.
-* **[SwiftLint](https://github.com/realm/SwiftLint).** A linter for Swift code, SwiftLint is released as an open-source project under the MIT licence.
-* **[XcodeGen](https://github.com/yonaskolb/XcodeGen).** A tool that generates Xcode projects starting from a YAML definition, XcodeGen is released as an open-source project under the MIT licence.
+- **[Brew](https://brew.sh/).** A package manager for macOS, Brew is released as an open-source project under the BSD 2-Clause 'Simplified' licence.
+- **[CocoaPods](http://cocoapods.org/).** The most widespread dependency manager in the iOS community, CocoaPods is released as an open-source project under the MIT licence.
+- **[CommitLint](https://commitlint.js.org/#/).** A linter for commits, CommitLint is released as an open-source project under the MIT licence.
+- **[Danger](https://danger.systems/js/).** A system to enforce code quality and contribution rules in pull requests, Danger is released as an open-source project under the MIT licence.
+- **[SwiftFormat](https://github.com/nicklockwood/SwiftFormat/).** A formatter for Swift code, SwiftFormat is released as an open-source project under the MIT licence.
+- **[SwiftGen](https://github.com/SwiftGen/SwiftGen).** A tool that generates type-safe Swift code for accessing project resources, SwiftGen is released as an open-source project under the MIT licence.
+- **[SwiftLint](https://github.com/realm/SwiftLint).** A linter for Swift code, SwiftLint is released as an open-source project under the MIT licence.
+- **[XcodeGen](https://github.com/yonaskolb/XcodeGen).** A tool that generates Xcode projects starting from a YAML definition, XcodeGen is released as an open-source project under the MIT licence.
 
 The App uses a number of native technologies provided by Apple's iOS SDK (e.g., [Foundation](https://developer.apple.com/documentation/foundation) and [UIKit](https://developer.apple.com/documentation/uikit)).
 
 When it comes to the iOS App’s architecture, Immuni combines a unidirectional data flow for the business logic with a MVVM architecture for the user interface. This structure is the result of combining two libraries:
 
-* **[Katana](https://github.com/BendingSpoons/katana-swift).** A library that provides structure to the flow of information concerning the business logic of a mobile app, Katana is developed and maintained by Bending Spoons and released as an open-source project under the MIT licence.
-* **[Tempura](https://github.com/BendingSpoons/tempura-swift/).** Tempura is a library for organising the user interface of a mobile app. Building on top of Katana, Tempura reduces the boilerplate needed to render the current state of the app. Tempura is developed and maintained by Bending Spoons and released as an open-source project under the MIT licence.
+- **[Katana](https://github.com/BendingSpoons/katana-swift).** A library that provides structure to the flow of information concerning the business logic of a mobile app, Katana is developed and maintained by Bending Spoons and released as an open-source project under the MIT licence.
+- **[Tempura](https://github.com/BendingSpoons/tempura-swift/).** Tempura is a library for organising the user interface of a mobile app. Building on top of Katana, Tempura reduces the boilerplate needed to render the current state of the app. Tempura is developed and maintained by Bending Spoons and released as an open-source project under the MIT licence.
 
 Finally, Immuni leverages other open-source libraries, including:
 
-* **[Alamofire](https://github.com/Alamofire/Alamofire).** The de-facto standard for performing HTTP(S) requests on iOS, Alamofire is released as an open-source project under the MIT licence.
-* **[BonMot](https://github.com/Rightpoint/BonMot).** A library that abstracts the complexity of creating and styling textual content within an iOS app, BonMot is released as an open-source project under the MIT licence.
-* **[Hydra](https://github.com/malcommac/Hydra/).** A promise-pattern implementation that also features constructs such as *async/await,* Hydra is used to implement the app’s business logic. It is released as an open-source project under the MIT licence.
-* **[Lottie](https://github.com/airbnb/lottie-ios).** A library for natively rendering vector-based animations and art in realtime, Lottie is developed and maintained by Airbnb and released as an open-source project under the Apache 2.0 licence.
-* **[PinLayout](https://github.com/layoutBox/PinLayout).** A library that permits writing user interface layout code leveraging a series of chainable function calls, PinLayout is released as an open-source project under the MIT licence.
-* **[SwiftLog](https://github.com/apple/swift-log/).** A logging package for Swift, SwiftLog is released by Apple under the Swift open-source effort. It is important to note that logs are never stored or sent outside the Mobile Client. Moreover, logs are disabled in production builds. SwiftLog is released as an open-source project under the Apache 2.0 licence.
+- **[Alamofire](https://github.com/Alamofire/Alamofire).** The de-facto standard for performing HTTP(S) requests on iOS, Alamofire is released as an open-source project under the MIT licence.
+- **[BonMot](https://github.com/Rightpoint/BonMot).** A library that abstracts the complexity of creating and styling textual content within an iOS app, BonMot is released as an open-source project under the MIT licence.
+- **[Hydra](https://github.com/malcommac/Hydra/).** A promise-pattern implementation that also features constructs such as _async/await,_ Hydra is used to implement the app’s business logic. It is released as an open-source project under the MIT licence.
+- **[Lottie](https://github.com/airbnb/lottie-ios).** A library for natively rendering vector-based animations and art in realtime, Lottie is developed and maintained by Airbnb and released as an open-source project under the Apache 2.0 licence.
+- **[PinLayout](https://github.com/layoutBox/PinLayout).** A library that permits writing user interface layout code leveraging a series of chainable function calls, PinLayout is released as an open-source project under the MIT licence.
+- **[SwiftLog](https://github.com/apple/swift-log/).** A logging package for Swift, SwiftLog is released by Apple under the Swift open-source effort. It is important to note that logs are never stored or sent outside the Mobile Client. Moreover, logs are disabled in production builds. SwiftLog is released as an open-source project under the Apache 2.0 licence.
 
 #### iOS App security
 
 Security is one of the most critical topics when it comes to Immuni. What follows is a discussion of some of the measures taken to protect user data, both while stored on the iOS Mobile Client and when sent to any of the Backend Services.
 
-Following Katana's architecture, most of the data that the iOS App uses are retained in a single atom called the *Store.* The Store’s content is persisted in a file stored on the iOS Mobile Client after being encrypted using [AES](https://developer.apple.com/documentation/cryptokit/aes/gcm). The encryption key is generated on the iOS Mobile Client and stored in its [keychain](https://developer.apple.com/documentation/security/keychain_services). Moreover, the file in which the Store is persisted is further protected using the [encryption API](https://developer.apple.com/documentation/uikit/protecting_the_user_s_privacy/encrypting_your_app_s_files) available on iOS.
+Following Katana's architecture, most of the data that the iOS App uses are retained in a single atom called the _Store._ The Store’s content is persisted in a file stored on the iOS Mobile Client after being encrypted using [AES](https://developer.apple.com/documentation/cryptokit/aes/gcm). The encryption key is generated on the iOS Mobile Client and stored in its [keychain](https://developer.apple.com/documentation/security/keychain_services). Moreover, the file in which the Store is persisted is further protected using the [encryption API](https://developer.apple.com/documentation/uikit/protecting_the_user_s_privacy/encrypting_your_app_s_files) available on iOS.
 
 Some data are also stored in the iOS Mobile Client’s [UserDefaults](https://developer.apple.com/documentation/foundation/userdefaults). The App provides a layer that encrypts this information as well. As with the Store’s content, the encryption key is generated on the iOS Mobile Client and stored in its keychain.
 
@@ -322,31 +320,31 @@ Both the build process and the dependency management are handled by [Gradle](htt
 
 The development process leverages also the following technologies:
 
-* **[CommitLint](https://commitlint.js.org/#/).** A linter for commits, CommitLint is released as an open-source project under the MIT licence.
-* **[Danger](https://danger.systems/js/).** A system to enforce code quality and contribution rules in pull requests, Danger is released as an open-source project under the MIT licence.
-* **[ktlint](https://ktlint.github.io/).** A linter for Kotlin code, ktlint is maintained by Pinterest and released as an open-source project under the MIT licence.
+- **[CommitLint](https://commitlint.js.org/#/).** A linter for commits, CommitLint is released as an open-source project under the MIT licence.
+- **[Danger](https://danger.systems/js/).** A system to enforce code quality and contribution rules in pull requests, Danger is released as an open-source project under the MIT licence.
+- **[ktlint](https://ktlint.github.io/).** A linter for Kotlin code, ktlint is maintained by Pinterest and released as an open-source project under the MIT licence.
 
 The source code is implemented leveraging native technologies offered by the Android SDK, as well as third-party libraries which we outline below.
 
 The architecture is built on [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/). When it comes to the project’s structure, Immuni is implemented using a data-driven MVVM architecture that follows the recommendations laid out in the [Android guide to app architecture](https://developer.android.com/jetpack/docs/guide). To achieve this, the Android App is based on the following technologies:
 
-* **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured_concurrency). Support for these functionalities is supplied by the *kotlinx.coroutines* library, which is released as an open-source project under the Apache 2.0 licence.
-* **[LiveData](https://developer.android.com/topic/libraries/architecture/livedata) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel).** LiveData are observable data holders, while ViewModels are designed to store and manage user interface related data in a lifecycle-conscious way. They both are part of the Android Jetpack set of libraries, and are released as open-source projects under the Apache 2.0 licence.
-* **[Navigation Component](https://developer.android.com/guide/navigation).** Navigation Component is used to create single activity apps, reducing complexity and ensuring a consistent and predictable user experience by adhering to an established set of [principles of navigation](https://developer.android.com/guide/navigation/navigation-principles). It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
-* **[Room](https://developer.android.com/topic/libraries/architecture/room).** The Room persistence library provides an abstraction layer over SQLite to allow for more robust database access. It can also expose data as LiveData/Flow, allowing for reactive-style programming.
-* **[Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager).** The Work Manager API makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the Android App exits or the device restarts. It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
+- **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured_concurrency). Support for these functionalities is supplied by the _kotlinx.coroutines_ library, which is released as an open-source project under the Apache 2.0 licence.
+- **[LiveData](https://developer.android.com/topic/libraries/architecture/livedata) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel).** LiveData are observable data holders, while ViewModels are designed to store and manage user interface related data in a lifecycle-conscious way. They both are part of the Android Jetpack set of libraries, and are released as open-source projects under the Apache 2.0 licence.
+- **[Navigation Component](https://developer.android.com/guide/navigation).** Navigation Component is used to create single activity apps, reducing complexity and ensuring a consistent and predictable user experience by adhering to an established set of [principles of navigation](https://developer.android.com/guide/navigation/navigation-principles). It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
+- **[Room](https://developer.android.com/topic/libraries/architecture/room).** The Room persistence library provides an abstraction layer over SQLite to allow for more robust database access. It can also expose data as LiveData/Flow, allowing for reactive-style programming.
+- **[Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager).** The Work Manager API makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the Android App exits or the device restarts. It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
 
 Additionally, the Android App uses the following libraries:
 
-* **[Glide](https://github.com/bumptech/glide).** An image loading and caching library for Android focused on smooth scrolling, Glide is developed and maintained by Google and released as an open-source project under the BSD, MIT, and Apache 2.0 licences.
-* **[Koin](https://github.com/InsertKoinIO/koin).** A dependency injection framework for Kotlin, Koin is released as an open-source project under the Apache 2.0 licence.
-* **[Lottie](https://github.com/airbnb/lottie-android).** A library for natively rendering vector-based animations and art in realtime, Lottie is developed and maintained by Airbnb and is released as an open-source project under the Apache 2.0 licence.
-* **[Moshi](https://github.com/square/moshi).** A modern JSON library for Kotlin and Java, Moshi is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
-* **[MockK](https://github.com/mockk/mockk).** A mocking library for Kotlin, MockK is released as an open-source project under the Apache 2.0 licence.
-* **[NumberPicker](https://github.com/ShawnLin013/NumberPicker).** An Android library that provides a simple and customisable number picker, NumberPicker is released as an open-source project under the MIT licence.
-* **[OkHttp](https://github.com/square/okhttp/).** An efficient, low-level HTTP(S) client for Java and Kotlin, OkHttp offers a robust foundation to high-level HTTP(S) clients like Retrofit. It is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
-* **[Retrofit](https://github.com/square/retrofit).** A high-level, type-safe HTTP(S) client for Android and Java, Retrofit is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
-* **[SQLCipher](https://github.com/sqlcipher/android-database-sqlcipher).** An Android SQLite API, SQLCipher allows the storage of encrypted data. The SQLCipher code itself is licensed under a BSD-style licence by Zetetic LLC.
+- **[Glide](https://github.com/bumptech/glide).** An image loading and caching library for Android focused on smooth scrolling, Glide is developed and maintained by Google and released as an open-source project under the BSD, MIT, and Apache 2.0 licences.
+- **[Koin](https://github.com/InsertKoinIO/koin).** A dependency injection framework for Kotlin, Koin is released as an open-source project under the Apache 2.0 licence.
+- **[Lottie](https://github.com/airbnb/lottie-android).** A library for natively rendering vector-based animations and art in realtime, Lottie is developed and maintained by Airbnb and is released as an open-source project under the Apache 2.0 licence.
+- **[Moshi](https://github.com/square/moshi).** A modern JSON library for Kotlin and Java, Moshi is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
+- **[MockK](https://github.com/mockk/mockk).** A mocking library for Kotlin, MockK is released as an open-source project under the Apache 2.0 licence.
+- **[NumberPicker](https://github.com/ShawnLin013/NumberPicker).** An Android library that provides a simple and customisable number picker, NumberPicker is released as an open-source project under the MIT licence.
+- **[OkHttp](https://github.com/square/okhttp/).** An efficient, low-level HTTP(S) client for Java and Kotlin, OkHttp offers a robust foundation to high-level HTTP(S) clients like Retrofit. It is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
+- **[Retrofit](https://github.com/square/retrofit).** A high-level, type-safe HTTP(S) client for Android and Java, Retrofit is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
+- **[SQLCipher](https://github.com/sqlcipher/android-database-sqlcipher).** An Android SQLite API, SQLCipher allows the storage of encrypted data. The SQLCipher code itself is licensed under a BSD-style licence by Zetetic LLC.
 
 #### Android App security
 
@@ -368,31 +366,31 @@ An important part of building trust around the project is enabling the community
 
 To reach this goal, we must ensure that:
 
-* The build process is publicly available
-* The builds are reproducible
+- The build process is publicly available
+- The builds are reproducible
 
 Before digging into the details of these two topics, it is important to mention that this is an ongoing effort. We look forward to collaborating with security experts and researchers to further improve the system.
 
 #### Open build process
 
-An *open build process* is a process that is publicly available for building and uploading Immuni builds to App Store Connect and Google Play Console. This means both making the implementation of the system accessible to the community, and enabling people to inspect logs to verify what the build process actually does. Moreover, the result of the build process should be available for download in the public repository so that it can be used for further analysis by anyone interested in the topic.
+An _open build process_ is a process that is publicly available for building and uploading Immuni builds to App Store Connect and Google Play Console. This means both making the implementation of the system accessible to the community, and enabling people to inspect logs to verify what the build process actually does. Moreover, the result of the build process should be available for download in the public repository so that it can be used for further analysis by anyone interested in the topic.
 
 Building and uploading builds in such a way that all the tools are publicly verifiable (e.g., open source or provided by Apple and Google), and impossible for the developers to alter, ensures that the production builds are created starting from the public repository. Once a build with a specific combination of application identifier, build number, and release version is uploaded to App Store Connect or Google Play Console, no other build may have the same combination.
 
-On iOS, this triple is determined by the *bundle identifier* (*CFBundleIdentifier*), *bundle version* (*CFBundleVersion*), and *release version* (*CFBundleShortVersionString*). On Android, the same three fields are called *application identifier* (*applicationId*), *version number* (*versionCode*), and *release version* (*versionName*).
+On iOS, this triple is determined by the _bundle identifier_ (_CFBundleIdentifier_), _bundle version_ (_CFBundleVersion_), and _release version_ (_CFBundleShortVersionString_). On Android, the same three fields are called _application identifier_ (_applicationId_), _version number_ (_versionCode_), and _release version_ (_versionName_).
 
-On both platforms, the application identifier and the release version are publicly available, while the build number is not. However, this can be easily extracted from the App binaries downloaded from the respective app stores, as it is contained in an unencrypted file (the *Info.plist* file on iOS, and the *AndroidManifest.xml* file on Android).
+On both platforms, the application identifier and the release version are publicly available, while the build number is not. However, this can be easily extracted from the App binaries downloaded from the respective app stores, as it is contained in an unencrypted file (the _Info.plist_ file on iOS, and the _AndroidManifest.xml_ file on Android).
 
 For both platforms, the build process leverages the following technologies:
 
-* **[Fastlane](https://fastlane.tools/).** A platform to orchestrate the build and release process of iOS and Android apps, Fastlane is released as an open-source project under the MIT licence.
-* **[GHR](https://deeeet.com/ghr/).** A command to create GitHub releases, GHR is released as an open-source project under the MIT licence.
+- **[Fastlane](https://fastlane.tools/).** A platform to orchestrate the build and release process of iOS and Android apps, Fastlane is released as an open-source project under the MIT licence.
+- **[GHR](https://deeeet.com/ghr/).** A command to create GitHub releases, GHR is released as an open-source project under the MIT licence.
 
 As a final note, having an open build process does not mean that everyone will be able to access the build system secrets. There are some pieces of information that must be kept secret. For example, we can not share the App Store Connect credentials, otherwise anyone would be able to publish an update of the App on the App Store. However, the commands launched in the build process and, most importantly, the effects and artifacts generated by these commands, are publicly available. Therefore, they confirm the integrity and consistency of the published version.
 
 #### Reproducible builds
 
-As the [Reproducible Builds website](https://reproducible-builds.org/tools/) states, *reproducible builds* are a set of software development practices that create an independently verifiable path from source to binary code.
+As the [Reproducible Builds website](https://reproducible-builds.org/tools/) states, _reproducible builds_ are a set of software development practices that create an independently verifiable path from source to binary code.
 
 In the context of Immuni, reproducibility would offer security researchers an additional way to verify that builds have been made from commits of the publicly available repositories. In fact, reproducibility would exceed the assurance offered by the open build process by letting security researchers compare the App Store and Google Play binaries with binaries generated on their own computers.
 
@@ -401,7 +399,7 @@ Below, we discuss the efforts we have made towards achieving reproducibility of 
 **iOS**  
 Reproducible builds in an iOS context are complex. Even with the same environment (e.g., operating system and compiler), builds may differ from run to run. Moreover, Apple requires that App Store builds be signed using a sophisticated [code signing system](https://developer.apple.com/support/code-signing/). Finally, iOS App builds pass through a process called [app thinning](https://developer.apple.com/documentation/xcode/reducing_your_app_s_size) that further modifies the uploaded artifacts before the final builds are made available on the App Store for download.
 
-We have been working on this problem, also leveraging [Telegram’s great work](https://core.telegram.org/reproducible-builds#reproducible-builds-for-ios), but we have not yet found a satisfactory solution. At the current stage, we have managed to successfully compare an App Store build with the *xcarchive* that generated it. However, the comparison starts from an already compiled artifact and requires the iOS App code signing certificates. For security reasons, these are not publicly available.
+We have been working on this problem, also leveraging [Telegram’s great work](https://core.telegram.org/reproducible-builds#reproducible-builds-for-ios), but we have not yet found a satisfactory solution. At the current stage, we have managed to successfully compare an App Store build with the _xcarchive_ that generated it. However, the comparison starts from an already compiled artifact and requires the iOS App code signing certificates. For security reasons, these are not publicly available.
 
 We expect more work to be done in this area, and look forward to improving the process in the future.
 
@@ -410,17 +408,17 @@ The reproducibility of Android builds is affected by similar problems as on iOS,
 
 These are the main aspects that may limit reproducibility:
 
-* The building environment must be exactly the same (e.g., Android Studio, Gradle version, and plugins version)
-* The *resources.arsc* file can be different across builds of the same commit due to a known [issue](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=901956) regarding file ordering
-* Production builds are signed with certificates that are kept secret, for security reasons
-* The Android App bundle format generates different APKs for different devices and device configurations, while also introducing some bundletool-specific files that are different for each build (e.g., *META-INF/BNDLTOOL.SF* and *META-INF/BNDLTOOL.RSA*)
-* The *AndroidManifest.xml* file of production builds could be slightly different from that of independent builds made from the same commit, due to changes performed by Google Play during app publishing
+- The building environment must be exactly the same (e.g., Android Studio, Gradle version, and plugins version)
+- The _resources.arsc_ file can be different across builds of the same commit due to a known [issue](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=901956) regarding file ordering
+- Production builds are signed with certificates that are kept secret, for security reasons
+- The Android App bundle format generates different APKs for different devices and device configurations, while also introducing some bundletool-specific files that are different for each build (e.g., _META-INF/BNDLTOOL.SF_ and _META-INF/BNDLTOOL.RSA_)
+- The _AndroidManifest.xml_ file of production builds could be slightly different from that of independent builds made from the same commit, due to changes performed by Google Play during app publishing
 
 However, some of these limitations can be addressed:
 
-* APKs can be compared with a [Python script](https://github.com/DrKLO/Telegram/blob/master/apkdiff.py) maintained by Telegram as part of their effort on reproducible builds, or with tools such as [apkanalyzer](https://developer.android.com/studio/command-line/apkanalyzer)
-* The APK signature does not modify existing files inside the APK, but only adds three new files which can be skipped during the comparison (*META-INF/MANIFEST.MF, META-INF/CERT.RSA,* and *META-INF/CERT.SF*)
-* Device-specific APKs can be generated from the published Android App bundle using [bundletool](https://developer.android.com/studio/command-line/bundletool)
+- APKs can be compared with a [Python script](https://github.com/DrKLO/Telegram/blob/master/apkdiff.py) maintained by Telegram as part of their effort on reproducible builds, or with tools such as [apkanalyzer](https://developer.android.com/studio/command-line/apkanalyzer)
+- The APK signature does not modify existing files inside the APK, but only adds three new files which can be skipped during the comparison (_META-INF/MANIFEST.MF, META-INF/CERT.RSA,_ and _META-INF/CERT.SF_)
+- Device-specific APKs can be generated from the published Android App bundle using [bundletool](https://developer.android.com/studio/command-line/bundletool)
 
 To increase transparency, the code is neither shrunk nor obfuscated, making it easier for security experts to decompile the bytecode and compare it with the published source code.
 
@@ -440,24 +438,24 @@ To monitor the performance and stability of all backend services and therefore g
 
 The following dependencies are used to implement the business logic:
 
-* **[Aioredis](https://aioredis.readthedocs.io/).** An async client for Redis interaction, Aioredis is released as an open-source project under the MIT licence.
-* **[Celery](http://www.celeryproject.org/).** An asynchronous task framework to execute delayed or scheduled tasks, Celery is released as an open-source project under the BSD-3 licence.
-* **[Decouple](https://github.com/henriquebastos/python-decouple/).** A library to easily inject configuration via static files or environment variables, Decouple is released as an open-source project under the MIT licence.
-* **[Marshmallow](https://pypi.org/project/marshmallow/).** A library to easily manage and validate endpoints schemas, Marshmallow is released as an open-source project under the MIT licence.
-* **[MongoEngine](http://mongoengine.org/).** A document-object mapper for working with MongoDB from Python, MongoEngine is released as an open-source project under the MIT licence.
-* **[Pymongo](https://docs.mongodb.com/drivers/pymongo).** A low-level library to interact with MongoDB, Pymongo is released as an open-source project under the Apache 2.0 licence.
-* **[Sanic](https://github.com/huge-success/sanic).** A fast, async web framework to implement web APIs, Sanic is released as an open-source project under the MIT licence.
-* **[Uvicorn](https://www.uvicorn.org).** An async web server, Uvicorn is released as an open-source project under the BSD-3 licence.
+- **[Aioredis](https://aioredis.readthedocs.io/).** An async client for Redis interaction, Aioredis is released as an open-source project under the MIT licence.
+- **[Celery](http://www.celeryproject.org/).** An asynchronous task framework to execute delayed or scheduled tasks, Celery is released as an open-source project under the BSD-3 licence.
+- **[Decouple](https://github.com/henriquebastos/python-decouple/).** A library to easily inject configuration via static files or environment variables, Decouple is released as an open-source project under the MIT licence.
+- **[Marshmallow](https://pypi.org/project/marshmallow/).** A library to easily manage and validate endpoints schemas, Marshmallow is released as an open-source project under the MIT licence.
+- **[MongoEngine](http://mongoengine.org/).** A document-object mapper for working with MongoDB from Python, MongoEngine is released as an open-source project under the MIT licence.
+- **[Pymongo](https://docs.mongodb.com/drivers/pymongo).** A low-level library to interact with MongoDB, Pymongo is released as an open-source project under the Apache 2.0 licence.
+- **[Sanic](https://github.com/huge-success/sanic).** A fast, async web framework to implement web APIs, Sanic is released as an open-source project under the MIT licence.
+- **[Uvicorn](https://www.uvicorn.org).** An async web server, Uvicorn is released as an open-source project under the BSD-3 licence.
 
 To increase the security, robustness, and quality of the code, we integrated several established tools into our development pipeline:
 
-* **[Bandit](https://github.com/PyCQA/bandit).** A tool designed to find common security vulnerabilities in Python code, it is maintained by the Python Code Quality Authority and released as an open-source project under the Apache 2.0 licence.
-* **[Black](https://github.com/psf/black).** A code formatter for Python, Black is released as an open-source project under the MIT licence.
-* **[Flake8](https://flake8.pycqa.org/en/latest/).** A tool to enforce consistent coding style rules, Flake8 is maintained by the Python Code Quality Authority and released as an open-source project under the MIT licence.
-* **[Isort](https://isort.readthedocs.io/en/latest/).** A utility to sort Python imports alphabetically, isort is released as an open-source project under the MIT licence.
-* **[Mypy](https://mypy.readthedocs.io/en/stable/).** A static type checker for Python, mypy is released as an open-source project under the MIT licence.
-* **[Pylint](https://www.pylint.org/).** A linter and static code analysis tool for Python, pylint is maintained by the Python Code Quality Authority and released as an open-source project under the GNU General Public Licence v2.
-* **[Pytest](https://docs.pytest.org/en/latest/).** A framework to write tests in Python, pytest is released as an open-source project under the MIT licence.
+- **[Bandit](https://github.com/PyCQA/bandit).** A tool designed to find common security vulnerabilities in Python code, it is maintained by the Python Code Quality Authority and released as an open-source project under the Apache 2.0 licence.
+- **[Black](https://github.com/psf/black).** A code formatter for Python, Black is released as an open-source project under the MIT licence.
+- **[Flake8](https://flake8.pycqa.org/en/latest/).** A tool to enforce consistent coding style rules, Flake8 is maintained by the Python Code Quality Authority and released as an open-source project under the MIT licence.
+- **[Isort](https://isort.readthedocs.io/en/latest/).** A utility to sort Python imports alphabetically, isort is released as an open-source project under the MIT licence.
+- **[Mypy](https://mypy.readthedocs.io/en/stable/).** A static type checker for Python, mypy is released as an open-source project under the MIT licence.
+- **[Pylint](https://www.pylint.org/).** A linter and static code analysis tool for Python, pylint is maintained by the Python Code Quality Authority and released as an open-source project under the GNU General Public Licence v2.
+- **[Pytest](https://docs.pytest.org/en/latest/).** A framework to write tests in Python, pytest is released as an open-source project under the MIT licence.
 
 ### App Configuration Service
 
@@ -497,7 +495,7 @@ The OTP automatically expires after a defined interval. If the data have not bee
 
 The OTP is composed of 10 uppercase alphanumeric characters, with the last character being a check digit.
 
-To prevent misunderstandings when the user communicates the OTP to the Healthcare Operator, the characters used in the OTP are limited to the following subset: *A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z, 1, 2, 3, 4, 5, 6, 7, 8, 9.* This leads to 25^9 possible valid combinations (since the last character is computed deterministically, based on the previous 9 characters).
+To prevent misunderstandings when the user communicates the OTP to the Healthcare Operator, the characters used in the OTP are limited to the following subset: _A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z, 1, 2, 3, 4, 5, 6, 7, 8, 9._ This leads to 25^9 possible valid combinations (since the last character is computed deterministically, based on the previous 9 characters).
 
 #### API - Authorise OTP <a name="api-authorise-otp" />
 
@@ -513,7 +511,7 @@ The API is only accessible by the HIS
 **Resource path**  
 `POST /v1/authorise-otp`
 
-**Request body**  
+**Request body**
 
 ```
 {
@@ -571,18 +569,18 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 `Exp-Client-Clock: <UNIX epoch time>`  
 `Exp-Dummy-Data: <true|false>`
 
-**Request body**  
+**Request body**
 
 ```
 {
-	"teks": [ 
+	"teks": [
 	{
 		"key_data": string,
 		"rolling_start_number": int,
 		"rolling_period" : int
 	}, ...
 	],
-	"province": string, 
+	"province": string,
 	"exposure_detection_summaries": [
 	{
     	"matched_key_count": int,
@@ -607,9 +605,9 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 #### Data model - Uploads <a name="data-model-uploads" />
 
 **Description**  
-The *uploads* collection stores the TEKs uploaded by a Mobile Client with an authorised OTP, together with information on the day of symptoms onset, if any. *Uploads* can be automatically deleted after 14 days by filtering on the generation time of *ObjectId.* *to_publish* indicates whether the data still needs to be processed to be included in a new TEK Chunk. *teks* is an array of TEKs. *key_data* is the base64-encoding of the 16-byte TEK. Any Epidemiological Infos are forwarded to the Analytics Service.
+The _uploads_ collection stores the TEKs uploaded by a Mobile Client with an authorised OTP, together with information on the day of symptoms onset, if any. _Uploads_ can be automatically deleted after 14 days by filtering on the generation time of _ObjectId._ _to_publish_ indicates whether the data still needs to be processed to be included in a new TEK Chunk. _teks_ is an array of TEKs. _key_data_ is the base64-encoding of the 16-byte TEK. Any Epidemiological Infos are forwarded to the Analytics Service.
 
-**Schema**  
+**Schema**
 
 ```
 {
@@ -629,15 +627,15 @@ The *uploads* collection stores the TEKs uploaded by a Mobile Client with an aut
 #### Data model - TEKChunks <a name="data-model-tekchunks" />
 
 **Description**  
-The *TEKChunks* collection holds the TEK Chunks generated by the Exposure Ingestion Service, and it is also read-accessible by the Exposure Reporting Service so that it can return the available TEK Chunks to the Mobile Clients. TEK Chunks can be automatically deleted after 14 days by filtering on the generation time of *ObjectId.* *index* is the incremental TEK Chunk index. *teks* is an array of TEKs. *key_data* is the base64-encoding of the 16-byte TEK.
+The _TEKChunks_ collection holds the TEK Chunks generated by the Exposure Ingestion Service, and it is also read-accessible by the Exposure Reporting Service so that it can return the available TEK Chunks to the Mobile Clients. TEK Chunks can be automatically deleted after 14 days by filtering on the generation time of _ObjectId._ _index_ is the incremental TEK Chunk index. _teks_ is an array of TEKs. _key_data_ is the base64-encoding of the 16-byte TEK.
 
-**Schema**  
+**Schema**
 
 ```
 {
  	_id: ObjectId,
  	index: int,
- 	teks: [ 
+ 	teks: [
  	{
    		key_data: string,
 		rolling_start_number: int,
@@ -671,7 +669,7 @@ Return the index of the oldest relevant TEK Chunk (no older than 14 days) and th
 `Content-Type: application/json`  
 `Cache-Control: public, max-age=1800`
 
-**Response body**  
+**Response body**
 
 ```
 {
@@ -679,6 +677,7 @@ Return the index of the oldest relevant TEK Chunk (no older than 14 days) and th
 	"newest": int
 }
 ```
+
 #### API - Download TEKs <a name="api-download-teks" />
 
 **Caller**  
@@ -702,12 +701,12 @@ We have elected not to provide an example of a response body here, as it would h
 
 ### Analytics Service
 
-*Section under construction.*
+_Section under construction._
 
 ## Open points
 
 These are some of the most pressing points on which we are working:
 
-* **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising decisions on dummy uploads.
-* **Analytics integrity.** We are trying to collect the necessary Epidemiological Infos and Technical Infos while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We have a promising solution under development that we expect to work for a significant portion of devices.
-* **Data retention, retrieval, and erasure.** We are finalising the specifics of these important policies.
+- **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising decisions on dummy uploads.
+- **Analytics integrity.** We are trying to collect the necessary Epidemiological Infos and Technical Infos while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We have a promising solution under development that we expect to work for a significant portion of devices.
+- **Data retention, retrieval, and erasure.** We are finalising the specifics of these important policies.
