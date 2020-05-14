@@ -272,7 +272,7 @@ The App is written using Swift 5.2 and XCode 11.5.
 The development process leverages the following technologies:
 
 - **[Brew](https://brew.sh/).** A package manager for macOS, Brew is released as an open-source project under the BSD 2-Clause 'Simplified' licence.
-- **[CocoaPods](http://cocoapods.org/).** The most widespread dependency manager in the iOS community, CocoaPods is released as an open-source project under the MIT licence.
+- **[CocoaPods](https://cocoapods.org/).** The most widespread dependency manager in the iOS community, CocoaPods is released as an open-source project under the MIT licence.
 - **[CommitLint](https://commitlint.js.org/#/).** A linter for commits, CommitLint is released as an open-source project under the MIT licence.
 - **[Danger](https://danger.systems/js/).** A system to enforce code quality and contribution rules in pull requests, Danger is released as an open-source project under the MIT licence.
 - **[SwiftFormat](https://github.com/nicklockwood/SwiftFormat/).** A formatter for Swift code, SwiftFormat is released as an open-source project under the MIT licence.
