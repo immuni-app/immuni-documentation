@@ -7,35 +7,37 @@
 - [Exposure detection and notification flow](#exposure-detection-and-notification-flow)
 - [Architecture](#architecture)
 - [Mobile Client](#mobile-client)
-  _ [Features](#features)
-  _ [Onboarding](#onboarding)
-  _ [Transmission Risk Assessment](#transmission-risk-assessment)
-  _ [TEKs upload](#teks-upload)
-  _ [Analytics](#analytics)
-  _ [A/G Framework](#ag-framework)
-  _ [iOS App](#ios-app)
-  _ [iOS App technologies](#ios-app-technologies)
-  _ [iOS App security](#ios-app-security)
-  _ [Android App](#android-app)
-  _ [Android App technologies](#android-app-technologies)
-  _ [Android App security](#android-app-security)
-  _ [App build verification](#app-build-verification)
-  _ [Open build process](#open-build-process) \* [Reproducible builds](#reproducible-builds)
+  - [Features](#features)
+    - [Onboarding](#onboarding)
+    - [Transmission Risk Assessment](#transmission-risk-assessment)
+    - [TEKs upload](#teks-upload)
+    - [Analytics](#analytics)
+  - [A/G Framework](#ag-framework)
+  - [iOS App](#ios-app)
+    - [iOS App technologies](#ios-app-technologies)
+    - [iOS App security](#ios-app-security)
+  - [Android App](#android-app)
+    - [Android App technologies](#android-app-technologies)
+    - [Android App security](#android-app-security)
+  - [App build verification](#app-build-verification)
+    - [Open build process](#open-build-process)
+    - [Reproducible builds](#reproducible-builds)
 - [Backend Services](#backend-services)
-  _ [Backend Services technologies](#backend-services-technologies)
-  _ [App Configuration Service](#app-configuration-service)
-  _ [API - Fetch Configuration Settings](#api-fetch-configuration-settings)
-  _ [OTP Service](#otp-service)
-  _ [OTP format](#otp-format)
-  _ [API - Authorise OTP](#api-authorise-otp)
-  _ [Exposure Ingestion Service](#exposure-ingestion-service)
-  _ [API - Validate OTP](#api-validate-otp)
-  _ [API - Upload TEKs](#api-upload-teks)
-  _ [Data model - Uploads](#data-model-uploads)
-  _ [Data model - TEKChunks](#data-model-tekchunks)
-  _ [Exposure Reporting Service](#exposure-reporting-service)
-  _ [API - Fetch TEK Chunk indexes](#api-fetch-tek-chunk-indexes)
-  _ [API - Download TEKs](#api-download-teks) \* [Analytics Service](#analytics-service)
+  - [Backend Services technologies](#backend-services-technologies)
+  - [App Configuration Service](#app-configuration-service)
+    - [API - Fetch Configuration Settings](#api-fetch-configuration-settings)
+  - [OTP Service](#otp-service)
+    - [OTP format](#otp-format)
+    - [API - Authorise OTP](#api-authorise-otp)
+  - [Exposure Ingestion Service](#exposure-ingestion-service)
+    - [API - Validate OTP](#api-validate-otp)
+    - [API - Upload TEKs](#api-upload-teks)
+    - [Data model - Uploads](#data-model-uploads)
+    - [Data model - TEKChunks](#data-model-tekchunks)
+  - [Exposure Reporting Service](#exposure-reporting-service)
+    - [API - Fetch TEK Chunk indexes](#api-fetch-tek-chunk-indexes)
+    - [API - Download TEKs](#api-download-teks)
+  - [Analytics Service](#analytics-service)
 - [Open points](#open-points)
 
 ## Context
@@ -515,8 +517,8 @@ The API is only accessible by the HIS
 
 ```
 {
-	"otp": string,
-	"symptoms_started_on": string
+  "otp": string,
+  "symptoms_started_on": string
 }
 ```
 
@@ -573,32 +575,32 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 
 ```
 {
-	"teks": [
-	{
-		"key_data": string,
-		"rolling_start_number": int,
-		"rolling_period" : int
-	}, ...
-	],
-	"province": string,
-	"exposure_detection_summaries": [
-	{
-    	"matched_key_count": int,
-    	"days_since_last_exposure": int,
-    	"attenuation_durations": array[int],
-    	"maximum_risk_score": int
-	}, ...
-	],
-	"exposure_infos": [
-	{
-    	"date": date,
-		"duration": int,
-		"attenuation_value": int,
-		"attenuation_durations": array[int],
-  		"transmission_risk_level": int,
-		"total_risk_score": int
+  "teks": [
+    {
+      "key_data": string,
+      "rolling_start_number": int,
+      "rolling_period" : int
     }, ...
-	]
+  ],
+  "province": string,
+  "exposure_detection_summaries": [
+    {
+      "matched_key_count": int,
+      "days_since_last_exposure": int,
+      "attenuation_durations": array[int],
+      "maximum_risk_score": int
+    }, ...
+  ],
+  "exposure_infos": [
+    {
+      "date": date,
+      "duration": int,
+      "attenuation_value": int,
+      "attenuation_durations": array[int],
+      "transmission_risk_level": int,
+      "total_risk_score": int
+    }, ...
+  ]
 }
 ```
 
@@ -611,16 +613,16 @@ The _uploads_ collection stores the TEKs uploaded by a Mobile Client with an aut
 
 ```
 {
-	_id: ObjectId,
-	to_publish: bool,
-	symptoms_started_on: date,
-	teks: [
-  	{
- 		key_data: string,
-   		rolling_start_number: int,
-		rolling_period : int
-  	}, ...
- 	]
+  _id: ObjectId,
+  to_publish: bool,
+  symptoms_started_on: date,
+  teks: [
+    {
+      key_data: string,
+      rolling_start_number: int,
+      rolling_period : int
+    }, ...
+  ]
 }
 ```
 
@@ -633,15 +635,15 @@ The _TEKChunks_ collection holds the TEK Chunks generated by the Exposure Ingest
 
 ```
 {
- 	_id: ObjectId,
- 	index: int,
- 	teks: [
- 	{
-   		key_data: string,
-		rolling_start_number: int,
-		transmission_risk_level: int
-	}, ...
-	]
+  _id: ObjectId,
+  index: int,
+  teks: [
+    {
+      key_data: string,
+      rolling_start_number: int,
+      transmission_risk_level: int
+    }, ...
+  ]
 }
 ```
 
@@ -673,8 +675,8 @@ Return the index of the oldest relevant TEK Chunk (no older than 14 days) and th
 
 ```
 {
-	"oldest": int,
-	"newest": int
+  "oldest": int,
+  "newest": int
 }
 ```
 
