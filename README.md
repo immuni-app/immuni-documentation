@@ -16,16 +16,16 @@
 
 ## Executive summary
 
-- Immuni is a technological solution that centres on **an iOS and Android smartphone app.** It helps us fight the COVID-19 pandemic by notifying users at risk of carrying the virus as early as possible—**even when they are asymptomatic.** These users can then isolate themselves to avoid infecting others, and seek medical advice.
-- Immuni’s design and development are founded on five main principles: **utility, accuracy, scalability, transparency,** and **privacy.**
+- Immuni is a technological solution that centres on **an iOS and Android smartphone app.** It helps us to fight the COVID-19 pandemic by notifying users at risk of carrying the virus as early as possible—**even when they are asymptomatic.** These users should then isolate themselves to avoid infecting others, and seek medical advice.
+- Immuni’s design and development are based on five main principles: **utility, accuracy, scalability, transparency,** and **privacy.**
 - It features a **contact tracing** system based on **Bluetooth Low Energy:**
-  - When two users come sufficiently close to each other for long enough, their devices record each other’s _rolling proximity identifier_ in their local memory. These identifiers are generated from _temporary exposure keys_ and change multiple times an hour. These keys are **generated randomly** and change once per day.
+  - When two users come sufficiently close to each other for long enough, their devices record each other’s _rolling proximity identifier_ in their local memory. These identifiers are generated from _temporary exposure keys_ and change multiple times each hour. These keys are **generated randomly** and change once per day.
   - When a user tests positive for SARS-CoV-2, the virus causing COVID-19, they have the option to upload to a server their recent temporary exposure keys. This operation can only happen with the validation of a **healthcare operator.**
   - The app periodically downloads the new temporary exposure keys and uses them to derive the infected users’ rolling proximity identifiers for the recent past. It then matches them against those stored in the device’s memory and **notifies the user** if a risky contact has occurred.
-  - The system uses **no geolocation data** whatsoever, including GPS data. So, the app cannot tell where the contact with a potentially contagious user took place, nor the identities of those involved.
+  - The system **does not use any geolocation data** whatsoever, including GPS data. So, the app cannot tell where the contact with a potentially contagious user took place, nor the identities of those involved.
 - To implement its contact tracing functionality, Immuni leverages **the Apple and Google Exposure Notification framework.** This allows Immuni to be more resilient than otherwise would be possible.
 - Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and technical information,** and are sent for the purpose of helping the National Healthcare Service (*Servizio Sanitario Nazionale*) to provide effective assistance to users, in compliance with art. 6.2.b and 6.3 of the Law Decree 28/2020.
-- Immuni is being developed while paying a lot of attention to user privacy and a number of measures have been taken to protect it. For example, the app collects **no personal data that would disclose the user’s identity,** such as the user’s name, age, address, email, or phone number.
+- Immuni development main pillar is to pay a lot of attention to user privacy, putting in place a number of measures to protect it. For example, the app **does not collect any personal data that would disclose the user’s identity,** such as the user’s name, age, address, email, or phone number.
 
 ## Context
 
@@ -33,7 +33,7 @@ The whole world is united by a determination to stop the spread of COVID-19, the
 
 Many experts agree that, in the future, new pandemics are a distinct possibility. Some may become even more dangerous to humanity than the one we are currently battling.
 
-In this challenging context, the contribution of technological innovation can be decisive. Immuni is one of a number of tools deployed and initiatives taken by the Italian government to help slow down the spread of the disease and accelerate the return to everyday life.
+In this challenging context, the contribution of technological innovation can be decisive. Immuni is one of a number of tools deployed and initiatives taken by the Italian government to help slowing down the spread of the disease and accelerate the return to everyday life.
 
 This document provides a high-level description of Immuni—it is a good idea to read it first. More detailed information can be found in the following documents (if you can not find them, check back in a few days—they are coming soon):
 
@@ -41,7 +41,7 @@ This document provides a high-level description of Immuni—it is a good idea to
 - [Technology Description](https://github.com/immuni-app/documentation/blob/master/Technology%20Description.md)
 - Security Description
 
-Additionally, we are going to open-source Immuni’s software under the GNU Affero General Public License version 3. Finally, penetration tests are due to take place and we will share the resulting reports.
+Additionally, we are going to open-source Immuni’s software under the [GNU Affero General Public License version 3](https://www.gnu.org/licenses/agpl-3.0.en.html). Finally, penetration tests are due to take place and we will share the resulting reports.
 
 ## Vision and goals
 
@@ -50,7 +50,7 @@ Immuni is a technological solution that centres on a smartphone app.
 It helps us fight epidemics—starting with COVID-19:
 
 1. The app aims to notify users at risk of carrying the virus as early as possible—even when they are asymptomatic.
-2. These users can then isolate themselves to avoid infecting others. This minimises the spread of the virus while speeding up a return to normal life for most people.
+2. These users should then isolate themselves to avoid infecting others. This minimises the spread of the virus while speeding up a return to normal life for most people.
 3. By being notified early, they can also seek medical advice and lower the risk of serious health consequences.
 
 Immuni is designed to address the current crisis, but the vision behind it is for the tools that are being developed to make us all better prepared in addressing similar threats that may arise in the future.
@@ -59,10 +59,10 @@ Immuni is designed to address the current crisis, but the vision behind it is fo
 
 The main principles that guide the design and development of Immuni follow:
 
-- **Utility.** The app needs to be useful in fulfilling the vision and goals for the project as outlined above. The key here is to be able to notify as high a percentage of the people who are substantially at risk as possible, and to do so as early as is practical. This is the most important principle.
-- **Accuracy.** Immuni aims to notify only those users who have a substantial risk of being positive to the virus. This is important because of the psychological toll that goes with being notified about a potential transmission of the disease, and because too high a rate of false positives would result in users losing trust in the app and stopping their use of it. Also, the more accurate the app is, the more efficiently the National Healthcare Service (_Servizio Sanitario Nazionale_) will be able to take care of users, making sure to attend to higher-risk ones first.
+- **Utility.** The app needs to be useful in fulfilling the vision and goals for the project as outlined above. The key here is to be able to notify as high a percentage of the people who are substantially at risk as possible, and to do so as early as it is practical. This is the most important principle.
+- **Accuracy.** Immuni aims to notify only those users who have a substantial risk of being positive to the virus. This is important because of the psychological toll that goes with being notified about a potential transmission of the disease, and because a too high rate of false positives would result in users losing trust in the app, ending up not using it anymore. Also, the more accurate the app is, the more efficiently the National Healthcare Service (_Servizio Sanitario Nazionale_) will be able to take care of users, making sure to attend to higher-risk ones first.
 - **Scalability.** Immuni needs to be widely adopted throughout the country. This requires the system to scale well technologically and the operational burden it places on the National Healthcare Service to be manageable.
-- **Transparency.** Everyone should be provided with access to documentation describing Immuni in all its parts and the rationale behind the most important design decisions. Also, all the relevant software will be open source. This allows the users to verify that the app works as documented and the expert community to help improve the system.
+- **Transparency.** Everyone should be provided access to documentation describing Immuni in all its parts and the rationale behind the most important design decisions. Also, all the relevant software will be open source. This allows the users to verify that the app works as documented and the expert community to help improve the system.
 - **Privacy.** While keeping Immuni useful, user privacy must be protected as well as possible. Earning and maintaining user trust is critical to make sure the app can be widely adopted.
 
 ## Product
@@ -139,7 +139,7 @@ Thanks to these data, it is possible to estimate the level of adoption of the ap
 
 ## Privacy
 
-Immuni has been and continues to be designed and developed while paying a lot of attention to user privacy. It is a fundamental right that we must do everything we can to protect. We also think that outstanding privacy protection is critical to making the app acceptable to the greatest number of people, thereby maximising Immuni’s utility.
+Immuni has been and continues to be designed and developed while paying a lot of attention to user privacy. It is a fundamental right that we must do everything we can to protect people and their data. We also think that outstanding privacy protection is critical to making the app acceptable to the greatest number of people, thereby maximising Immuni’s utility.
 
 Below, we provide a list of some of the measures by which Immuni protects the user’s privacy:
 
