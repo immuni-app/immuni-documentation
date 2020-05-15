@@ -24,7 +24,7 @@
   - The app periodically downloads the new temporary exposure keys and uses them to derive the infected users’ rolling proximity identifiers for the recent past. It then matches them against those stored in the device’s memory and **notifies the user** if a risky contact has occurred.
   - The system **does not use any geolocation data** whatsoever, including GPS data. So, the app cannot tell where the contact with a potentially contagious user took place, nor the identities of those involved.
 - To implement its contact tracing functionality, Immuni leverages **the Apple and Google Exposure Notification framework.** This allows Immuni to be more resilient than otherwise would be possible.
-- Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and technical information,** and are sent for the purpose of helping the National Healthcare Service (*Servizio Sanitario Nazionale*) to provide effective assistance to users, in compliance with art. 6.2.b and 6.3 of the Law Decree 28/2020.
+- Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and technical information,** and are sent for the purpose of helping the National Healthcare Service (Servizio Sanitario Nazionale) to provide effective assistance to users, in compliance with art. 6.2.b and 6.3 of the Law Decree 28/2020.
 - Immuni development main pillar is to pay a lot of attention to user privacy, putting in place a number of measures to protect it. For example, the app **does not collect any personal data that would disclose the user’s identity,** such as the user’s name, age, address, email, or phone number.
 
 ## Context
