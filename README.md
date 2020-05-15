@@ -75,7 +75,7 @@ The app then proceeds to recommend at-risk users what to do. Recommendations may
 
 As stated, Immuni’s contact tracing is based on Bluetooth Low Energy. This has some advantages, compared to a solution based on location tracking:
 
-- **The system is more accurate.** Unlike geolocalisation, which, in many contexts, has a precision in the order of the tens of metres, Bluetooth Low Energy signals allow for capturing contact occurring within a radius of a few metres of the user. These are the cases of contact relevant to the transmission of SARS-CoV-2.
+- **The system is more accurate.** Unlike geolocalization, which, in many contexts, has a precision in the order of the tens of metres, Bluetooth Low Energy signals allow for capturing contact occurring within a radius of a few metres of the user. These are the cases of contact relevant to the transmission of SARS-CoV-2.
 - **The battery is used more efficiently.** Battery-efficient location-tracking solutions exist. However, Bluetooth Low Energy tends to be outstanding when it comes to energy efficiency. This is important because it is reasonable to expect that the app’s uninstall rate will be correlated with battery consumption.
 - **No geolocation data are required.** Thanks to Bluetooth Low Energy, contacts are traced without tracking the users’ location. This may result in the app being more welcomed by people and could facilitate wider adoption, increasing Immuni’s utility.
 
