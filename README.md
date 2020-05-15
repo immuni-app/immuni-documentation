@@ -37,8 +37,8 @@ In this challenging context, the contribution of technological innovation can be
 
 This document provides a high-level description of Immuni—it is a good idea to read it first. More detailed information can be found in the following documents (if you can not find them, check back in a few days—they are coming soon):
 
-- Product Description
-- [Technology Description](https://github.com/immuni-app/documentation/blob/master/Technology%20Description.md)
+- [Product Description](/Product%20Description.md)
+- [Technology Description](/Technology%20Description.md)
 - Security Description
 
 Additionally, we are going to open-source Immuni’s software under the GNU Affero General Public License version 3. Finally, penetration tests are due to take place and we will share the resulting reports.
