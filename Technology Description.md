@@ -68,7 +68,7 @@ For ease of reference, the following list defines some of the terms used through
 
 **Contact.** The event of two Mobile Clients coming into sufficient proximity of each other for long enough (generally a few metres for at least five minutes) that they will receive and locally store each other’s RPIs. We will say that these Mobile Clients ‘came into Contact’ with each other or we will use similar expressions. The duration of the Contact is defined as that estimated by the Mobile Client, independently of the actual length of the period of time during which the Mobile Clients were in proximity of each other. Considering that the detection of the relevant BLE signals is performed periodically and that these can be obstructed by various obstacles, the estimation of duration will necessarily be imperfect.
 
-**Epidemiological Info.** Any set of Exposure Detection Summaries and Exposure Infos.
+**Epidemiological Info.** Any set of Exposure Detection Summaries and Exposure Info.
 
 **Exposure.** For a specific TEK, the set of all the Contacts occurring between the user’s Mobile Client and another Mobile Client for as long as the latter was broadcasting RPIs generated from that TEK (TEKs change daily). For Contacts during which said TEK was generated or retired in favour of a new one, only the portion of the Contact occurring for the relevant TEK is considered part of the Exposure. When the Exposure of a Mobile Client to a certain TEK is not an empty set, we will say that ‘the Mobile Client was Exposed to that TEK’, or we will use similar expressions. The duration of an Exposure is defined as the sum of the durations of all its Contacts.
 
@@ -108,7 +108,7 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 
 **National Healthcare Service.** The Italian national healthcare system, known as the _Servizio Sanitario Nazionale._
 
-**One Time Password (OTP).** A random, ten-character code used to authenticate calls between the Mobile Client and the Exposure Ingestion Service while uploading TEKs, Exposure Detection Summaries, Exposure Infos, and the user’s Province of Domicile. The code is generated on the Mobile Client and then authorised by a Healthcare Operator via the OTP Service. It expires after a defined interval.
+**One Time Password (OTP).** A random, ten-character code used to authenticate calls between the Mobile Client and the Exposure Ingestion Service while uploading TEKs, Exposure Detection Summaries, Exposure Info, and the user’s Province of Domicile. The code is generated on the Mobile Client and then authorised by a Healthcare Operator via the OTP Service. It expires after a defined interval.
 
 **OTP Service.** See [Architecture](#architecture).
 
@@ -169,23 +169,23 @@ The Immuni system includes Mobile Client and Backend Services.
 - Broadcasting the RPIs through BLE signals
 - Collecting RPIs broadcast by other Mobile Clients
 - Periodically downloading the TEKs of users who tested positive for SARS-CoV-2 and decided to make them available for download
-- Computing Exposure Detection Summaries and Exposure Infos
+- Computing Exposure Detection Summaries and Exposure Info
 - Notifying the user if relevant
 - Allowing the user to upload their recent TEKs in the case that they test positive for the virus
-- Collecting and uploading the user’s Province of Domicile, Epidemiological Infos (if any), and Technical Infos
+- Collecting and uploading the user’s Province of Domicile, Epidemiological Info (if any), and Technical Info
 
 The Mobile Client includes the following parts:
 
-- **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement contact tracing apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
+- **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement contact tracing apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Info.
 - **App (iOS App and Android App).** The Immuni iOS or Android apps that users download from the App Store and Google Play respectively. The App is responsible for handling user interactions (including notifying users that they may be at risk) and for implementing the business logic (including all communications with the Backend Services).
 
 **Backend Services.** Immuni’s backend software and infrastructure, which include the following services:
 
 - **App Configuration Service.** This serves the Configuration Settings used by the App.
 - **OTP Service.** This facilitates the authorisation of the OTP used by the Mobile Client for authenticating with the Exposure Ingestion Service. The Healthcare Operator will collect the OTP from a consenting user who tested positive for SARS-CoV-2, and enter it into the HIS. The HIS will then record the OTP in a database, authorising it and making it accessible to the Exposure Ingestion Service.
-- **Exposure Ingestion Service.** When a Healthcare Operator informs a user that they tested positive for SARS-CoV-2, this service allows the user’s Mobile Client to start an upload of the TEKs it generated over the previous 14 days and their Province of Domicile. If any Epidemiological Infos from the previous 14 days are available, the Mobile Client will upload them too.
+- **Exposure Ingestion Service.** When a Healthcare Operator informs a user that they tested positive for SARS-CoV-2, this service allows the user’s Mobile Client to start an upload of the TEKs it generated over the previous 14 days and their Province of Domicile. If any Epidemiological Info from the previous 14 days are available, the Mobile Client will upload them too.
 - **Exposure Reporting Service.** This provides a scalable system to serve the TEKs of SARS-CoV-2 positive users to the Mobile Clients, after they were uploaded through the Exposure Ingestion Service.
-- **Analytics Service.** The National Healthcare Service needs to have some visibility into the number of devices the app is correctly functioning on, and the number of users Immuni is notifying. This helps it operate the system effectively, thereby minimising the epidemic’s health toll. The Analytics Service allows the upload of Province of Domicile, Epidemiological Infos (if any), and Technical Infos by the Mobile Client without identifying users. The data have certain limitations enforced by the A/G Framework to protect user privacy. Further protection to user privacy is achieved by uploading such data without asking the user to authenticate, and without leveraging a user identifier or device identifier.
+- **Analytics Service.** The National Healthcare Service needs to have some visibility into the number of devices the app is correctly functioning on, and the number of users Immuni is notifying. This helps it operate the system effectively, thereby minimising the epidemic’s health toll. The Analytics Service allows the upload of Province of Domicile, Epidemiological Info (if any), and Technical Info by the Mobile Client without identifying users. The data have certain limitations enforced by the A/G Framework to protect user privacy. Further protection to user privacy is achieved by uploading such data without asking the user to authenticate, and without leveraging a user identifier or device identifier.
 
 ## Mobile Client
 
@@ -223,7 +223,7 @@ If a user is found to be SARS-CoV-2 positive, they can decide to upload the foll
 
 - The TEKs generated by user’s Mobile Client in the previous 14 days
 - The user’s Province of Domicile
-- The Epidemiological Infos computed in the previous 14 days, if any
+- The Epidemiological Info computed in the previous 14 days, if any
 
 A Healthcare Operator will assist the user with this operation. The upload process can be summarised as follows:
 
@@ -231,15 +231,15 @@ A Healthcare Operator will assist the user with this operation. The upload proce
 2. The Healthcare Operator inserts the OTP into the HIS, which authorises it by sending it to the Exposure Ingestion Service.
 3. The Healthcare Operator invites the user to validate the OTP. Upon user action, the Mobile Client validates the OTP with the Exposure Ingestion Service. If the validation is successful, the process continues as described below.
 4. The operating system shows a native confirmation pop-up and the user must provide their permission before the App can access the TEKs. Then, the App proceeds to query the A/G Framework to retrieve the 14 most recent TEKs. Note that the App cannot bypass this authorisation process.
-5. After receiving the user’s permission, the App uploads to the Exposure Ingestion Service the 14 most recent TEKs, the user’s Province of Domicile, and the Epidemiological Infos for the previous 14 days (if any). The upload is authenticated with the OTP.
+5. After receiving the user’s permission, the App uploads to the Exposure Ingestion Service the 14 most recent TEKs, the user’s Province of Domicile, and the Epidemiological Info for the previous 14 days (if any). The upload is authenticated with the OTP.
 
 The Mobile Client periodically generates dummy traffic to prevent information about the user (chiefly whether they tested positive for SARS-CoV-2) to be gained through traffic analysis. Details can be found in Security Description.
 
 #### Analytics
 
-Periodically, the Mobile Client will send the user’s Province of Domicile and some Epidemiological Infos (if any are available) and Technical Infos to the Analytics Service. This information is critical for the National Healthcare Service to operate Immuni effectively, thereby maximising the containment of the epidemic and patient care, as explained in [High-Level Description](https://github.com/immuni-app/immuni-documentation/blob/master/README.md).
+Periodically, the Mobile Client will send the user’s Province of Domicile and some Epidemiological Info (if any are available) and Technical Info to the Analytics Service. This information is critical for the National Healthcare Service to operate Immuni effectively, thereby maximising the containment of the epidemic and patient care, as explained in [High-Level Description](https://github.com/immuni-app/immuni-documentation/blob/master/README.md).
 
-To protect user privacy, the Epidemiological Infos have a number of limitations, which are enforced by the A/G Framework. For example, the operating system alerts the user every time the App requests the Exposure Infos for a given Exposure Detection Summary. Also, the duration of each Exposure is measured in five-minute increments and capped at 30 minutes. Moreover, Immuni has no way to determine that multiple Exposures on different days may have occurred with the same infected user.
+To protect user privacy, the Epidemiological Info have a number of limitations, which are enforced by the A/G Framework. For example, the operating system alerts the user every time the App requests the Exposure Info for a given Exposure Detection Summary. Also, the duration of each Exposure is measured in five-minute increments and capped at 30 minutes. Moreover, Immuni has no way to determine that multiple Exposures on different days may have occurred with the same infected user.
 
 Furthermore, we are working on a system to allow the Mobile Client to upload such data without requiring any sort of user authentication (including phone number or email address verification), user identifiers, or device identifiers. At the same time, the system protects the integrity of the data from large-scale pollution caused by attackers sending fake data. The system will not work for all devices—the server will discard untrustworthy data. We will share the relevant documentation soon.
 
@@ -249,7 +249,7 @@ For the implementation of the [Exposure detection and notification flow](#exposu
 
 Part of the functionality is provided directly by the operating system, which results in enhanced user privacy:
 
-- The RPI Database is handled by the operating system. As such, the App does not have access to information such as which specific TEK triggered a Match, if any. Without notifying the user, the App can only access the Exposure Detection Summary for a set of TEKs. This offers high-level information on the Exposures for those TEKs. To access the Exposure Infos—which offer a bit more detail—the App has to trigger a notification to the user that is handled by the operating system and cannot be bypassed. Moreover, the operating system limits the App’s access to this information in various ways, including through aggregations and rate limits on the relevant API.
+- The RPI Database is handled by the operating system. As such, the App does not have access to information such as which specific TEK triggered a Match, if any. Without notifying the user, the App can only access the Exposure Detection Summary for a set of TEKs. This offers high-level information on the Exposures for those TEKs. To access the Exposure Info—which offer a bit more detail—the App has to trigger a notification to the user that is handled by the operating system and cannot be bypassed. Moreover, the operating system limits the App’s access to this information in various ways, including through aggregations and rate limits on the relevant API.
 - The App must obtain the user’s permission to get their TEKs so that it can upload them to the Exposure Ingestion Service. The entire authorisation flow is triggered by the App and handled by the operating system. The App has no way to bypass this security measure.
 
 On top of the privacy enhancements mentioned above, electing to leverage the A/G Framework unlocks a number of other advantages that we do not believe would be achievable in a custom implementation. These include:
@@ -524,13 +524,13 @@ The API is only accessible by the HIS
 
 ### Exposure Ingestion Service
 
-The Exposure Ingestion Service provides an API for the Mobile Client to upload its TEKs for the previous 14 days, in the case that the user tests positive for SARS-CoV-2 and decides to share them. Contextually, the Mobile Client uploads the Epidemiological Infos from the previous 14 days, if any. If some Epidemiological Infos are indeed uploaded, the user’s Province of Domicile is uploaded too. The upload can only take place with an authorised OTP.
+The Exposure Ingestion Service provides an API for the Mobile Client to upload its TEKs for the previous 14 days, in the case that the user tests positive for SARS-CoV-2 and decides to share them. Contextually, the Mobile Client uploads the Epidemiological Info from the previous 14 days, if any. If some Epidemiological Info are indeed uploaded, the user’s Province of Domicile is uploaded too. The upload can only take place with an authorised OTP.
 
 The Exposure Ingestion Service is also responsible for periodically generating the TEK Chunks to be published by the Exposure Reporting Service. The TEK Chunks are assigned a unique incremental index and are immutable. They are generated periodically as the Mobile Clients upload new TEKs.
 
 TEK Chunks older than 14 days are automatically deleted from the database by an async cleanup job.
 
-Province of Domicile and Epidemiological Infos are forwarded to the Analytics Service.
+Province of Domicile and Epidemiological Info are forwarded to the Analytics Service.
 
 #### API - Validate OTP <a name="api-validate-otp" />
 
@@ -557,7 +557,7 @@ The Mobile Client validates the OTP prior to uploading data. The request is auth
 Mobile Client
 
 **Description**  
-Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 14 days, together with the user’s Province of Domicile. If any Epidemiological Infos from the previous 14 days are available, the Mobile Client uploads those too. The timestamp that accompanies each TEK is referred to the Mobile Client’s system time. For this reason, the Mobile Client informs the Exposure Ingestion Service about its system time so that a skew can be corrected.
+Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 14 days, together with the user’s Province of Domicile. If any Epidemiological Info from the previous 14 days are available, the Mobile Client uploads those too. The timestamp that accompanies each TEK is referred to the Mobile Client’s system time. For this reason, the Mobile Client informs the Exposure Ingestion Service about its system time so that a skew can be corrected.
 
 **Resource hostname**  
 `upload.immuni.gov.it`
@@ -607,7 +607,7 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 #### Data model - Uploads <a name="data-model-uploads" />
 
 **Description**  
-The _uploads_ collection stores the TEKs uploaded by a Mobile Client with an authorised OTP, together with information on the day of symptoms onset, if any. _Uploads_ can be automatically deleted after 14 days by filtering on the generation time of _ObjectId._ _to_publish_ indicates whether the data still needs to be processed to be included in a new TEK Chunk. _teks_ is an array of TEKs. _key_data_ is the base64-encoding of the 16-byte TEK. Any Epidemiological Infos are forwarded to the Analytics Service.
+The _uploads_ collection stores the TEKs uploaded by a Mobile Client with an authorised OTP, together with information on the day of symptoms onset, if any. _Uploads_ can be automatically deleted after 14 days by filtering on the generation time of _ObjectId._ _to_publish_ indicates whether the data still needs to be processed to be included in a new TEK Chunk. _teks_ is an array of TEKs. _key_data_ is the base64-encoding of the 16-byte TEK. Any Epidemiological Info are forwarded to the Analytics Service.
 
 **Schema**
 
@@ -710,5 +710,5 @@ _Section under construction._
 These are some of the most pressing points on which we are working:
 
 - **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising decisions on dummy uploads.
-- **Analytics integrity.** We are trying to collect the necessary Epidemiological Infos and Technical Infos while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We have a promising solution under development that we expect to work for a significant portion of devices.
+- **Analytics integrity.** We are trying to collect the necessary Epidemiological Info and Technical Info while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We have a promising solution under development that we expect to work for a significant portion of devices.
 - **Data retention, retrieval, and erasure.** We are finalising the specifics of these important policies.
