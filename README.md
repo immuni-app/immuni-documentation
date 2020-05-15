@@ -104,7 +104,7 @@ Besides the temporary exposure keys, some additional information is sent to the 
 - Epidemiological information
 - Technical information
 
-These data are collected and used in compliance with art. 6.2.b and 6.3 of the Law Decree 28/2020. They are essential for the National Healthcare Service to effectively manage the system, including providing optimal healthcare assistance to users.
+These data are collected and used in compliance with art. 6.2.b and 6.3 of the Law Decree 28/2020 ([Decreto Legge 30 aprile 2020, n. 28 ](https://www.gazzettaufficiale.it/eli/id/2020/04/30/20G00046/sg)). They are essential for the National Healthcare Service to effectively manage the system, including providing optimal healthcare assistance to users.
 
 ### Epidemiological information
 
