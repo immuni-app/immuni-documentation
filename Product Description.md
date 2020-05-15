@@ -20,7 +20,7 @@
 
 ## Context
 
-This document describes the features and user flows made available by the Immuni app. It assumes that you have already read the [High-Level Description](https://github.com/immuni-app/documentation/blob/master/README.md).
+This document describes the features and user flows made available by the Immuni app. It assumes that you have already read the [High-Level Description](/README.md).
 
 Each section covers a specific part of the app. Features are described from the user’s point of view, using sentences in the first-person voice. When required, more details on _how_ the app delivers that particular feature are provided as sub-points. Note that this document does not attempt to define the specific details of the user experience or of the user interface. However, both are designed following the requirements laid out below.
 
