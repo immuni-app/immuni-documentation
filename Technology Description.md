@@ -518,7 +518,7 @@ The API is only accessible by the HIS
 ```
 {
   "otp": string,
-  "symptoms_started_on": string
+  "symptoms_started_on": date
 }
 ```
 
