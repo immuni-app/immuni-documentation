@@ -267,7 +267,7 @@ The iOS App will be available for devices running iOS 13. However, iOS 13.5 is r
 
 #### iOS App technologies
 
-The App is written using Swift 5.2 and XCode 11.5.
+The App is written using Swift 5.2 and Xcode 11.5.
 
 The development process leverages the following technologies:
 
