@@ -67,7 +67,7 @@ paths:
           type: integer
           format: int32
       responses:
-        200:
+        "200":
           description: A JSON-formatted dictionary. Specifications are being worked
             out.
           headers:
@@ -77,7 +77,7 @@ paths:
               schema:
                 type: string
           content: {}
-        400:
+        "400":
           description: Invalid request.
           content: {}
   /otp:
@@ -99,10 +99,10 @@ paths:
               $ref: '#/components/schemas/OTPUpload'
         required: true
       responses:
-        204:
+        "204":
           description: Operation completed successfully.
           content: {}
-        400:
+        "400":
           description: Invalid data. An APIError is returned. Possible error codes
             are 1400 ("Unexpected empty body") and 1401 ("Body not compliant with
             the defined schema").
@@ -126,17 +126,17 @@ paths:
         schema:
           type: boolean
       responses:
-        204:
+        "204":
           description: Operation completed successfully.
           content: {}
-        400:
+        "400":
           description: Invalid data. An APIError is returned. The only possible error
             code is 1100 ("Missing required input parameters").
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/APIError'
-        401:
+        "401":
           description: 'Unauthorised request: invalid OTP.'
           content: {}
       security:
@@ -175,17 +175,17 @@ paths:
               $ref: '#/components/schemas/Upload'
         required: true
       responses:
-        204:
+        "204":
           description: Operation completed successfully.
           content: {}
-        400:
+        "400":
           description: Invalid data. An APIError is returned. The only possible error
             code is 1100 ("Missing required input parameters").
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/APIError'
-        401:
+        "401":
           description: 'Unauthorised request: invalid OTP.'
           content: {}
       security:
@@ -199,7 +199,7 @@ paths:
         days) and the index of the newest available TEK Chunk. It is up to the Mobile
         Client not to download the same TEK Chunk more than once.
       responses:
-        200:
+        "200":
           description: Operation completed successfully.
           headers:
             Cache-Control:
@@ -211,7 +211,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TEKChunkIndexes'
-        404:
+        "404":
           description: No TEK Chunks found.
           content: {}
   /keys/{TEKChunkIndex}:
@@ -230,7 +230,7 @@ paths:
           type: integer
           format: int32
       responses:
-        200:
+        "200":
           description: Operation completed successfully.
           headers:
             Cache-Control:
@@ -239,7 +239,7 @@ paths:
               schema:
                 type: string
           content: {}
-        404:
+        "404":
           description: TEK Chunk not found.
           content: {}
 components:
@@ -408,7 +408,7 @@ components:
           format: int32
           example: 1400
         message:
-          pattern: ^[A-Za-z0-9 ]{1,64}$
+          pattern: ^[A-Za-z0-9. ]{1,64}$
           type: string
           example: Unexpected empty body.
   securitySchemes:
