@@ -333,7 +333,6 @@ The architecture is built on [Android Architecture Components](https://developer
 - **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured_concurrency). Support for these functionalities is supplied by the _kotlinx.coroutines_ library, which is released as an open-source project under the Apache 2.0 licence.
 - **[LiveData](https://developer.android.com/topic/libraries/architecture/livedata) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel).** LiveData are observable data holders, while ViewModels are designed to store and manage user interface related data in a lifecycle-conscious way. They both are part of the Android Jetpack set of libraries, and are released as open-source projects under the Apache 2.0 licence.
 - **[Navigation Component](https://developer.android.com/guide/navigation).** Navigation Component is used to create single activity apps, reducing complexity and ensuring a consistent and predictable user experience by adhering to an established set of [principles of navigation](https://developer.android.com/guide/navigation/navigation-principles). It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
-- **[Room](https://developer.android.com/topic/libraries/architecture/room).** The Room persistence library provides an abstraction layer over SQLite to allow for more robust database access. It can also expose data as LiveData/Flow, allowing for reactive-style programming.
 - **[Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager).** The Work Manager API makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the Android App exits or the device restarts. It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
 
 Additionally, the Android App uses the following libraries:
@@ -346,15 +345,12 @@ Additionally, the Android App uses the following libraries:
 - **[NumberPicker](https://github.com/ShawnLin013/NumberPicker).** An Android library that provides a simple and customisable number picker, NumberPicker is released as an open-source project under the MIT licence.
 - **[OkHttp](https://github.com/square/okhttp/).** An efficient, low-level HTTP(S) client for Java and Kotlin, OkHttp offers a robust foundation to high-level HTTP(S) clients like Retrofit. It is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
 - **[Retrofit](https://github.com/square/retrofit).** A high-level, type-safe HTTP(S) client for Android and Java, Retrofit is developed and maintained by Square Inc. and released as an open-source project under the Apache 2.0 licence.
-- **[SQLCipher](https://github.com/sqlcipher/android-database-sqlcipher).** An Android SQLite API, SQLCipher allows the storage of encrypted data. The SQLCipher code itself is licensed under a BSD-style licence by Zetetic LLC.
 
 #### Android App security
 
 Security is one of the most critical topics when it comes to Immuni. What follows is a discussion of some of the measures taken to protect user data, both while stored on the Android Mobile Client and when sent to any of the Backend Services.
 
-The Android App stores data inside a SQLite local database. The SQLCipher library is used to encrypt the database using AES256. The encryption key is generated on the Android Mobile Client and stored in its [keystore](https://developer.android.com/training/articles/keystore).
-
-Some data are also stored on the Android Mobile Client’s [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences). The Android Mobile Client provides a layer that encrypts this information using AES256. Like the database content, the encryption key is generated on the Android Mobile Client and stored in its keystore.
+The Android App stores data inside [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences) and provides a layer that encrypts this information using AES256. The encryption key is generated on the Android Mobile Client and stored in its [keystore](https://developer.android.com/training/articles/keystore). 
 
 To generate the encryption keys on the Android Mobile Client, we use [Jetpack](https://developer.android.com/topic/security/data).
 
