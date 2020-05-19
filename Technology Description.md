@@ -350,7 +350,7 @@ Additionally, the Android App uses the following libraries:
 
 Security is one of the most critical topics when it comes to Immuni. What follows is a discussion of some of the measures taken to protect user data, both while stored on the Android Mobile Client and when sent to any of the Backend Services.
 
-The Android App stores data inside [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences) and provides a layer that encrypts this information using AES256. The encryption key is generated on the Android Mobile Client and stored in its [keystore](https://developer.android.com/training/articles/keystore). 
+The Android App stores data inside [EncryptedSharedPreferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences) encrypting this information using AES256. The encryption key is generated on the Android Mobile Client and stored in its [keystore](https://developer.android.com/training/articles/keystore). 
 
 To generate the encryption keys on the Android Mobile Client, we use [Jetpack](https://developer.android.com/topic/security/data).
 
