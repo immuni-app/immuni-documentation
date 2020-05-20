@@ -295,7 +295,7 @@ Finally, Immuni leverages other open-source libraries, including:
 - **[Lottie](https://github.com/airbnb/lottie-ios).** A library for natively rendering vector-based animations and art in realtime, Lottie is developed and maintained by Airbnb and released as an open-source project under the Apache 2.0 licence.
 - **[PinLayout](https://github.com/layoutBox/PinLayout).** A library that permits writing user interface layout code leveraging a series of chainable function calls, PinLayout is released as an open-source project under the MIT licence.
 - **[SwiftLog](https://github.com/apple/swift-log/).** A logging package for Swift, SwiftLog is released by Apple under the Swift open-source effort. It is important to note that logs are never stored or sent outside the Mobile Client. Moreover, logs are disabled in production builds. SwiftLog is released as an open-source project under the Apache 2.0 licence.
-- **[ZipArchive](https://github.com/ZipArchive/ZipArchive).** A utility class to zip and unzip files on iOS. It is used to manage archives containing TEK Chunks downloaded from the server as specified in the [Apple's documentation](https://developer.apple.com/documentation/exposurenotification/setting_up_an_exposure_notification_server).
+- **[ZipArchive](https://github.com/ZipArchive/ZipArchive).** A utility class to zip and unzip files on iOS. It is used to manage archives containing TEK Chunks downloaded from the server as specified in [Apple's documentation](https://developer.apple.com/documentation/exposurenotification/setting_up_an_exposure_notification_server).
 
 #### iOS App security
 
