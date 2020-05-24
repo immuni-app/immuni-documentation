@@ -1,5 +1,8 @@
 # Immuni's High-Level Description
 
+The Immuni App is the Italian Government’s exposure notification solution, realized by the Special Commissioner for the Covid-19 emergency (Presidency of the Council of Ministers), in collaboration with the Ministry of Health and the Minister  for Technological Innovation and Digitalization.
+It only uses public infrastructures located within the national borders. It is exclusively managed by the public company Sogei S.p.A. The source code has been developed for the Presidency of the Council of Ministers by the Bending Spoons S.p.A. company, and it is released under a GNU AGPL license.
+
 ## Table of contents
 
 - [Executive summary](#executive-summary)
