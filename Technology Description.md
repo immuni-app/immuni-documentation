@@ -720,6 +720,5 @@ _Section under construction._
 
 These are some of the most pressing points on which we are working:
 
-- **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising decisions on dummy uploads.
-- **Analytics integrity.** We are trying to collect the necessary Epidemiological Infos and Technical Infos while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We have a promising solution under development that we expect to work for a significant portion of devices.
-- **Data retention, retrieval, and erasure.** We are finalising the specifics of these important policies.
+- **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising the development of dummy traffic.
+- **Analytics integrity.** We are trying to collect the necessary Operational Info while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user identifier or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We devised a promising solution that we expect to work for a significant portion of devices. Documentation and development are underway.
