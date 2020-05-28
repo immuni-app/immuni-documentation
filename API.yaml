@@ -75,13 +75,23 @@ paths:
       tags:
       - "Exposure Ingestion"
       summary: "The Mobile Client validates the OTP prior to uploading data. The request is authenticated with the OTP to be validated. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls."
+      consumes:
+      - "application/json; charset=utf-8"
       produces:
       - "application/json"
       parameters:
       - in: "header"
-        name: "Exp-Dummy-Data"
-        type: "boolean"
+        name: "Immuni-Dummy-Data"
+        type: "integer"
         required: true
+        minimum: 0
+        maximum: 1
+      - in: "body"
+        name: "body"
+        description: "A JSON-formatted dictionary containing a padding field to emulate the upload request payload size."
+        required: true
+        schema:
+          $ref: "#/definitions/CheckOTP"
       responses:
         204:
           description: "Operation completed successfully."
@@ -99,18 +109,20 @@ paths:
       - "Exposure Ingestion"
       summary: "Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 14 days, together with the user’s Province of Domicile. If any Epidemiological Infos from the previous 14 days are available, the Mobile Client uploads those too. The timestamp that accompanies each TEK is referred to the Mobile Client’s system time. For this reason, the Mobile Client informs the Exposure Ingestion Service about its system time so that a skew can be corrected. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls."
       consumes:
-      - "application/json"
+      - "application/json; charset=utf-8"
       produces:
       - "application/json"
       parameters:
       - in: "header"
-        name: "Exp-Client-Clock"
+        name: "Immuni-Client-Clock"
         type: "integer"
         format: "int32"
         required: true
       - in: "header"
-        name: "Exp-Dummy-Data"
-        type: "boolean"
+        name: "Immuni-Dummy-Data"
+        type: "integer"
+        minimum: 0
+        maximum: 1
         required: true
       - in: "body"
         name: "body"
@@ -153,7 +165,7 @@ paths:
       - "Exposure Reporting"
       summary: "Given a specific TEK Chunk index, the Mobile Client downloads the associated TEK Chunk from the Exposure Reporting Service."
       produces:
-      - "application/x-protobuf"
+      - "application/zip"
       parameters:
       - name: "TEKChunkIndex"
         in: "path"
@@ -202,14 +214,13 @@ definitions:
         type: "string"
         pattern: "^[A-Z]{2}$"
         example: "MB"
+      padding:
+        type: "string"
+        pattern: "^[a-zA-Z0-9]*$"
       exposure_detection_summaries:
         type: "array"
         items:
           $ref: "#/definitions/ExposureDetectionSummary"
-      exposure_infos:
-        type: "array"
-        items:
-          $ref: "#/definitions/ExposureInfo"
   TEK:
     type: "object"
     required:
@@ -217,11 +228,6 @@ definitions:
     - "rolling_start_number"
     - "rolling_period"
     properties:
-      transmission_risk_level:
-        type: "integer"
-        minimum: 0
-        maximum: 8
-        example: 1
       key_data:
         type: "string"
         example: "utdH33iMRTapATp7iK3hdA=="
@@ -252,11 +258,15 @@ definitions:
   ExposureDetectionSummary:
     type: "object"
     required:
+    - "date"
     - "matched_key_count"
     - "days_since_last_exposure"
     - "attenuation_durations"
     - "maximum_risk_score"
     properties:
+      date:
+        type: "string"
+        format: "date"
       matched_key_count:
         type: "integer"
         format: "int32"
@@ -269,9 +279,9 @@ definitions:
         example: 1
       attenuation_durations:
         type: "array"
-        minItems: 2
-        maxItems: 2
-        example: [300, 0]
+        minItems: 3
+        maxItems: 3
+        example: [300, 0, 0]
         items:
           type: "integer"
           format: "int32"
@@ -281,6 +291,18 @@ definitions:
         minimum: 0
         maximum: 4096
         example: 4
+      exposure_info:
+        type: "array"
+        items:
+          $ref: "#/definitions/ExposureInfo"
+  CheckOTP:
+    type: "object"
+    required:
+    - "padding"
+    properties:
+      padding:
+        type: "string"
+        pattern: "^[a-zA-Z0-9]*$"
   ExposureInfo:
     type: "object"
     required:
@@ -297,18 +319,20 @@ definitions:
       duration:
         type: "integer"
         format: "int32"
-        maximum: 30
-        minimum: 5
+        maximum: 1800
+        minimum: 0
         example: 5
       attenuation_value:
         type: "integer"
         format: "int32"
+        minimum: 0
+        maximum: 255
         example: 45
       attenuation_durations:
         type: "array"
-        minItems: 2
-        maxItems: 2
-        example: [300, 0]
+        minItems: 3
+        maxItems: 3
+        example: [300, 0, 0]
         items:
           type: "integer"
           format: "int32"
@@ -316,7 +340,7 @@ definitions:
       transmission_risk_level:
         type: "integer"
         format: "int32"
-        minimum: 1
+        minimum: 0
         maximum: 8
         example: 1
       total_risk_score:
