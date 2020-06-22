@@ -68,6 +68,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned. Possible error codes are 1400 (\"Unexpected empty body\") and 1401 (\"Body not compliant with the defined schema\")."
           schema:
@@ -97,6 +101,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
@@ -135,6 +143,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
@@ -210,6 +222,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned."
           schema:
@@ -241,6 +257,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned."
           schema:
