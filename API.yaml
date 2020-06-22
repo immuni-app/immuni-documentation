@@ -13,7 +13,7 @@ tags:
 - name: "Exposure Reporting"
   description: "The Exposure Reporting Service makes the TEK Chunks created by the Exposure Ingestion Service available to the Mobile Client. Only TEK Chunks for the last 14 days are made available. To avoid downloading the same TEKs multiple times, the Mobile Clients fetch the indexes of the TEK Chunks available to download first. Then, they only actually download TEK Chunks with indexes for which TEK Chunks have not been downloaded before."
 - name: "Analytics"
-  description: "The Analytics Service provides an API to the Mobile Clients for uploading certain data without identifying users, both during regular operations and especially when a Match is found between a TEK Chunk and the RPIs in the RPI Database.<br><br>Collecting these data is crucial to spotting anomalies in the system, as well as being able to check how many users are being notified. The National Healthcare System needs this information to operate Immuni effectively."
+  description: "The Analytics Service provides an API to the Mobile Clients for uploading certain data without identifying users, both during regular operations and especially when a match is found between a TEK Chunk and the RPIs in the RPI Database. Collecting these data is crucial to spotting anomalies in the system, as well as being able to check how many users are being notified. The National Healthcare System needs this information to operate Immuni effectively."
 schemes:
 - "https"
 paths:
