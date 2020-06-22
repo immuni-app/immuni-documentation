@@ -263,9 +263,9 @@ paths:
           $ref: "#/definitions/AnalyticsToken"
       responses:
         201:
-          description: "Token is authorized."
+          description: "Token is authorized. No response body returned."
         202:
-          description: "Token authorization in progress."
+          description: "Token authorization in progress. No response body returned."
         400:
           description: "Invalid data. An APIError is returned."
           schema:
