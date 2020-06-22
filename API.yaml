@@ -189,7 +189,7 @@ paths:
     post:
       tags:
       - "Analytics"
-      summary: "Save the operational data in compliance with the monthly policy, avoiding multiple from the same user in a small timeframe, authorized with the provided analytics token."
+      summary: "Save the operational data sent by the iOS device, in compliance with the monthly policy, authorized with the provided analytics token."
       consumes:
       - "application/json; charset=utf-8"
       produces:
