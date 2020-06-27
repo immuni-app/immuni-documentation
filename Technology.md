@@ -1,4 +1,4 @@
-# Immuni's Technology Description
+# Immuni's Technology
 
 ## Table of contents
 
