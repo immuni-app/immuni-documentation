@@ -1,4 +1,4 @@
-# Immuni's Product Description
+# Immuni's Product
 
 ## Table of contents
 
