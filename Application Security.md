@@ -1,4 +1,4 @@
-# Application Security Description
+# Application Security
 
 ## Table of contents
 - [Introduction](#introduction)
