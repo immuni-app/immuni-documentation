@@ -45,11 +45,11 @@
 This document provides a low-level design description of the technology developed for Immuni. It assumes that you have already read the following documents:
 
 - [High-Level Description](/README.md)
-- [Product Description](/Product%20Description.md)
+- [Product](/Product.md)
 
 More information can be found in the documentation linked throughout. For those interested in the technology behind Immuni, the following documents are especially relevant:
 
-- [Application Security Description](/Application%20Security%20Description.md)
+- [Application Security](/Application%20Security.md)
 - [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md)
 
 ## Glossary

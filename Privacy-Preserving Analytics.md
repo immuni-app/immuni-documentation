@@ -23,7 +23,7 @@
 
 ## Introduction
 
-This document focuses on Immuni’s analytics data. It details the data that Immuni collects, and when and why it does so. It also details the measures in place to protect user privacy and to preserve the integrity of the data. It assumes that you have already read [High-Level Description](/README.md) and [Technology Description](/Technology%20Description.md). Certain terms—written with a capital letter at their beginning—are defined in the Technology Description's glossary.
+This document focuses on Immuni’s analytics data. It details the data that Immuni collects, and when and why it does so. It also details the measures in place to protect user privacy and to preserve the integrity of the data. It assumes that you have already read [High-Level Description](/README.md) and [Technology](/Technology.md). Certain terms—written with a capital letter at their beginning—are defined in Technology's glossary.
 
 Immuni collects two types of analytics data:
 - Epidemiological Info
@@ -35,7 +35,7 @@ When sending these data to the relevant Backend Service, Immuni includes the use
 
 ### Uploaded data
 
-Epidemiological Info is any set of Exposure Detection Summaries and Exposure Info. For convenience, we provide below the definitions of Exposure Detection Summaries and Exposure Info as found in [Technology Description](/Technology%20Description.md).
+Epidemiological Info is any set of Exposure Detection Summaries and Exposure Info. For convenience, we provide below the definitions of Exposure Detection Summaries and Exposure Info as found in [Technology](/Technology.md).
 
 **Exposure Detection Summary.** A summary of aggregate information related to the Exposures of a Mobile Client for a set of TEKs. When the A/G Framework on the Mobile Client is provided with a set of TEKs, it can check whether they Match any of the locally stored RPIs. After completing this check, the Mobile Client generates an Exposure Detection Summary. Calculated for the given set of TEKs and their respective Exposures, an Exposure Detection Summary includes the following:
 - The number of TEKs Matching any of the locally stored RPIs, which is also the number of Exposures for that set of TEKs
@@ -268,7 +268,7 @@ Some privacy and security considerations on the collection of Operational Info f
 - The analytics token is generated randomly and contains no information on the device. Moreover, it is replaced after no more than two months. The Analytics Service cannot associate the uploads of Operational Info from multiple analytics tokens to the same iOS Mobile Client.
 - Operational Info includes the bare minimum amount of information that the National Healthcare Service needs to monitor Immuni’s working condition and allocate resources effectively. Only one upload of Operational Info with Exposure and one of Operational Info without Exposure are performed by a Mobile Client per calendar month, at most.
 - The risk of an attacker exploiting race conditions to circumvent the rate-limits we impose on the authorisation of analytics tokens is mitigated with the methodology described in [Preventing race conditions](#preventing-race-conditions) above.
-- The risk of an attacker inferring any sensitive information about the user by analysing the traffic related to the upload of Operational Info is mitigated by a number of measures. Please refer to  [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
+- The risk of an attacker inferring any sensitive information about the user by analysing the traffic related to the upload of Operational Info is mitigated by a number of measures. Please refer to [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
 ## Configurability
 

@@ -18,7 +18,7 @@
 
 ## Introduction
 
-This document details the measures Immuni adopts to mitigate the risk that an attacker may infer information about a user by analysing the encrypted traffic between the user's Mobile Client and the Backend Services. It assumes that you have already read [High-Level Description](/README.md), [Technology Description](/Technology%20Description.md), and [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). Certain terms—written with a capital letter at their beginning—are defined in Technology Description's glossary.
+This document details the measures Immuni adopts to mitigate the risk that an attacker may infer information about a user by analysing the encrypted traffic between the user's Mobile Client and the Backend Services. It assumes that you have already read [High-Level Description](/README.md), [Technology](/Technology.md), and [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). Certain terms—written with a capital letter at their beginning—are defined in Technology's glossary.
 
 Our focus is on protecting the interaction between the Mobile Client and two Backend Services: the Exposure Ingestion Service and the Analytics Service. Without appropriate countermeasures, interactions with the former could reveal that a user tested positive for SARS-CoV-2. Similarly, interactions with the latter could reveal that a user was warned about a Risky Exposure.
 
