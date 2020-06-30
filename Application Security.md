@@ -121,7 +121,7 @@ Immuni will also implement a signing mechanism for other types of data served th
 If just any user could upload their TEKs to the Exposure Ingestion Service, an attacker may be able to trigger Exposure Notifications for users who are actually not at risk. If done at scale, such an attack could disrupt the system. The following measures are in place to minimisze this risk:
 
 - Uploads to the Exposure Ingestion Service must be validated with an OTP that is generated randomly on the Mobile Client. The OTP must be validated by a Healthcare Operator before it can be used by the Mobile Client to authorise an upload request. 
-- The OTP has a *time to live*, after which it can no longer be used to authorise an upload. The time to live is set at 2 minutes and 30 seconds. The choice represents a trade-off between two conflicting goals:
+- The OTP has a *time to live,* after which it can no longer be used to authorise an upload. The time to live is set at 2 minutes and 30 seconds. The choice represents a trade-off between two conflicting goals:
   - Limiting the validity of the OTP to mitigate brute-force attacks
   - Giving the user enough time to complete the upload in a situation of psychological distress
 
