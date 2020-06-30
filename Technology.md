@@ -731,19 +731,19 @@ Finally, the Analytics Service also receives Province of Domicile and Epidemiolo
 
 #### API - Authorise analytics token (iOS)
 
-**Caller**
+**Caller**  
 Mobile Client
 
-**Description**
+**Description**  
 The Mobile Client requests the authorisation of an analytics token. Such authorisation is carried out by the Analytics Service asynchronously. The Mobile Client subsequently calls the same API to verify whether its current analytics token has been authorised and is therefore valid for the upload of Operational Info. A [DeviceCheck](https://developer.apple.com/documentation/devicecheck) token is provided by the Mobile Client to the Analytics Service. The analytics token and the DeviceCheck token are used by the Analytics Service to mitigate the risk of large-scale pollution of the analytics data, as described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md).
 
-**Resource hostname**
+**Resource hostname**  
 `analytics.immuni.gov.it`
 
-**Resource path**
+**Resource path**  
 `POST /v1/analytics/apple/token`
 
-**Request Headers**
+**Request Headers**  
 `Content-Type: application/json; charset=utf-8`
 
 **Request Body**
@@ -754,27 +754,27 @@ The Mobile Client requests the authorisation of an analytics token. Such authori
 }
 ```
 
-**Response status codes**
-`201: authorised token`
+**Response status codes**  
+`201: authorised token`  
 `202: authorisation in progress`
 
 #### API - Upload Operational Info (iOS)
 
-**Caller**
+**Caller**  
 Mobile Client
 
-**Description**
+**Description**  
 Right after an Exposure Detection completes, the Mobile Client may compute and upload the Operational Info, together with the user’s Province of Domicile. A valid analytics token is needed to complete the operation successfully. The Operational Info fields use integers instead of booleans to ensure that the size of the payloads does not depend, among other things, on sensitive information such as whether the user was notified of a Risky Exposure. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls. Padding bytes are added as described in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
-**Resource hostname**
+**Resource hostname**  
 `analytics.immuni.gov.it`
 
-**Resource path**
+**Resource path**  
 `POST /v1/analytics/apple/operational-info`
 
-**Request headers**
-`Authorization: Bearer <analytics_token>`
-`Content-Type: application/json; charset=utf-8`
+**Request headers**  
+`Authorization: Bearer <analytics_token>`   
+`Content-Type: application/json; charset=utf-8`  
 `Immuni-Dummy-Data: <0|1>`
 
 **Request body**
@@ -795,7 +795,7 @@ Right after an Exposure Detection completes, the Mobile Client may compute and u
 
 #### Data model - Exposure
 
-**Description**
+**Description**  
 The Exposure collection stores the Province of Domicile and the Epidemiological Info forwarded by the Exposure Ingestion Service to the Analytics Service. Exposure documents can be automatically deleted after a configurable number of days by filtering on the generation time of ObjectId.
 
 **Schema**
@@ -827,7 +827,7 @@ The Exposure collection stores the Province of Domicile and the Epidemiological 
 
 #### Data model - Operational Info
 
-**Description**
+**Description**  
 The OperationalInfo collection holds the Operational Info sent by the Mobile Clients to the Analytics Service. The platform field indicates whether the data is coming from an iOS or Android device. OperationalInfo documents can be automatically deleted after a configurable number of days by filtering on the generation time of ObjectId.
 
 **Schema**
