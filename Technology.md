@@ -22,6 +22,8 @@
   - [App build verification](#app-build-verification)
     - [Open build process](#open-build-process)
     - [Reproducible builds](#reproducible-builds)
+      - [iOS](#ios)
+      - [Android](#android)
 - [Backend Services](#backend-services)
   - [Backend Services technologies](#backend-services-technologies)
   - [App Configuration Service](#app-configuration-service)
@@ -38,9 +40,13 @@
     - [API - Fetch TEK Chunk indexes](#api-fetch-tek-chunk-indexes)
     - [API - Download TEKs](#api-download-teks)
   - [Analytics Service](#analytics-service)
-- [Open points](#open-points)
+    - [API - Authorise analytics token (iOS)](#api---authorise-analytics-token-ios)
+    - [API - Upload Operational Info (iOS)](#api---upload-operational-info-ios)
+    - [API - Upload Operational Info (Android)](#api---upload-operational-info-android)
+    - [Data model - Exposure](#data-model---exposure)
+    - [Data model - Operational Info](#data-model---operational-info)
 
-## Context
+## Introduction
 
 This document provides a low-level design description of the technology developed for Immuni. It assumes that you have already read the following documents:
 
@@ -50,6 +56,7 @@ This document provides a low-level design description of the technology develope
 More information can be found in the documentation linked throughout. For those interested in the technology behind Immuni, the following documents are especially relevant:
 
 - [Application Security](/Application%20Security.md)
+- [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md)
 - [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md)
 
 ## Glossary
@@ -72,33 +79,31 @@ For ease of reference, the following list defines some of the terms used through
 
 **Configuration Settings.** Data returned by the App Configuration Service to the Mobile Client to make it possible to dynamically change the way the App is configured. For example, the Configuration Settings are used to communicate the parameters to be used by the Mobile Client in the calculation of the Total Risk Score.
 
-**Contact.** The event of two Mobile Clients coming into sufficient proximity of each other for long enough (generally a few metres for at least five minutes) that they will receive and locally store each other’s RPIs. We will say that these Mobile Clients ‘came into Contact’ with each other or we will use similar expressions. The duration of the Contact is defined as that estimated by the Mobile Client, independently of the actual length of the period of time during which the Mobile Clients were in proximity of each other. Considering that the detection of the relevant BLE signals is performed periodically and that these can be obstructed by various obstacles, the estimation of duration will necessarily be imperfect.
-
 **Epidemiological Info.** Any set of Exposure Detection Summaries and Exposure Info.
 
-**Exposure.** For a specific TEK, the set of all the Contacts occurring between the user’s Mobile Client and another Mobile Client for as long as the latter was broadcasting RPIs generated from that TEK (TEKs change daily). For Contacts during which said TEK was generated or retired in favour of a new one, only the portion of the Contact occurring for the relevant TEK is considered part of the Exposure. When the Exposure of a Mobile Client to a certain TEK is not an empty set, we will say that ‘the Mobile Client was Exposed to that TEK’, or we will use similar expressions. The duration of an Exposure is defined as the sum of the durations of all its Contacts.
+**Exposure.** The event of two Mobile Clients coming into sufficient proximity of each other for long enough (generally a few metres for at least a few minutes) that they will receive and locally store each other’s RPIs. We will say that these Mobile Clients were ‘Exposed’ to each other or we will use similar expressions. The duration of the Exposure is defined as that estimated by the Mobile Client, independently of the actual length of the period of time during which the Mobile Clients were in proximity of each other. Considering that the detection of the relevant BLE signals is performed periodically and that these can be obstructed by various obstacles, the estimation of duration will necessarily be imperfect. When the TEK of one of the two Mobile Clients changes (this occurs once a day), the Exposure is considered to have ended. A new Exposure may start if the two Mobile Clients continue to be in sufficient proximity of each other.
 
-**Exposure Detection.** The process through which the Mobile Client periodically checks whether Contact with a SARS-CoV-2 positive person has taken place and computes an assessment of the risk that a transmission ensued. More detailed information can be found in [Exposure Detection](#exposure-detection).
+**Exposure Detection.** The process through which the Mobile Client periodically checks whether Exposure to a SARS-CoV-2-positive user has taken place and computes an assessment of the risk that a transmission ensued. More detailed information can be found in [Exposure Detection](#exposure-detection).
 
-**Exposure Detection Summary.** A summary of aggregate information related to the Exposures of a Mobile Client for a set of TEKs. When the A/G Framework on the Mobile Client is provided with these TEKs, it can check whether they Match any of the locally stored RPIs. After completing this check, the Mobile Client will generate an Exposure Detection Summary. Calculated for the given set of TEKs and their respective Exposures, the Exposure Detection Summary includes the following:
+**Exposure Detection Summary.** A summary of aggregate information related to the Exposures of a Mobile Client for a set of TEKs. When the A/G Framework on the Mobile Client is provided with a set of TEKs, it can check whether they Match any of the locally stored RPIs. After completing this check, the Mobile Client generates an Exposure Detection Summary. Calculated for the given set of TEKs and their respective Exposures, the Exposure Detection Summary includes the following:
 
-- The number of TEKs Matching any of the locally stored RPIs, which is also the number of Exposures for that set of TEKs
+- The number of TEKs Matching any of the locally stored RPIs
 - The number of days since the most recent Exposure to any Matching TEK of the given set
-- The sum of the durations of those Exposures, grouped by three ranges of minimum Attenuation (each measured in five-minute increments and capped at 30 minutes)
+- The sum of the durations of those Exposures, grouped by three ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
 - The highest Total Risk Score among those of the various Exposures
 
 Note that the Exposure Detection Summary does not contain either the TEKs that Matched a locally stored RPI, or the Matched RPIs.
 
-**Exposure Info.** Information related to a specific Exposure. For each TEK Matching at least one locally stored RPI—which is to say, for each Exposure—the A/G Framework on the Mobile Client can generate an Exposure Info containing the following information:
+**Exposure Info.** Information related to a specific Exposure. For each Exposure for a set of TEKs Matching locally stored RPIs, the A/G Framework on the Mobile Client can generate an object containing the following information:
 
 - The day the Exposure occurred
 - The duration of the Exposure (measured in five-minute increments and capped at 30 minutes)
-- The minimum Attenuation during the Exposure
-- The sum of the durations of the Exposure’s Contacts, grouped by three ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
+- The average Attenuation during the Exposure
+- The duration of the Exposure, broken down by three ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
 - The Transmission Risk for the relevant TEK
 - The Total Risk Score for the Exposure
 
-Note that the Exposure Info does not contain either the TEK for which it was computed, or the RPI that Matched the TEK.
+Note that the Exposure Info does not contain either the TEK for which it was computed, or the RPIs that Matched the TEK.
 
 **Exposure Ingestion Service.** See [Architecture](#architecture).
 
@@ -110,7 +115,7 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 
 **Immuni.** The sum of all the parts underlying the exposure detection and notification system described in this document, including Mobile Clients, Backend Services, Healthcare Operators, and HIS.
 
-**Match.** The Mobile Client can determine whether an RPI which was stored locally after a Contact has been generated from a given TEK. When this is the case, for simplicity, we will say that 'the TEK Matches the RPI', 'the RPI Matches the TEK', 'there is a Match for the TEK', or we will use similar expressions.
+**Match.** The Mobile Client can determine whether an RPI which was stored locally after an Exposure has been generated from a given TEK. When this is the case, for simplicity, we will say that 'the TEK Matches the RPI', 'the RPI Matches the TEK', 'there is a Match for the TEK', or we will use similar expressions.
 
 **Mobile Client.** See [Architecture](#architecture).
 
@@ -127,11 +132,11 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 - Whether the user was notified of a Risky Exposure after the last Exposure Detection
 - The date on which the last Risky Exposure took place, if any
 
-The data are periodically uploaded to the Analytics Service without leveraging a user identifier or device identifier, and without requiring the user to authenticate in any way (including verifying a phone number or email). This helps protect user privacy.
+The data are periodically uploaded to the Analytics Service without requiring the user to authenticate in any way (including verifying a phone number or email address). This helps protect user privacy.
 
 **OTP Service.** See [Architecture](#architecture).
 
-**Province of Domicile.** Different areas in Italy are managing the emergency differently, and the advice users receive may vary based on where they are located. Also, the Epidemiological Info and the Operational Info are more informative when broken down by geographical regions. To protect the user’s privacy, the App only asks for the province in which they live. This happens during the onboarding process.
+**Province of Domicile.** The Epidemiological Info and the Operational Info are more informative when broken down by geographical regions. To protect the user’s privacy, the App only asks for the province in which they live. This happens during the onboarding process.
 
 **Received Signal Strength Indicator (RSSI).** The power of a radio signal as measured at the receiving end of the transmission.
 
@@ -143,24 +148,24 @@ The data are periodically uploaded to the Analytics Service without leveraging a
 
 **TEK Chunk.** A set of TEKs, created by the Exposure Ingestion Service by grouping TEKs generated on and uploaded by the Mobile Clients of users who tested positive for SARS-CoV-2 in a specific time window. The TEK Chunks are then made available for download to the Mobile Client by the Exposure Reporting Service. To avoid duplicate downloads, the TEK Chunks are immutable and assigned a unique incremental index. They are generated periodically as new TEKs are uploaded by the Mobile Clients and deleted after 14 days.
 
-**Temporary Exposure Key (TEK).** A 16-byte, cryptographic, random key generated by a Mobile Client. Every day, the Mobile Client generates a different TEK and uses it to derive a set of RPIs. The TEKs leave the Mobile Client only after receiving user approval and only when the user has tested positive for SARS-CoV-2. The server deletes TEKs older than 14 days.
+**Temporary Exposure Key (TEK).** A 16-byte, cryptographic, random key generated by a Mobile Client. Every day, the Mobile Client generates a different TEK and uses it to derive a set of RPIs. The TEKs leave the Mobile Client only after receiving user approval and only when the user has tested positive for SARS-CoV-2. The Backend Services delete TEKs older than 14 days.
 
-**Total Risk Score.** For a specific Exposure, the assessed risk that a SARS-CoV-2 transmission may have occurred. This is calculated through a risk model. The model accounts for contributions from different factors, as follows:
+**Total Risk Score.** For a specific Exposure, the assessed risk that a SARS-CoV-2 transmission may have occurred. This is calculated through a risk model. The model accounts for contributions from the following factors:
 
 - The number of days since the Exposure occurred
 - The duration of the Exposure
-- The minimum Attenuation
+- The average Attenuation
 - The Transmission Risk associated to that specific TEK
 
-More detailed information on how the Total Risk Score is calculated can be found [here](https://developer.apple.com/documentation/exposurenotification/enexposureconfiguration).
+Currently, Immuni leverages only the duration of the Exposure and the average Attenuation to calculate the Total Risk Score. More detailed information on how the Total Risk Score is calculated can be found [here](https://developer.apple.com/documentation/exposurenotification/enexposureconfiguration).
 
-**Transmission Risk.** People who tested positive for SARS-CoV-2 may be more or less infectious according to a number of factors, such as the time elapsed since the appearance of symptoms. The Transmission Risk is a 3-bit value that can be associated with a TEK to indicate how contagious the user was while a specific TEK was in use. It allows for a more sophisticated calculation of the Total Risk Score.
+**Transmission Risk.** People who tested positive for SARS-CoV-2 may be more or less infectious according to a number of factors, such as the time elapsed since the appearance of symptoms. The Transmission Risk is a 3-bit value that can be associated with a TEK to indicate how contagious the user was while a specific TEK was in use. It allows for a more sophisticated calculation of the Total Risk Score. Currently, Immuni does not leverage the Transmission Risk.
 
 ## Core flow
 
 **TEK and RPI generation.** Every 24 hours, the Mobile Client generates a new TEK and stores it locally. The Mobile Client derives RPIs from the TEK via a cryptographic hash function. Every RPI is associated with a subinterval of the 24 hours of a TEK’s validity. Using a cryptographic hash function makes it practically impossible to derive a TEK from an RPI.
 
-**RPI exchange.** Mobile Clients use BLE to continuously broadcast the RPI associated with the current subinterval of the 24 hours, and collect RPIs from Mobile Clients they come into Contact with. The received RPIs are stored locally, together with the timestamp of the event and the Attenuation.
+**RPI exchange.** Mobile Clients use BLE to continuously broadcast the RPI associated with the current subinterval of the 24 hours, and collect RPIs from Mobile Clients they were Exposed to. The received RPIs are stored locally, together with the timestamp of the event and the Attenuation.
 
 **TEK upload.** When a user tests positive for SARS-CoV-2, a Healthcare Operator will ask them whether they wish to dictate the OTP they can locate in the App. If so, the Healthcare Operator inserts the OTP provided by the user into the HIS, and the HIS forwards the OTP to the OTP Service. This operation authorises the App to upload to the Exposure Ingestion Service the TEKs generated over the previous 14 days.
 
@@ -186,7 +191,7 @@ Immuni’s architecture includes Mobile Client and Backend Services.
 
 The Mobile Client includes the following parts:
 
-- **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement contact tracing apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
+- **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement Exposure notification apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
 - **App (iOS App and Android App).** The Immuni iOS or Android apps that users download from the App Store and Google Play respectively. The App is responsible for handling user interactions (including notifying users that they may be at risk) and for implementing the business logic (including all communications with the Backend Services).
 
 **Backend Services.** Immuni’s backend software and infrastructure, which include the following services:
@@ -194,8 +199,8 @@ The Mobile Client includes the following parts:
 - **App Configuration Service.** This serves the Configuration Settings used by the App.
 - **OTP Service.** This facilitates the authorisation of the OTP used by the Mobile Client for authenticating with the Exposure Ingestion Service. The Healthcare Operator will collect the OTP from a consenting user who tested positive for SARS-CoV-2, and enter it into the HIS. The HIS will then record the OTP in a database, authorising it and making it accessible to the Exposure Ingestion Service.
 - **Exposure Ingestion Service.** When a Healthcare Operator informs a user that they tested positive for SARS-CoV-2, this service allows the user’s Mobile Client to start an upload of the TEKs it generated over the previous 14 days and their Province of Domicile. If any Epidemiological Info from the previous 14 days is available, the Mobile Client will upload that too.
-- **Exposure Reporting Service.** This provides a scalable system to serve the TEKs of SARS-CoV-2 positive users to the Mobile Clients, after they were uploaded through the Exposure Ingestion Service.
-- **Analytics Service.** The National Healthcare Service needs to have some visibility as to the number of devices on which the app is correctly functioning, and the number of users Immuni is notifying. This helps it to operate the system effectively, thereby minimising the epidemic’s health toll. The Analytics Service allows the upload of Operational Info (together with the user’s Province of Domicile) by the Mobile Client. To help protect user privacy, the data are uploaded without identifying the user (who is not asked to authenticate in any way), and without leveraging a user identifier or device identifier.
+- **Exposure Reporting Service.** This provides a scalable system to serve the TEKs of SARS-CoV-2-positive users to the Mobile Clients, after they were uploaded through the Exposure Ingestion Service.
+- **Analytics Service.** The National Healthcare Service needs to have some visibility as to the number of devices on which the app is correctly functioning, and the number of users Immuni is notifying. This helps it to operate the system effectively. The Analytics Service allows the upload of Operational Info (together with the user’s Province of Domicile) by the Mobile Client. To help protect user privacy, the data are uploaded without identifying the user, who is not asked to authenticate in any way.
 
 ## Mobile Client
 
@@ -219,17 +224,17 @@ The onboarding process guides the user through the following steps:
 
 #### Exposure Detection
 
-The Mobile Client periodically checks whether a Contact with a SARS-CoV-2 positive person has taken place and computes an assessment of the risk that a transmission ensued by executing the following steps:
+The Mobile Client periodically checks whether Exposure to a SARS-CoV-2-positive user has taken place and computes an assessment of the risk that a transmission ensued by executing the following steps:
 
 1. The App downloads the new TEK Chunks made available by the Exposure Reporting Service.
 2. The A/G Framework verifies whether there is a Match between one or more TEKs in the TEK Chunks and the locally stored RPIs.
-3. For each Matching TEK—and, therefore, each Exposure—the A/G Framework computes a Total Risk Score using a simple, publicly available risk model with parameters set by the App.
-4. The A/G Framework generates an Exposure Detection Summary, which includes the maximum Total Risk Score across all Exposures for the TEK Chunks.
-5. If the maximum Total Risk Score exceeds a certain threshold, the App has the A/G Framework provide for the TEK Chunks the Exposure Info for each Exposure (this triggers an operating system alert to the user) and notifies the user that they may be at risk.
+3. For each Exposure for these TEKs, the A/G Framework computes a Total Risk Score using a simple, publicly available risk model with parameters set by the App.
+4. The A/G Framework generates an Exposure Detection Summary, which includes the maximum Total Risk Score across all Exposures for the TEKs.
+5. If the maximum Total Risk Score exceeds a certain threshold, the App has the A/G Framework provide the Exposure Info for each of these Exposures (this triggers an operating system alert to the user) and notifies the user that they may be at risk.
 
 #### TEKs upload
 
-If a user is found to be SARS-CoV-2 positive, they can decide to upload the following information to the Exposure Ingestion Service:
+If a user is found to be SARS-CoV-2-positive, they can decide to upload the following information to the Exposure Ingestion Service:
 
 - The TEKs generated by user’s Mobile Client in the previous 14 days
 - The user’s Province of Domicile
@@ -249,7 +254,7 @@ The Mobile Client periodically generates dummy traffic to mitigate the risk that
 
 Periodically, the Mobile Client sends Operational Info (together with the user’s Province of Domicile) to the Analytics Service. This information is critical for the National Healthcare Service to operate Immuni effectively, thereby maximising the containment of the epidemic and patient care, as explained in the [High-Level Description](/README.md).
 
-We devised a system to allow the Mobile Client to upload such data without requiring any sort of user authentication (including phone number or email address verification), user identifiers, or device identifiers. At the same time, the system protects the integrity of the data from large-scale pollution caused by attackers sending fake data. The system does not work for all devices—the server will discard untrustworthy data. We will share the relevant documentation soon.
+We devised a system to allow the Mobile Client to upload such data without requiring the user to authenticate in any way (including through the verification of a phone number or email address). At the same time, the system protects the integrity of the data from large-scale pollution caused by attackers sending fake data. The system does not work for all devices—the server will discard untrustworthy data. Details can be found in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md).
 
 The Mobile Client periodically generates dummy traffic to mitigate the risk that information about the user (chiefly whether a Risky Exposure was detected) may be inferred by an attacker through traffic analysis. Details can be found in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
@@ -273,7 +278,7 @@ On top of the privacy enhancements mentioned above, electing to leverage the A/G
 
 This section discusses the iOS-specific aspects of the App.
 
-The iOS App will be available for devices running iOS 13. However, iOS 13.5 is required for the A/G Framework to work and, therefore, Immuni’s core flow to function properly. To date, Apple has not announced the intention to release it for earlier iOS versions. Hence, the iOS App will prevent the user from completing the onboarding if they have not updated to iOS 13.5.
+The iOS App is available for devices running iOS 13. However, iOS 13.5 is required for the A/G Framework to work and, therefore, Immuni’s core flow to function properly. To date, Apple has not announced the intention to release it for earlier iOS versions. Hence, the iOS App prevents the user from completing the onboarding if they have not updated to iOS 13.5.
 
 #### iOS App technologies
 
@@ -323,7 +328,7 @@ Finally, every communication with the server is established using HTTPS. The Mob
 
 This section discusses the Android-specific aspects of the App.
 
-The Android App will be available for devices running Android 6 (Marshmallow, API 23) or above. For the A/G Framework to work, the user needs to have updated Google Play Services to version 20.18.13 or above. Therefore, the Android App will prevent the user from completing the onboarding if they do not have a sufficiently recent version of Google Play Services.
+The Android App is available for devices running Android 6 (Marshmallow, API 23) or above. For the A/G Framework to work, the user needs to have updated Google Play Services to version 20.18.13 or above. Therefore, the Android App prevents the user from completing the onboarding if they do not have a sufficiently recent version of Google Play Services.
 
 #### Android App technologies
 
@@ -405,14 +410,12 @@ In the context of Immuni, reproducibility would offer security researchers an ad
 
 Below, we discuss the efforts we have made towards achieving reproducibility of builds on both platforms.
 
-**iOS**  
-Reproducible builds in an iOS context are complex. Even with the same environment (e.g., operating system and compiler), builds may differ from run to run. Moreover, Apple requires that App Store builds be signed using a sophisticated [code signing system](https://developer.apple.com/support/code-signing/). Finally, iOS App builds pass through a process called [app thinning](https://developer.apple.com/documentation/xcode/reducing_your_app_s_size) that further modifies the uploaded artifacts before the final builds are made available on the App Store for download.
+##### iOS  
+Reproducible builds in an iOS context are complex. Even with the same environment (e.g., operating system and compiler), builds may differ from run to run. Moreover, Apple requires that App Store builds be signed using a sophisticated  [code signing system](https://developer.apple.com/support/code-signing/). Finally, iOS App builds pass through a process called  [app thinning](https://developer.apple.com/documentation/xcode/reducing_your_app_s_size) that further modifies the uploaded artifacts before the final builds are made available on the App Store for download.
 
-We have been working on this problem, also leveraging [Telegram’s great work](https://core.telegram.org/reproducible-builds#reproducible-builds-for-ios), but we have not yet found a satisfactory solution. At the current stage, we have managed to successfully compare an App Store build with the _xcarchive_ that generated it. However, the comparison starts from an already compiled artifact and requires the iOS App code signing certificates. For security reasons, these are not publicly available.
+A detailed description of the work done so far can be found [here](https://github.com/immuni-app/immuni-app-ios/issues/217).
 
-We expect more work to be done in this area, and look forward to improving the process in the future.
-
-**Android**  
+##### Android  
 The reproducibility of Android builds is affected by similar problems as on iOS, as builds may differ from run to run even with the same building environment.
 
 These are the main aspects that may limit reproducibility:
@@ -467,7 +470,7 @@ To increase the security, robustness, and quality of the code, we integrated sev
 
 ### App Configuration Service
 
-The App can be partially customised through the Configuration Settings downloaded at the App startup and updated every time the App starts a session, whether in the foreground or background. For example, these include information such as the weights to be used by the Mobile Client in the calculation of the Total Risk Score.
+The App can be partially customised through the Configuration Settings downloaded at the App startup and updated every time the App starts a background session. For example, these include information such as the weights to be used by the Mobile Client in the calculation of the Total Risk Score.
 
 #### API - Fetch Configuration Settings <a name="api-fetch-configuration-settings" />
 
@@ -504,7 +507,7 @@ The OTP automatically expires after a defined interval. If the data have not bee
 
 The OTP is composed of 10 uppercase alphanumeric characters, with the last character being a check digit.
 
-To prevent misunderstandings when the user communicates the OTP to the Healthcare Operator, the characters used in the OTP are limited to the following subset: _A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z, 1, 2, 3, 4, 5, 6, 7, 8, 9._ This leads to 25^9 possible valid combinations (since the last character is computed deterministically, based on the previous 9 characters).
+To prevent misunderstandings when the user communicates the OTP to the Healthcare Operator, the characters used in the OTP are limited to the following subset: *A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z,*1, 2, 3, 4, 5, 6, 7, 8, 9. This leads to 25^9 possible valid combinations (since the last character is computed deterministically, based on the previous 9 characters).
 
 #### API - Authorise OTP <a name="api-authorise-otp" />
 
@@ -512,7 +515,7 @@ To prevent misunderstandings when the user communicates the OTP to the Healthcar
 HIS
 
 **Description**  
-The provided OTP authorises the upload of the Mobile Client’s TEKs. This API will not be publicly exposed, to prevent unauthorised users from reaching it. Authentication for having the OTP Service and the HIS trust each other is configured at the infrastructure level. The payload also contains the start date of the symptoms, so that the Exposure Ingestion Service can use it to compute the Transmission Risk for each uploaded TEK.
+The provided OTP authorises the upload of the Mobile Client’s TEKs. This API will not be publicly exposed, to prevent unauthorised users from reaching it. Authentication for having the OTP Service and the HIS trust each other is configured at the infrastructure level. The payload also contains the start date of the symptoms. The Exposure Ingestion Service can use this date to determine the likelihood of the user having been contagious when a specific TEK was current. Those with the lowest probability can then be disregarded.
 
 **Resource hostname**  
 The API is only accessible by the HIS
@@ -540,7 +543,7 @@ The Exposure Ingestion Service is also responsible for periodically generating t
 
 TEK Chunks older than 14 days are automatically deleted from the database by an async cleanup job.
 
-Province of Domicile and Epidemiological Info are forwarded to the Analytics Service.
+Province of Domicile and Epidemiological Info are collected while protecting user privacy, as described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md) and [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md). The Exposure Ingestion Service forwards them to the Analytics Service.
 
 #### API - Validate OTP <a name="api-validate-otp" />
 
@@ -548,7 +551,7 @@ Province of Domicile and Epidemiological Info are forwarded to the Analytics Ser
 Mobile Client
 
 **Description**  
-The Mobile Client validates the OTP prior to uploading data. The request is authenticated with the OTP to be validated. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
+The Mobile Client validates the OTP prior to uploading data. The request is authenticated with the OTP to be validated. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls. Padding bytes are added as described in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
 **Resource hostname**  
 `upload.immuni.gov.it`
@@ -559,7 +562,15 @@ The Mobile Client validates the OTP prior to uploading data. The request is auth
 **Request headers**  
 `Authorization: Bearer <SHA256(OTP)>`  
 `Content-Type: application/json; charset=utf-8`  
-`Exp-Dummy-Data: <true|false>`
+`Immuni-Dummy-Data: <0|1>`
+
+**Request body**
+
+```
+{
+  “padding”: string
+}
+```
 
 #### API - Upload TEKs <a name="api-upload-teks" />
 
@@ -567,7 +578,7 @@ The Mobile Client validates the OTP prior to uploading data. The request is auth
 Mobile Client
 
 **Description**  
-Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 14 days, together with the user’s Province of Domicile. If any Epidemiological Info from the previous 14 days are available, the Mobile Client uploads those too. The timestamp that accompanies each TEK is referred to the Mobile Client’s system time. The Mobile Client informs the Exposure Ingestion Service about its system time so that a potential skew can be corrected. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
+Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 14 days, together with the user’s Province of Domicile. If any Epidemiological Info from the previous 14 days are available, the Mobile Client uploads those too. The timestamp that accompanies each TEK is referred to the Mobile Client’s system time. The Mobile Client informs the Exposure Ingestion Service about its system time so that a potential skew can be corrected. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls. Padding bytes are added as described in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
 **Resource hostname**  
 `upload.immuni.gov.it`
@@ -578,8 +589,8 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 **Request headers**  
 `Authorization: Bearer <SHA256(OTP)>`  
 `Content-Type: application/json; charset=utf-8`  
-`Exp-Client-Clock: <UNIX epoch time>`  
-`Exp-Dummy-Data: <true|false>`
+`Immuni-Client-Clock: <UNIX epoch time>`  
+`Immuni-Dummy-Data: <0|1>`
 
 **Request body**
 
@@ -612,6 +623,7 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
       ]
     }, ...
   ],
+  "padding": string
 }
 ```
 
@@ -709,16 +721,125 @@ Given a specific TEK Chunk index, the Mobile Client downloads the associated TEK
 `Cache-Control: public, max-age=1296000`  
 `Content-Type: application/zip`
 
-**Response body**  
-We have elected not to provide an example of a response body here, as it would hardly be readable or informative in this context.
-
 ### Analytics Service
 
-_Section under construction._
+The Analytics Service exposes an API that makes it possible for the Mobile Client to upload Operational Info, together with the user’s Province of Domicile. [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md) and [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md) describe how these data are collected while protecting user privacy.
 
-## Open points
+The data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). Without sensible countermeasures, it would be easy for an attacker to pollute the data at scale, making them unreliable and, therefore, useless. The mitigations we have put in place are described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). They differ for iOS and Android, as the relevant technologies available for the two operating systems—namely Apple’s [DeviceCheck](https://developer.apple.com/documentation/devicecheck) and Google’s [SafetyNet Attestation](https://developer.android.com/training/safetynet/attestation)—are distinct.
 
-These are some of the most pressing points on which we are working:
+Finally, the Analytics Service also receives Province of Domicile and Epidemiological Info from the Exposure Ingestion Service.
 
-- **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising the development of dummy traffic.
-- **Analytics integrity.** We are trying to collect the necessary Operational Info while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user identifier or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We devised a promising solution that we expect to work for a significant portion of devices. Documentation and development are underway.
+#### API - Authorise analytics token (iOS)
+
+**Caller**
+Mobile Client
+
+**Description**
+The Mobile Client requests the authorisation of an analytics token. Such authorisation is carried out by the Analytics Service asynchronously. The Mobile Client subsequently calls the same API to verify whether its current analytics token has been authorised and is therefore valid for the upload of Operational Info. A [DeviceCheck](https://developer.apple.com/documentation/devicecheck) token is provided by the Mobile Client to the Analytics Service. The analytics token and the DeviceCheck token are used by the Analytics Service to mitigate the risk of large-scale pollution of the analytics data, as described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md).
+
+**Resource hostname**
+`analytics.immuni.gov.it`
+
+**Resource path**
+`POST /v1/analytics/apple/token`
+
+**Request Headers**
+`Content-Type: application/json; charset=utf-8`
+
+**Request Body**
+```
+{
+  “analytics_token”: <128-byte-string>
+  “device_token”: string  
+}
+```
+
+**Response status codes**
+`201: authorised token`
+`202: authorisation in progress`
+
+#### API - Upload Operational Info (iOS)
+
+**Caller**
+Mobile Client
+
+**Description**
+Right after an Exposure Detection completes, the Mobile Client may compute and upload the Operational Info, together with the user’s Province of Domicile. A valid analytics token is needed to complete the operation successfully. The Operational Info fields use integers instead of booleans to ensure that the size of the payloads does not depend, among other things, on sensitive information such as whether the user was notified of a Risky Exposure. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls. Padding bytes are added as described in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
+
+**Resource hostname**
+`analytics.immuni.gov.it`
+
+**Resource path**
+`POST /v1/analytics/apple/operational-info`
+
+**Request headers**
+`Authorization: Bearer <analytics_token>`
+`Content-Type: application/json; charset=utf-8`
+`Immuni-Dummy-Data: <0|1>`
+
+**Request body**
+```
+{
+  “province”: string
+  “exposure_permission”: int
+  “bluetooth_active”: int
+  “notification_permission”: int
+  “exposure_notification”: int
+  “last_risky_exposure_on”: date,
+  “padding”: string
+}
+```
+
+#### API - Upload Operational Info (Android)
+*This section is underway.*
+
+#### Data model - Exposure
+
+**Description**
+The Exposure collection stores the Province of Domicile and the Epidemiological Info forwarded by the Exposure Ingestion Service to the Analytics Service. Exposure documents can be automatically deleted after a configurable number of days by filtering on the generation time of ObjectId.
+
+**Schema**
+```
+{
+  _id: ObjectId,
+  province: string,
+  exposure_detection_summaries: [
+    {
+      date: date
+      matched_key_count: int,
+      days_since_last_exposure: int,
+      attenuation_durations: array[int],
+      maximum_risk_score: int,
+      exposure_info: [
+        {
+          date: date,
+          duration: int,
+          attenuation_value: int,
+          attenuation_durations: array[int],
+          transmission_risk_level: int,
+          total_risk_score: int
+        }, …
+      ]
+    }, …
+  ]
+}
+```
+
+#### Data model - Operational Info
+
+**Description**
+The OperationalInfo collection holds the Operational Info sent by the Mobile Clients to the Analytics Service. The platform field indicates whether the data is coming from an iOS or Android device. OperationalInfo documents can be automatically deleted after a configurable number of days by filtering on the generation time of ObjectId.
+
+**Schema**
+```
+{
+  _id: ObjectId,
+  province: string,
+  platform: string,
+  exposure_permission: boolean,
+  bluetooth_active: boolean,
+  notification_permission: boolean,
+  exposure_notification: boolean,
+  last_risky_exposure_on: date,
+}
+```
