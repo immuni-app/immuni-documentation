@@ -1,6 +1,6 @@
 # Immuni's High-Level Description
 
-Immuni is the Italian Government’s exposure notification solution, realized by the Special Commissioner for the COVID-19 emergency (Presidency of the Council of Ministers), in collaboration with the Ministry of Health and the Ministry for Technological Innovation and Digitalization. It only uses public infrastructures located within the national borders. It is exclusively managed by the public company Sogei S.p.A. The source code has been developed for the Presidency of the Council of Ministers by Bending Spoons S.p.A., and it is released under a GNU Affero General Public License version 3.
+Immuni is the Italian Government’s exposure notification solution, realised by the Special Commissioner for the COVID-19 emergency (Presidency of the Council of Ministers), in collaboration with the Ministry of Health and the Ministry for Technological Innovation and Digitalisation. It only uses public infrastructures located within the national borders. It is exclusively managed by the public company Sogei S.p.A. The source code has been developed for the Presidency of the Council of Ministers by Bending Spoons S.p.A., and it is released under a GNU Affero General Public License version 3.
 
 ## Table of contents
 
@@ -14,7 +14,6 @@ Immuni is the Italian Government’s exposure notification solution, realized by
   - [Epidemiological information](#epidemiological-information)
   - [Operational information](#operational-information)
 - [Privacy](#privacy)
-- [Open points](#open-points)
 
 ## Executive summary
 
@@ -25,8 +24,8 @@ Immuni is the Italian Government’s exposure notification solution, realized by
   - When a user tests positive for SARS-CoV-2, the virus causing COVID-19, they have the option to upload to a server their recent temporary exposure keys. This operation can only happen with the validation of a **healthcare operator.**
   - The app periodically downloads the new temporary exposure keys and uses them to derive the infected users’ rolling proximity identifiers for the recent past. It then matches the identifiers against those stored in the device’s memory and **notifies the user** if a risky exposure has occurred.
   - The system uses **no geolocation data** whatsoever, including GPS data. So, the app cannot tell where the contact with a potentially contagious user took place, nor the identities of those involved.
-- To implement its contact tracing functionality, Immuni leverages **the Apple and Google Exposure Notification framework.** This allows Immuni to be more reliable than otherwise would be possible.
-- Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and operational information,** and are sent for the purpose of helping the National Healthcare Service (Servizio Sanitario Nazionale) to provide effective assistance to users.
+- To implement its exposure notification functionality, Immuni leverages **the Apple and Google Exposure Notification framework.** This allows Immuni to be more reliable than otherwise would be possible.
+- Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and operational information,** and are sent for the purpose of helping the National Healthcare Service (_Servizio Sanitario Nazionale_) to provide effective assistance to users.
 - Immuni is being developed while paying a lot of attention to user privacy and a number of measures have been taken to protect it. For example, the app collects **no personal data that would disclose the user’s identity,** such as the user’s name, age, address, email, or phone number.
 
 ## Introduction
@@ -39,12 +38,13 @@ In this challenging context, the contribution of technological innovation can be
 
 This document provides a high-level description of Immuni—it is a good idea to read it first. More detailed information can be found in the following documents:
 
-- [Product Description](/Product%20Description.md)
-- [Technology Description](/Technology%20Description.md)
-- [Application Security Description](/Application%20Security%20Description.md)
+- [Product](/Product.md)
+- [Technology](/Technology.md)
+- [Application Security](/Application%20Security.md)
+- [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md)
 - [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md)
 
-We have open-sourced Immuni’s software under the [GNU Affero General Public License version 3](https://www.gnu.org/licenses/agpl-3.0.en.html). Finally, penetration tests are taking place and we will share the resulting reports.
+We have open-sourced Immuni’s software under the [GNU Affero General Public License version 3](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
 ## Vision and goals
 
@@ -60,7 +60,7 @@ Immuni is designed to address the current crisis, but the vision behind it is fo
 
 ## Principles
 
-The main principles that guide the design and development of Immuni follow:
+The main principles guiding the Immuni project follow:
 
 - **Utility.** The app needs to be useful in fulfilling the project's vision and goals, as outlined above. The key here is to be able to notify as high a percentage of the people who are substantially at risk as possible, and to do so as early as is practical. This is the most important principle.
 - **Accessibility.** For fairness and to facilitate the widest adoption, Immuni should be accessible to the maximum possible number of people who may want to use it. This principle impacts decision-making across the board, including in user experience, design, localisation, and technology.
@@ -71,7 +71,7 @@ The main principles that guide the design and development of Immuni follow:
 
 ## Product
 
-Immuni is a technological solution that centres on a smartphone app available for Android and iOS.
+Immuni is a technological solution that centres on a smartphone app available for iOS and Android.
 
 It features an exposure notification system to help alert potentially SARS-CoV-2-positive users at an early stage. This system keeps track of contact between Immuni users, even when they are total strangers. When a user tests positive for SARS-CoV-2, the app uses this system to notify other at-risk users. The system is based on Bluetooth Low Energy and does not use any geolocation data whatsoever, including GPS data. So, while the app knows that the contact with an infected user took place, how long it lasted, and can estimate the distance that separated the two users, it cannot tell where the contact took place, nor the identities of those involved.
 
@@ -83,7 +83,7 @@ As stated, Immuni’s exposure notification system leverages Bluetooth Low Energ
 - **The battery is used more efficiently.** Bluetooth Low Energy excels when it comes to energy efficiency. This is important because it is reasonable to expect that the app’s uninstall rate will be correlated with battery consumption.
 - **No geolocation data are required.** Thanks to Bluetooth Low Energy, contact is traced without tracking the users’ location. This may result in the app being more welcomed by the public and could facilitate wider adoption, increasing Immuni’s utility.
 
-To implement its contact tracing functionality, Immuni leverages the Apple and Google Exposure Notification framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). This allows Immuni to overcome certain technical limitations, thus being more reliable than otherwise would be possible.
+To implement its exposure notification functionality, Immuni leverages the Apple and Google Exposure Notification framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). This allows Immuni to overcome certain technical limitations, thus being more reliable than otherwise would be possible.
 
 ### How it works
 
@@ -119,18 +119,18 @@ The only epidemiological data Immuni collects relate to the user’s exposure to
 - The day the exposure occurred
 - The duration of the exposure
 - Signal attenuation information used for estimating the distance between the two users’ devices during the exposure
-- Information on how contagious the infected user was likely to be when the exposure occurred, based on the day of symptom onset, if any (this information may be attached to each temporary exposure key the infected user has uploaded with the assistance of a health operator)
 
 The app may send epidemiological information to the server only upon uploading temporary exposure keys. When a healthcare operator communicates to the user their positivity to a SARS-CoV-2 test, any available epidemiological information from the previous 14 days will be uploaded too. The data upload needs to be initiated by the user and approved by the healthcare operator.
 
-To protect the user’s privacy, the data uploaded relating to their exposure to potentially contagious users have certain limitations. For example, the duration of the exposure is measured in five-minute increments and capped at 30 minutes for the sum of all contact with an infected user on any given day. Moreover, Immuni has no way to determine that exposures occurring on different days may have involved the same infected user. The app also performs periodic dummy uploads to mitigate the risk of someone gaining sensitive information about the user through traffic analysis.
+To protect the user’s privacy, the data uploaded relating to their exposure to potentially contagious users have certain limitations. For example, the duration of the exposure is measured in five-minute increments and capped at 30 minutes. Moreover, Immuni has no way to determine that exposures occurring on different days may have involved the same infected user. The app also performs periodic dummy uploads to mitigate the risk of someone gaining sensitive information about the user through traffic analysis.
 
-Collecting these data helps the National Healthcare Service to optimise the app’s risk model. By learning how the epidemiological information (e.g., the duration of the user's exposure) correlates with the user ultimately testing positive for SARS-CoV-2, it may be possible to improve the app's risk model and therefore increase its accuracy, thereby increasing the effectiveness of the exposure notification system. Note that the assessment of risk always happens on the user's device, while the latest model can be fetched from the server.
+Collecting these data helps the National Healthcare Service to optimise the app’s risk model. By learning how the epidemiological information (e.g., the duration of the exposure) correlates with the user ultimately testing positive for SARS-CoV-2, it may be possible to improve the app's risk model and, therefore, increase its accuracy. This would, in turn, increase the effectiveness of the exposure notification system. Note that the assessment of risk always takes place on the user's device, while the latest model can be fetched from the server.
 
 ### Operational information
 
 In addition to the above, some data on device activity and exposure notifications may be collected and uploaded. These data include:
 
+- Whether the device runs iOS or Android
 - Whether permission to leverage the Apple and Google Exposure Notification framework is granted
 - Whether the device’s Bluetooth is enabled
 - Whether permission to send local notifications is granted
@@ -139,11 +139,11 @@ In addition to the above, some data on device activity and exposure notification
 
 The upload may take place after an exposure detection has been completed. The operational information is uploaded automatically.
 
-To protect user privacy, the data are uploaded without leveraging a user identifier or device identifier, and without requiring the user to authenticate in any way (e.g., no phone number or email verification). Moreover, traffic analysis is obstructed by dummy uploads.
+To protect user privacy, the data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). Moreover, traffic analysis is obstructed by dummy uploads.
 
-Thanks to these data, it is possible to estimate the level of the app’s adoption across the country, not just measured by number of downloads—a largely meaningless metric—but by devices that are actually working properly. This information is very helpful, as we know that the utility of Immuni depends heavily on its uptake within the population. Supported by these data, the National Healthcare Service can make better decisions in a number of areas critical to maximising the effectiveness of exposure notifications and providing optimal patient care. Such areas include product development, engineering, and communications.
+Thanks to these data, it is possible to estimate the level of the app’s adoption across the country, not just measured by number of downloads—a largely meaningless metric—but by devices that are actually working properly. This information is very helpful, as the utility of Immuni depends heavily on its uptake within the population. Supported by these data, the National Healthcare Service can make better decisions in a number of areas critical to maximising the effectiveness of exposure notifications and providing optimal patient care. Such areas include product development, engineering, and communications.
 
-The data would also help with optimising the allocation of resources. By notifying at-risk users, the app will increase the volume of interactions with the National Healthcare Service. Therefore, estimating the number of users that the system will notify may help the National Healthcare Service to allocate its resources accordingly and thus efficiently.
+The data would also help with optimising the allocation of resources. By notifying at-risk users, the app will increase the volume of interactions with the National Healthcare Service. Therefore, estimating the number of users that the system will notify may help the National Healthcare Service to allocate its resources accordingly and, thus, efficiently. Knowing the date on which the last risky exposure took place helps with estimating when symptoms may appear. Such factors enable the National Healthcare Service to adjust its response even more accurately.
 
 ## Privacy
 
@@ -154,18 +154,11 @@ Below, we provide a list of some of the measures by which Immuni protects the us
 - The app does not collect any personal data that would disclose the user’s identity. For example, it does not collect the user’s name, date of birth, address, email, or phone number.
 - The app does not collect any geolocation data, including GPS data. The user’s movements are not tracked in any shape or form.
 - The rolling proximity identifier that is broadcast by the app is generated from random temporary exposure keys and does not contain any information about the device, let alone the user. Moreover, it changes multiple times each hour.
-- The epidemiological information uploaded about the user’s exposure to potentially contagious users has certain limitations. For example, the duration of the exposure is measured in five-minute increments and capped at 30 minutes for the sum of all contact with an infected user on any given day. Moreover, Immuni has no way to determine that exposures occurring on different days may have involved the same infected user.
-- The operational information is uploaded without leveraging a user identifier or device identifier, and without requiring the user to authenticate in any way (including verifying a phone number or email).
+- The epidemiological information uploaded about the user’s exposure to potentially contagious users has certain limitations. For example, the duration of the exposure is measured in five-minute increments and capped at 30 minutes. Moreover, Immuni has no way to determine that exposures occurring on different days may have involved the same infected user.
+- The operational information is uploaded without requiring the user to authenticate in any way (including verifying a phone number or email).
 - The app performs periodic dummy uploads to mitigate the risk of someone gaining sensitive information about the user through traffic analysis.
 - The data stored on the device are encrypted.
 - All connections between the device and the server are encrypted.
 - All data, whether stored on the device or on the server, are deleted when no longer needed, and in any case no later than December 31, 2020.
 - The Ministry of Health will be the data controller. The data will be used solely with the aim of containing the COVID-19 epidemic or for scientific research.
-- The data will be stored on servers located in Italy and managed by publicly controlled entities.
-
-## Open points
-
-These are some of the most pressing points on which we are working:
-
-- **Dummy traffic.** We would like to minimise the information that an attacker could gain by analysing network traffic. We are finalising the development of dummy uploads.
-- **Analytics integrity.** We are trying to collect the necessary operational information while preserving user privacy to the maximum possible extent. However, performing such collection without asking the user to authenticate (e.g., by verifying a phone number or email address) and without using any user identifier or device identifier makes it harder to prevent attackers from polluting the data with fake uploads. We devised a promising solution that we expect to work for a significant portion of devices. Documentation and development are underway.
+- The data will be stored on servers located in Italy and managed by publicly controlled bodies.
