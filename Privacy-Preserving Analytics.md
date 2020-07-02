@@ -38,18 +38,22 @@ When sending these data to the relevant Backend Service, Immuni includes the use
 Epidemiological Info is any set of Exposure Detection Summaries and Exposure Info. For convenience, we provide below the definitions of Exposure Detection Summaries and Exposure Info as found in [Technology](/Technology.md).
 
 **Exposure Detection Summary.** A summary of aggregate information related to the Exposures of a Mobile Client for a set of TEKs. When the A/G Framework on the Mobile Client is provided with a set of TEKs, it can check whether they Match any of the locally stored RPIs. After completing this check, the Mobile Client generates an Exposure Detection Summary. Calculated for the given set of TEKs and their respective Exposures, an Exposure Detection Summary includes the following:
-- The number of TEKs Matching any of the locally stored RPIs, which is also the number of Exposures for that set of TEKs
+- The number of TEKs Matching any of the locally stored RPIs
 - The number of days since the most recent Exposure to any Matching TEK of the given set
 - The sum of the durations of those Exposures, grouped by three ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
 - The highest Total Risk Score among those of the various Exposures
 
-**Exposure Info.** Information related to a specific Exposure. For each TEK Matching at least one locally stored RPI—which is to say, for each Exposure—the A/G Framework on the Mobile Client can generate an Exposure Info containing the following information:
+Note that the Exposure Detection Summary does not contain either the TEKs that Matched a locally stored RPI, or the Matched RPIs.
+
+**Exposure Info.** Information related to a specific Exposure. For each Exposure for a set of TEKs Matching locally stored RPIs, the A/G Framework on the Mobile Client can generate an object containing the following information:
 - The day the Exposure occurred
 - The duration of the Exposure (measured in five-minute increments and capped at 30 minutes)
-- The minimum Attenuation during the Exposure
-- The sum of the durations of the Exposure’s Contacts, grouped by three ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
+- The average Attenuation during the Exposure
+- The duration of the Exposure, broken down by three ranges of Attenuation (each measured in five-minute increments and capped at 30 minutes)
 - The Transmission Risk for the relevant TEK
 - The Total Risk Score for the Exposure
+
+Note that the Exposure Info does not contain either the TEK for which it was computed, or the RPIs that Matched the TEK.
 
 ### Upload triggers
 
@@ -74,8 +78,8 @@ Some privacy and security considerations concerning the collection of Epidemiolo
 - The duration of each Exposure is measured in five-minute increments and capped at 30 minutes. As such, Immuni cannot infer whether, on the day of the Exposure, the user’s Mobile Client was in close proximity with the Mobile Client of a potentially contagious user for 30 minutes or for several hours.
 - Immuni has no way to determine that Exposures occurring on different days may have involved the same Mobile Client.
 - When the App attempts to access the Exposure Info, the operating system alerts the user that this is happening. The App cannot bypass this measure.
-- It is difficult for an attacker to upload fake Epidemiological Info at scale. To do so, they would need to access OTPs that have been authorised by Healthcare Operators. Moreover, the OTPs expire 2.5 minutes after they are authorised. Finally, for each OTP, only a limited amount of Epidemiological Info can be uploaded.
-- The risk that an attacker may infer any sensitive information about the user by analysing the traffic related to the validation of the OTP or the upload of Epidemiological Info is mitigated by a number of measures. Please refer to [Technology Description](/Technology%20Description.md).
+- It is difficult for an attacker to upload fake Epidemiological Info at scale. To do so, they would need to access OTPs that have been authorised by Healthcare Operators. Moreover, the OTPs expire 2 minutes and 30 seconds after they are authorised. Finally, for each OTP, only a limited amount of Epidemiological Info can be uploaded.
+- The risk that an attacker may infer any sensitive information about the user by analysing the traffic related to the validation of the OTP or the upload of Epidemiological Info is mitigated by a number of measures. Please refer to [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
 ## Operational Info
 
@@ -237,12 +241,12 @@ The worker, therefore, rejects the Operational Info and records the abusive beha
 
 In table 1, we present a brief recap of the meaning that the Analytics Service assigns to the different combinations of DeviceCheck per-device bits.
 
-| bit1 | bit0 | Integer representation | Meaning |
+| _bit1_ | _bit0_ | Integer representation | Meaning |
 | :--- | :--- | :--------------------- | :---------- |
-| 0    | 0    | 0                      |  Default value. |
-| 0    | 1    | 1                      |  The worker is waiting for the third read before it can authorise the last analytics token it received from the device. |
-| 1    | 0    | 2                      |  Reserved for future use. |
-| 1    | 1    | 3                      |  The device is blacklisted. |
+| 0    | 0    | 0                      |  Default value |
+| 0    | 1    | 1                      |  The worker is waiting for the third read before it can authorise the last analytics token it received from the device |
+| 1    | 0    | 2                      |  Reserved for future use |
+| 1    | 1    | 3                      |  The device is blacklisted |
 
 **Table 1.** The meaning of the various configurations of the DeviceCheck per-device bits.
 
