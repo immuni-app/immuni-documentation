@@ -100,7 +100,7 @@ The diagram in figure 1 represents a simulated TEK upload sequence. The steps in
 - **Wait.** A delay is added to make the simulated TEK upload sequence more realistic by mimicking user-introduced delays.
 
 ![Figure 1](/Figures/Traffic%20Analysis%20Mitigation%20-%20Figure%201.png)
-**Figure 1.** The steps involved in a simulated TEK upload sequence.
+<p style="text-align: center;"><b>Figure 1.</b> The steps involved in a simulated TEK upload sequence.</p>
 
 
 
