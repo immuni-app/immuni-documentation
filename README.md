@@ -1,6 +1,6 @@
 # Immuni's High-Level Description
 
-Immuni is the Italian Government’s exposure notification solution, realized by the Special Commissioner for the COVID-19 emergency (Presidency of the Council of Ministers), in collaboration with the Ministry of Health and the Ministry for Technological Innovation and Digitalization. It only uses public infrastructures located within the national borders. It is exclusively managed by the public company Sogei S.p.A. The source code has been developed for the Presidency of the Council of Ministers by Bending Spoons S.p.A., and it is released under a GNU Affero General Public License version 3.
+Immuni is the Italian Government’s exposure notification solution, realised by the Special Commissioner for the COVID-19 emergency (Presidency of the Council of Ministers), in collaboration with the Ministry of Health and the Ministry for Technological Innovation and Digitalisation. It only uses public infrastructures located within the national borders. It is exclusively managed by the public company Sogei S.p.A. The source code has been developed for the Presidency of the Council of Ministers by Bending Spoons S.p.A., and it is released under a GNU Affero General Public License version 3.
 
 ## Table of contents
 
@@ -24,8 +24,8 @@ Immuni is the Italian Government’s exposure notification solution, realized by
   - When a user tests positive for SARS-CoV-2, the virus causing COVID-19, they have the option to upload to a server their recent temporary exposure keys. This operation can only happen with the validation of a **healthcare operator.**
   - The app periodically downloads the new temporary exposure keys and uses them to derive the infected users’ rolling proximity identifiers for the recent past. It then matches the identifiers against those stored in the device’s memory and **notifies the user** if a risky exposure has occurred.
   - The system uses **no geolocation data** whatsoever, including GPS data. So, the app cannot tell where the contact with a potentially contagious user took place, nor the identities of those involved.
-- To implement its contact tracing functionality, Immuni leverages **the Apple and Google Exposure Notification framework.** This allows Immuni to be more reliable than otherwise would be possible.
-- Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and operational information,** and are sent for the purpose of helping the National Healthcare Service (Servizio Sanitario Nazionale) to provide effective assistance to users.
+- To implement its exposure notification functionality, Immuni leverages **the Apple and Google Exposure Notification framework.** This allows Immuni to be more reliable than otherwise would be possible.
+- Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and operational information,** and are sent for the purpose of helping the National Healthcare Service (_Servizio Sanitario Nazionale_) to provide effective assistance to users.
 - Immuni is being developed while paying a lot of attention to user privacy and a number of measures have been taken to protect it. For example, the app collects **no personal data that would disclose the user’s identity,** such as the user’s name, age, address, email, or phone number.
 
 ## Introduction
@@ -71,7 +71,7 @@ The main principles guiding the Immuni project follow:
 
 ## Product
 
-Immuni is a technological solution that centres on a smartphone app available for Android and iOS.
+Immuni is a technological solution that centres on a smartphone app available for iOS and Android.
 
 It features an exposure notification system to help alert potentially SARS-CoV-2-positive users at an early stage. This system keeps track of contact between Immuni users, even when they are total strangers. When a user tests positive for SARS-CoV-2, the app uses this system to notify other at-risk users. The system is based on Bluetooth Low Energy and does not use any geolocation data whatsoever, including GPS data. So, while the app knows that the contact with an infected user took place, how long it lasted, and can estimate the distance that separated the two users, it cannot tell where the contact took place, nor the identities of those involved.
 
@@ -83,7 +83,7 @@ As stated, Immuni’s exposure notification system leverages Bluetooth Low Energ
 - **The battery is used more efficiently.** Bluetooth Low Energy excels when it comes to energy efficiency. This is important because it is reasonable to expect that the app’s uninstall rate will be correlated with battery consumption.
 - **No geolocation data are required.** Thanks to Bluetooth Low Energy, contact is traced without tracking the users’ location. This may result in the app being more welcomed by the public and could facilitate wider adoption, increasing Immuni’s utility.
 
-To implement its contact tracing functionality, Immuni leverages the Apple and Google Exposure Notification framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). This allows Immuni to overcome certain technical limitations, thus being more reliable than otherwise would be possible.
+To implement its exposure notification functionality, Immuni leverages the Apple and Google Exposure Notification framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). This allows Immuni to overcome certain technical limitations, thus being more reliable than otherwise would be possible.
 
 ### How it works
 
