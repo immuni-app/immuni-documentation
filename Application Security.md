@@ -43,15 +43,15 @@ The App asks only for two permissions: to access the Exposure Notification frame
 | Permission | Reason |
 | :--------- | :----- |
 | COVID‑19 Exposure Notifications | To access Apple’s COVID‑19 Exposure Notifications framework and inform the user about a Risky Exposure |
-| Push notifications | To display alerts to inform the user when the service is inactive or about a required update |
+| Push notifications | To display notifications to inform the user when the service is inactive or about a required update—these notifications are generated locally, not sent from a server |
 
 In addition, the App declares the following entitlements:
 
 | Entitlement | Value | Reason |
 | :---------- | :---- | :----- |
-| com.apple.developer.exposure-notification | true | To access Apple’s COVID-19 Exposure Notifications framework |
-| com.apple.developer.default-data-protection | NSFileProtectionCompleteUntilFirstUserAuthentication | To protect the App’s data until the user unlocks their device for the first time after reboot—this protects the data in the case of device theft |
-| aps-environment | production | To display push notifications to the user |
+| _com.apple.developer.exposure-notification_ | _true_ | To access Apple’s COVID-19 Exposure Notifications framework |
+| _com.apple.developer.default-data-protection_ | _NSFileProtectionCompleteUntilFirstUserAuthentication_ | To protect the App’s data until the user unlocks their device for the first time after reboot—this protects the data in the case of device theft |
+| _aps-environment_ | _production_ | To display push notifications to the user—these notifications are generated locally, not sent from a server |
 
 #### Android
 
@@ -59,14 +59,14 @@ The App asks only for permission to access the Exposure Notification framework. 
 
 | Permission | Reason |
 | :--------- | :----- |
-| COVID‑19 Exposure Notifications *(in system settings)* | To access Google’s COVID‑19 Exposure Notifications framework |
+| COVID‑19 Exposure Notifications | To access Google’s COVID‑19 Exposure Notifications framework |
 
 In addition, the App lists the following permissions in the App’s manifest file:
 
 | Permission | Reason |
 | :--------- | :----- |
-| android.permission.INTERNET | To communicate with the Immuni Backend Services |
-| android.permission.BLUETOOTH | To use the Exposure Notifications framework, as specified in [Exposure Notifications Android API Documentation](https://www.google.com/covid19/exposurenotifications/pdfs/Android-Exposure-Notification-API-documentation-v1.3.2.pdf) (page 3) |
+| _android.permission.INTERNET_ | To communicate with the Immuni Backend Services |
+| _android.permission.BLUETOOTH_ | To use the Exposure Notifications framework, as specified in [Exposure Notifications Android API Documentation](https://www.google.com/covid19/exposurenotifications/pdfs/Android-Exposure-Notification-API-documentation-v1.3.2.pdf) (page 3) |
 
 
 ### Protection of data in transit
@@ -76,8 +76,8 @@ When the Mobile Client exchanges data with the Backend Services, the communicati
 
 | URL        | Ciphers |
 | :--------- | :------ |
-| *get.immuni.gov.it* | TLS 1.3 and 1.2:<br>*TLS_CHACHA20_POLY1305_SHA256*<br>*TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384*<br>*TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256* |
-| *upload.immuni.gov.it*<br>*analytics.immuni.gov.it* | TLS 1.2 only:<br>*TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384*<br>*TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256* |
+| _get.immuni.gov.it_ | TLS 1.3:<br>_TLS\_CHACHA20\_POLY1305\_SHA256_<br><br>TLS 1.2:<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384_<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256_ |
+| _upload.immuni.gov.it_<br>_analytics.immuni.gov.it_ | TLS 1.2:<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384_*<br>*_TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256_* |
 
 - To reduce the likelihood of MITM attacks perpetrated by spoofing the Backend Services’ TLS certificate, the App performs strict checks that leverage Certificate Authority (CA) pinning. We enforce CA pinning rather than leaf certificate pinning because it guarantees an adequate level of protection when combined with the other measures described below, while making it possible to easily manage and rotate the Server Certificate.
 - A single CA has been authorised to sign certificates for the domain used by the Immuni Backend Services. The CA is Actalis S.p.A., a well-known Italian Certificate Authority whose CA services are fully compliant with the ‘[Baseline Requirements Certificate Policy for the Issuance and Management of Publicly Trusted Certificates](https://cabforum.org/wp-content/uploads/CAB-Forum-BR-1.3.0.pdf)’ issued by the CA/Browser Forum. The choice of an Italian Certification Authority was based on the requirement that, to the maximum possible extent, the infrastructure should be physically located in Italy.
@@ -109,9 +109,7 @@ Moreover, the following checks are performed on a regular basis:
 To be as effective as possible in fighting the COVID-19 epidemic, Immuni needs to operate reliably. We have devised several measures to ensure that the system is highly resistant to attacks that attempt to compromise its availability and modify its intended behaviour.
 
 ### Data signing
-Immuni signs the TEKs available for download from the Exposure Reporting Service with an *ECDSA-P256-SHA256* signing algorithm, identified by the following OID: 
-
-1.2.840.10045.4.3.2.
+Immuni signs the TEKs available for download from the Exposure Reporting Service with the ECDSA using Curve P-256 and SHA-256. The OID is 1.2.840.10045.4.3.2.
 
 The associated public key has been shared with Apple and Google and is used by the Mobile Clients to verify the downloaded data and guarantee its authenticity and integrity.
 
@@ -121,12 +119,12 @@ Immuni will also implement a signing mechanism for other types of data served th
 If just any user could upload their TEKs to the Exposure Ingestion Service, an attacker may be able to trigger Exposure Notifications for users who are actually not at risk. If done at scale, such an attack could disrupt the system. The following measures are in place to minimisze this risk:
 
 - Uploads to the Exposure Ingestion Service must be validated with an OTP that is generated randomly on the Mobile Client. The OTP must be validated by a Healthcare Operator before it can be used by the Mobile Client to authorise an upload request. 
-- The OTP has a *time to live,* after which it can no longer be used to authorise an upload. The time to live is set at 2 minutes and 30 seconds. The choice represents a trade-off between two conflicting goals:
+- The OTP has a _time to live,_ after which it can no longer be used to authorise an upload. The time to live is set at 2 minutes and 30 seconds. The choice represents a trade-off between two conflicting goals:
   - Limiting the validity of the OTP to mitigate brute-force attacks
   - Giving the user enough time to complete the upload in a situation of psychological distress
 
   Requiring the OTP to be validated by a Healthcare Operator restricts access to the Exposure Ingestion Service to only those users who tested positive for SARS-CoV-2.
-- The OTP is composed of ten characters from a set of 25 symbols (*A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z,* 1, 2, 3, 4, 5, 6, 7, 8, 9). The first nine characters are picked randomly, while the last character is computed algorithmically, serving the purpose of a check digit. There are 25^9 possible OTPs, a space equivalent to slightly less than 42 bits of entropy. Even if it increases the probability of collisions, we chose to exclude from the standard alphabet characters that may be ambiguous when read to the Healthcare Operator. This provides a good trade-off between security and user experience.
+- The OTP is composed of ten characters from a set of 25 symbols (_A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z,_ 1, 2, 3, 4, 5, 6, 7, 8, 9). The first nine characters are picked randomly, while the last character is computed algorithmically, serving the purpose of a check digit. There are 25^9 possible OTPs, equivalent to slightly less than 42 bits of entropy. Even if it increases the probability of collisions, we chose to exclude from the standard alphabet characters that may be ambiguous when read to the Healthcare Operator. This provides a good trade-off between security and user experience.
 - Adequate infrastructural rate-limiting techniques are in place to slow down or prevent attempts to brute-force the OTPs.
 - With a valid OTP, the Mobile Client is allowed to upload a maximum of 14 TEKs, corresponding to those generated in the previous 14 days. This limit makes it impossible for an attacker in possession of a valid OTP to flood the system by uploading an arbitrarily large number of TEKs.
 
