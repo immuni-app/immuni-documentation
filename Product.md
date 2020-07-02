@@ -154,3 +154,5 @@ I can receive comprehensive answers to common questions that I may have about th
 - Questions are prioritised so that the app can ensure the most pressing and common ones are presented first.
 - A search bar allows the user to find relevant questions more easily.
 - If the user taps any of them, a separate screen will open to reveal the answer to that question.
+
+![FAQ](/Design/FAQ.png)
