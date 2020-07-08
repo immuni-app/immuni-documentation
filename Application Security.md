@@ -7,7 +7,7 @@
 		- [iOS](#ios)
 		- [Android](#android)
 	- [Protection of data in transit](#protection-of-data-in-transit)
-	- [Traffic-analysis mitigation](#traffic-analysis-mitigation)
+	- [Traffic analysis mitigation](#traffic-analysis-mitigation)
 	- [Protection of data at rest](#protection-of-data-at-rest)
 	- [Security of the software development lifecycle](#security-of-the-software-development-lifecycle)
 - [Service disruption or alteration](#service-disruption-or-alteration)
@@ -42,14 +42,14 @@ The App asks only for two permissions: to access the Exposure Notification frame
 
 | Permission | Reason |
 | :--------- | :----- |
-| COVID‑19 Exposure Notifications | To access Apple’s COVID‑19 Exposure Notifications framework and inform the user about a Risky Exposure |
+| COVID‑19 Exposure Notifications | To access Apple’s COVID‑19 Exposure Notification framework and inform the user about a Risky Exposure |
 | Push notifications | To display notifications to inform the user when the service is inactive or about a required update—these notifications are generated locally, not sent from a server |
 
 In addition, the App declares the following entitlements:
 
 | Entitlement | Value | Reason |
 | :---------- | :---- | :----- |
-| _com.apple.developer.exposure-notification_ | _true_ | To access Apple’s COVID-19 Exposure Notifications framework |
+| _com.apple.developer.exposure-notification_ | _true_ | To access Apple’s COVID-19 Exposure Notification framework |
 | _com.apple.developer.default-data-protection_ | _NSFileProtectionCompleteUntilFirstUserAuthentication_ | To protect the App’s data until the user unlocks their device for the first time after reboot—this protects the data in the case of device theft |
 | _aps-environment_ | _production_ | To display push notifications to the user—these notifications are generated locally, not sent from a server |
 
@@ -59,14 +59,14 @@ The App asks only for permission to access the Exposure Notification framework. 
 
 | Permission | Reason |
 | :--------- | :----- |
-| COVID‑19 Exposure Notifications | To access Google’s COVID‑19 Exposure Notifications framework |
+| COVID‑19 Exposure Notifications | To access Google’s COVID‑19 Exposure Notification framework |
 
 In addition, the App lists the following permissions in the App’s manifest file:
 
 | Permission | Reason |
 | :--------- | :----- |
 | _android.permission.INTERNET_ | To communicate with the Immuni Backend Services |
-| _android.permission.BLUETOOTH_ | To use the Exposure Notifications framework, as specified in [Exposure Notifications Android API Documentation](https://www.google.com/covid19/exposurenotifications/pdfs/Android-Exposure-Notification-API-documentation-v1.3.2.pdf) (page 3) |
+| _android.permission.BLUETOOTH_ | To use the Exposure Notification framework, as specified in [Exposure Notifications Android API Documentation](https://www.google.com/covid19/exposurenotifications/pdfs/Android-Exposure-Notification-API-documentation-v1.3.2.pdf) (page 3) |
 
 
 ### Protection of data in transit
@@ -77,13 +77,13 @@ When the Mobile Client exchanges data with the Backend Services, the communicati
 | URL        | Ciphers |
 | :--------- | :------ |
 | _get.immuni.gov.it_ | TLS 1.3:<br>_TLS\_CHACHA20\_POLY1305\_SHA256_<br><br>TLS 1.2:<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384_<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256_ |
-| _upload.immuni.gov.it_<br>_analytics.immuni.gov.it_ | TLS 1.2:<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384_*<br>*_TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256_* |
+| _upload.immuni.gov.it_<br>_analytics.immuni.gov.it_ | TLS 1.2:<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384_<br>_TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256_ |
 
 - To reduce the likelihood of MITM attacks perpetrated by spoofing the Backend Services’ TLS certificate, the App performs strict checks that leverage Certificate Authority (CA) pinning. We enforce CA pinning rather than leaf certificate pinning because it guarantees an adequate level of protection when combined with the other measures described below, while making it possible to easily manage and rotate the Server Certificate.
 - A single CA has been authorised to sign certificates for the domain used by the Immuni Backend Services. The CA is Actalis S.p.A., a well-known Italian Certificate Authority whose CA services are fully compliant with the ‘[Baseline Requirements Certificate Policy for the Issuance and Management of Publicly Trusted Certificates](https://cabforum.org/wp-content/uploads/CAB-Forum-BR-1.3.0.pdf)’ issued by the CA/Browser Forum. The choice of an Italian Certification Authority was based on the requirement that, to the maximum possible extent, the infrastructure should be physically located in Italy.
 - A CAA DNS record on the domain has been set that entitles only Actalis S.p.A. to authorise the CA to sign certificates for the Immuni domain. This way, an attacker would not be able to perform a MITM attack by getting another CAA-compliant CA to sign certificates for the Immuni domain.
 
-### Traffic-analysis mitigation
+### Traffic analysis mitigation
 Without appropriate countermeasures, even if the data are encrypted by the time they are in transit, an attacker could still infer sensitive information by analysing the communication between the Mobile Client and Backend Services. For example, an exchange of information between the Mobile Client and the Exposure Ingestion Service could reveal that the user is uploading their TEKs and has therefore tested positive for SARS-CoV-2. 
 
 An in-depth description of the techniques in place to thwart traffic analysis attacks is available in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
@@ -116,7 +116,7 @@ The associated public key has been shared with Apple and Google and is used by t
 Immuni will also implement a signing mechanism for other types of data served through the CDN, such as the Configuration Settings. This is not ready for Immuni’s initial release, but it will be available in a future version of the App.
 
 ### Authorisation of TEK uploads
-If just any user could upload their TEKs to the Exposure Ingestion Service, an attacker may be able to trigger Exposure Notifications for users who are actually not at risk. If done at scale, such an attack could disrupt the system. The following measures are in place to minimisze this risk:
+If just any user could upload their TEKs to the Exposure Ingestion Service, an attacker may be able to trigger Exposure Notifications for users who are actually not at risk. If done at scale, such an attack could disrupt the system. The following measures are in place to minimise this risk:
 
 - Uploads to the Exposure Ingestion Service must be validated with an OTP that is generated randomly on the Mobile Client. The OTP must be validated by a Healthcare Operator before it can be used by the Mobile Client to authorise an upload request. 
 - The OTP has a _time to live,_ after which it can no longer be used to authorise an upload. The time to live is set at 2 minutes and 30 seconds. The choice represents a trade-off between two conflicting goals:

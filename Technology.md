@@ -43,7 +43,7 @@
     - [API - Authorise analytics token (iOS)](#api---authorise-analytics-token-ios)
     - [API - Upload Operational Info (iOS)](#api---upload-operational-info-ios)
     - [API - Upload Operational Info (Android)](#api---upload-operational-info-android)
-    - [Data model - Exposure](#data-model---exposure)
+    - [Data model - Exposures](#data-model---exposures)
     - [Data model - Operational Info](#data-model---operational-info)
 
 ## Introduction
@@ -346,7 +346,7 @@ The source code is implemented leveraging native technologies offered by the And
 
 The architecture is built on [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/). When it comes to the project’s structure, Immuni is implemented using a data-driven MVVM architecture that follows the recommendations laid out in the [Android guide to app architecture](https://developer.android.com/jetpack/docs/guide). To achieve this, the Android App is based on the following technologies:
 
-- **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured*concurrency). Support for these functionalities is supplied by the \_kotlinx.coroutines* library, which is released as an open-source project under the Apache 2.0 licence.
+- **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured*concurrency). Support for these functionalities is supplied by the _kotlinx.coroutines_ library, which is released as an open-source project under the Apache 2.0 licence.
 - **[LiveData](https://developer.android.com/topic/libraries/architecture/livedata) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel).** LiveData are observable data holders, while ViewModels are designed to store and manage user interface related data in a lifecycle-conscious way. They both are part of the Android Jetpack set of libraries, and are released as open-source projects under the Apache 2.0 licence.
 - **[Navigation Component](https://developer.android.com/guide/navigation).** Navigation Component is used to create single activity apps, reducing complexity and ensuring a consistent and predictable user experience by adhering to an established set of [principles of navigation](https://developer.android.com/guide/navigation/navigation-principles). It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
 - **[Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager).** The Work Manager API makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the Android App exits or the device restarts. It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
@@ -527,8 +527,8 @@ The API is only accessible by the HIS
 
 ```
 {
-  "otp": string,
-  "symptoms_started_on": date
+  “otp”: string,
+  “symptoms_started_on”: date
 }
 ```
 
@@ -593,34 +593,34 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 
 ```
 {
-  "teks": [ 
+  “teks”: [ 
     {
-      "key_data": string,
-      "rolling_start_number": int,
-      "rolling_period" : int
+      “key_data”: string,
+      “rolling_start_number”: int,
+      “rolling_period”: int
     }, ...
   ],
-  "province": string, 
-  "exposure_detection_summaries": [
+  “province”: string, 
+  “exposure_detection_summaries”: [
     {
-      "date": date
-      "matched_key_count": int,
-      "days_since_last_exposure": int,
-      "attenuation_durations": array[int],
-      "maximum_risk_score": int,
-      "exposure_info": [
+      “date”: date
+      “matched_key_count”: int,
+      “days_since_last_exposure”: int,
+      “attenuation_durations”: array[int],
+      “maximum_risk_score”: int,
+      “exposure_info”: [
         {
-          "date": date,
-          "duration": int,
-          "attenuation_value": int,
-          "attenuation_durations": array[int],
-          "transmission_risk_level": int,
-          "total_risk_score": int
+          “date”: date,
+          “duration”: int,
+          “attenuation_value”: int,
+          “attenuation_durations”: array[int],
+          “transmission_risk_level”: int,
+          “total_risk_score”: int
         }, ...
       ]
     }, ...
   ],
-  "padding": string
+  “padding”: string
 }
 ```
 
@@ -695,8 +695,8 @@ Return the index of the oldest relevant TEK Chunk (no older than 14 days) and th
 
 ```
 {
-  "oldest": int,
-  "newest": int
+  “oldest”: int,
+  “newest”: int
 }
 ```
 
@@ -815,9 +815,9 @@ The _Exposures_ collection stores the Province of Domicile and the Epidemiologic
           attenuation_durations: array[int],
           transmission_risk_level: int,
           total_risk_score: int
-        }, …
+        }, ...
       ]
-    }, …
+    }, ...
   ]
 }
 ```
@@ -837,6 +837,6 @@ The _OperationalInfo_ collection holds the Operational Info sent by the Mobile C
   bluetooth_active: boolean,
   notification_permission: boolean,
   exposure_notification: boolean,
-  last_risky_exposure_on: date,
+  last_risky_exposure_on: date
 }
 ```
