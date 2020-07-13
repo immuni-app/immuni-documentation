@@ -12,6 +12,8 @@ tags:
   description: "The Exposure Ingestion Service provides an API for the Mobile Client to upload its TEKs for the previous 14 days, in the case that the user tests positive for SARS-CoV-2 and decides to share them. Contextually, the Mobile Client uploads the Epidemiological Infos from the previous 14 days, if any. If some Epidemiological Infos are indeed uploaded, the user's Province of Domicile is uploaded too. The upload can only take place with an authorised OTP. The Exposure Ingestion Service is also responsible for periodically generating the TEK Chunks to be published by the Exposure Reporting Service. The TEK Chunks are assigned a unique incremental index and are immutable. They are generated periodically as the Mobile Clients upload new TEKs. TEK Chunks older than 14 days are automatically deleted from the database by an async cleanup job. Province of Domicile and Epidemiological Infos are forwarded to the Analytics Service."
 - name: "Exposure Reporting"
   description: "The Exposure Reporting Service makes the TEK Chunks created by the Exposure Ingestion Service available to the Mobile Client. Only TEK Chunks for the last 14 days are made available. To avoid downloading the same TEKs multiple times, the Mobile Clients fetch the indexes of the TEK Chunks available to download first. Then, they only actually download TEK Chunks with indexes for which TEK Chunks have not been downloaded before."
+- name: "Analytics"
+  description: "The Analytics Service provides an API to the Mobile Clients for uploading certain data without identifying users, both during regular operations and especially when a match is found between a TEK Chunk and the RPIs in the RPI Database. Collecting these data is crucial to spotting anomalies in the system, as well as being able to check how many users are being notified. The National Healthcare System needs this information to operate Immuni effectively."
 schemes:
 - "https"
 paths:
@@ -66,6 +68,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned. Possible error codes are 1400 (\"Unexpected empty body\") and 1401 (\"Body not compliant with the defined schema\")."
           schema:
@@ -95,6 +101,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
@@ -133,6 +143,10 @@ paths:
       responses:
         204:
           description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
         400:
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
@@ -183,8 +197,105 @@ paths:
               description: "Directives for caching the response. TEK Chunks are cached for 15 days."
         404:
           description: "TEK Chunk not found."
+  /analytics/apple/operational-info:
+    post:
+      tags:
+      - "Analytics"
+      summary: "Save the operational data sent by the iOS device, in compliance with the monthly policy, authorized with the provided analytics token."
+      consumes:
+      - "application/json; charset=utf-8"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Immuni-Dummy-Data"
+        type: "integer"
+        required: true
+        minimum: 0
+        maximum: 1
+      - in: "body"
+        name: "body"
+        description: "A JSON-formatted dictionary containing the operational data."
+        required: true
+        schema:
+          $ref: "#/definitions/OperationalInfo"
+      responses:
+        204:
+          description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
+        400:
+          description: "Invalid data. An APIError is returned."
+          schema:
+            $ref: "#/definitions/APIError"
+      security:
+        - analytics_bearer: []
+  /analytics/google/operational-info:
+    post:
+      tags:
+      - "Analytics"
+      summary: "Save the operational data sent by the Android device, authorized with the provided SafetyNet hardware attestation token."
+      consumes:
+      - "application/json; charset=utf-8"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Immuni-Dummy-Data"
+        type: "integer"
+        required: true
+        minimum: 0
+        maximum: 1
+      - in: "body"
+        name: "body"
+        description: "A JSON-formatted dictionary containing the operational data."
+        required: true
+        schema:
+          $ref: "#/definitions/GoogleOperationalInfo"
+      responses:
+        204:
+          description: "Operation completed successfully."
+          headers:
+            Cache-Control:
+              type: "string"
+              description: "Directives to prevent caching of 204 responses."
+        400:
+          description: "Invalid data. An APIError is returned."
+          schema:
+            $ref: "#/definitions/APIError"
+  /analytics/apple/token:
+    post:
+      tags:
+      - "Analytics"
+      summary: "Authorize the provided analytics token with the device authenticity SDK offered by the device operating system."
+      consumes:
+      - "application/json; charset=utf-8"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "A JSON-formatted dictionary containing the tokens."
+        required: true
+        schema:
+          $ref: "#/definitions/AnalyticsToken"
+      responses:
+        201:
+          description: "Token is authorized. No response body returned."
+        202:
+          description: "Token authorization in progress. No response body returned."
+        400:
+          description: "Invalid data. An APIError is returned."
+          schema:
+            $ref: "#/definitions/APIError"
 securityDefinitions:
   otp_bearer:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+  analytics_bearer:
     type: "apiKey"
     name: "Authorization"
     in: "header"
@@ -230,6 +341,7 @@ definitions:
     properties:
       key_data:
         type: "string"
+        format: "byte"
         example: "utdH33iMRTapATp7iK3hdA=="
       rolling_start_number:
         type: "integer"
@@ -349,6 +461,76 @@ definitions:
         minimum: 0
         maximum: 4096
         example: 4
+  OperationalInfo:
+    type: "object"
+    required:
+    - "province"
+    - "exposure_permission"
+    - "bluetooth_active"
+    - "notification_permission"
+    - "exposure_notification"
+    - "last_risky_exposure_on"
+    properties:
+      province:
+        type: "string"
+        pattern: "^[A-Z]{2}$"
+        example: "MB"
+      exposure_permission:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        maximum: 1
+        example: 1
+      bluetooth_active:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        maximum: 1
+        example: 1
+      notification_permission:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        maximum: 1
+        example: 1
+      exposure_notification:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        maximum: 1
+        example: 1
+      last_risky_exposure_on:
+        type: "string"
+        format: "date"
+  GoogleOperationalInfo:
+    allOf:
+    - $ref: '#/definitions/OperationalInfo'
+    - type: "object"
+      required:
+      - "salt"
+      - "signed_attestation"
+      properties:
+        salt:
+          type: "string"
+          format: "byte"
+          maxLength: 24
+          example: "T84OSRnLtbRRtUgYQM5wLw=="
+        signed_attestation:
+          type: "string"
+          maxLength: 10000
+  AnalyticsToken:
+    type: "object"
+    required:
+    - "device_token"
+    - "analytics_token"
+    properties:
+      analytics_token:
+        type: "string"
+        pattern: "^[a-f0-9]{128}$"
+      device_token:
+        type: "string"
+        format: "byte"
+        maxLength: 10000
   APIError:
     type: "object"
     required:
