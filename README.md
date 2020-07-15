@@ -1,3 +1,6 @@
+NOTE: This README is also available [in Italian](/Translations/it/README.md).  
+NOTA: Questo README è disponibile [in italiano](/Translations/it/README.md).
+
 # Immuni's High-Level Description
 
 Immuni is the Italian Government’s exposure notification solution, realised by the Special Commissioner for the COVID-19 emergency (Presidency of the Council of Ministers), in collaboration with the Ministry of Health and the Ministry for Technological Innovation and Digitalisation. It only uses public infrastructures located within the national borders. It is exclusively managed by the public company Sogei S.p.A. The source code has been developed for the Presidency of the Council of Ministers by Bending Spoons S.p.A., and it is released under a GNU Affero General Public License version 3.
