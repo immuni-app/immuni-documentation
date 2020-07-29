@@ -41,13 +41,13 @@ paths:
         minimum: 1
         format: "int32"
       responses:
-        200:
+        "200":
           description: "A JSON-formatted dictionary. Specifications are being worked out."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives for caching the response. The Configuration Settings are cached for 60 minutes."
-        400:
+        "400":
           description: "Invalid request."
   /otp:
     post:
@@ -66,13 +66,13 @@ paths:
         schema:
           $ref: "#/definitions/OTPUpload"
       responses:
-        204:
+        "204":
           description: "Operation completed successfully."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives to prevent caching of 204 responses."
-        400:
+        "400":
           description: "Invalid data. An APIError is returned. Possible error codes are 1400 (\"Unexpected empty body\") and 1401 (\"Body not compliant with the defined schema\")."
           schema:
             $ref: "#/definitions/APIError"
@@ -99,13 +99,13 @@ paths:
         schema:
           $ref: "#/definitions/CheckOTP"
       responses:
-        204:
+        "204":
           description: "Operation completed successfully."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives to prevent caching of 204 responses."
-        400:
+        "400":
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
             $ref: "#/definitions/APIError"
@@ -141,13 +141,13 @@ paths:
         schema:
           $ref: "#/definitions/Upload"
       responses:
-        204:
+        "204":
           description: "Operation completed successfully."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives to prevent caching of 204 responses."
-        400:
+        "400":
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
             $ref: "#/definitions/APIError"
@@ -163,7 +163,7 @@ paths:
       produces:
       - "application/json"
       responses:
-        200:
+        "200":
           description: "Operation completed successfully."
           schema:
             $ref: "#/definitions/TEKChunkIndexes"
@@ -171,7 +171,7 @@ paths:
             Cache-Control:
               type: "string"
               description: "Directives for caching the response. The indexes are cached for 30 minutes."
-        404:
+        "404":
           description: "No TEK Chunks found."
   /keys/{TEKChunkIndex}:
     get:
@@ -189,13 +189,13 @@ paths:
         type: "integer"
         format: "int32"
       responses:
-        200:
+        "200":
           description: "Operation completed successfully."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives for caching the response. TEK Chunks are cached for 15 days."
-        404:
+        "404":
           description: "TEK Chunk not found."
   /analytics/apple/operational-info:
     post:
@@ -220,13 +220,13 @@ paths:
         schema:
           $ref: "#/definitions/OperationalInfo"
       responses:
-        204:
+        "204":
           description: "Operation completed successfully."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives to prevent caching of 204 responses."
-        400:
+        "400":
           description: "Invalid data. An APIError is returned."
           schema:
             $ref: "#/definitions/APIError"
@@ -255,13 +255,13 @@ paths:
         schema:
           $ref: "#/definitions/GoogleOperationalInfo"
       responses:
-        204:
+        "204":
           description: "Operation completed successfully."
           headers:
             Cache-Control:
               type: "string"
               description: "Directives to prevent caching of 204 responses."
-        400:
+        "400":
           description: "Invalid data. An APIError is returned."
           schema:
             $ref: "#/definitions/APIError"
@@ -282,11 +282,11 @@ paths:
         schema:
           $ref: "#/definitions/AnalyticsToken"
       responses:
-        201:
+        "201":
           description: "Token is authorized. No response body returned."
-        202:
+        "202":
           description: "Token authorization in progress. No response body returned."
-        400:
+        "400":
           description: "Invalid data. An APIError is returned."
           schema:
             $ref: "#/definitions/APIError"
