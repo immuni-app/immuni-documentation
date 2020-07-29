@@ -109,7 +109,7 @@ paths:
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
             $ref: "#/definitions/APIError"
-        401:
+        "401":
           description: "Unauthorised request: invalid OTP."
       security:
         - otp_bearer: []
@@ -151,7 +151,7 @@ paths:
           description: "Invalid data. An APIError is returned. The only possible error code is 1100 (\"Missing required input parameters\")."
           schema:
             $ref: "#/definitions/APIError"
-        401:
+        "401":
           description: "Unauthorised request: invalid OTP."
       security:
         - otp_bearer: []
