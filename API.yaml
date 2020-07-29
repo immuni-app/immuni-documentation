@@ -544,5 +544,5 @@ definitions:
         example: 1400
       message:
         type: "string"
-        pattern: "^[A-Za-z0-9 ]{1,64}$"
+        pattern: "^[A-Za-z0-9 \.]{1,64}$"
         example: "Unexpected empty body."
