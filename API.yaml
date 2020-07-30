@@ -143,14 +143,7 @@ paths:
         header, the Mobile Client can indicate to the server that the call it is making
         is a dummy one. The server will ignore the content of such calls.
       parameters:
-      - name: Immuni-Dummy-Data
-        in: header
-        required: true
-        schema:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
+      - $ref: '#/components/parameters/Immuni-Dummy-Data'
       requestBody:
         description: A JSON-formatted dictionary containing a padding field to emulate
           the upload request payload size.
@@ -205,14 +198,7 @@ paths:
         schema:
           type: integer
           format: int32
-      - name: Immuni-Dummy-Data
-        in: header
-        required: true
-        schema:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
+      - $ref: '#/components/parameters/Immuni-Dummy-Data'
       requestBody:
         description: |-
           A JSON-formatted dictionary containing the data to upload. The
@@ -306,14 +292,7 @@ paths:
       summary: Save the operational data sent by the iOS device, in compliance with
         the monthly policy, authorized with the provided analytics token.
       parameters:
-      - name: Immuni-Dummy-Data
-        in: header
-        required: true
-        schema:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
+      - $ref: '#/components/parameters/Immuni-Dummy-Data'
       requestBody:
         description: A JSON-formatted dictionary containing the operational data.
         content:
@@ -347,14 +326,7 @@ paths:
         Save the operational data sent by the Android device, authorized with
         the provided SafetyNet hardware attestation token.
       parameters:
-      - name: Immuni-Dummy-Data
-        in: header
-        required: true
-        schema:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
+      - $ref: '#/components/parameters/Immuni-Dummy-Data'
       requestBody:
         description: A JSON-formatted dictionary containing the operational data.
         content:
@@ -407,7 +379,21 @@ paths:
                 $ref: '#/components/schemas/APIError'
       x-codegen-request-body-name: body
 components:
+  parameters:
+    Immuni-Dummy-Data:
+      name: Immuni-Dummy-Data
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/Flag'
+
   schemas:
+    Flag:
+      maximum: 1
+      minimum: 0
+      type: integer
+      format: int32
+      example: 1
     OTPUpload:
       required:
       - otp
@@ -594,29 +580,13 @@ components:
           type: string
           example: MB
         exposure_permission:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
-          example: 1
+          $ref: '#/components/schemas/Flag'
         bluetooth_active:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
-          example: 1
+          $ref: '#/components/schemas/Flag'
         notification_permission:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
-          example: 1
+          $ref: '#/components/schemas/Flag'
         exposure_notification:
-          maximum: 1
-          minimum: 0
-          type: integer
-          format: int32
-          example: 1
+          $ref: '#/components/schemas/Flag'
         last_risky_exposure_on:
           type: string
           format: date
