@@ -174,7 +174,11 @@ paths:
                 $ref: '#/components/schemas/APIError'
         "401":
           description: 'Unauthorised request: invalid OTP.'
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
       security:
       - otp_bearer: []
       x-codegen-request-body-name: body
