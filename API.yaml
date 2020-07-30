@@ -89,7 +89,10 @@ paths:
                 Settings are cached for 60 minutes.
               schema:
                 type: string
-          content: {}
+          content:
+            application/json:
+              schema:
+                type: object
         "400":
           description: Invalid request.
           content: {}
