@@ -722,7 +722,7 @@ Given a specific TEK Chunk index, the Mobile Client downloads the associated TEK
 
 The Analytics Service exposes an API that makes it possible for the Mobile Client to upload Operational Info, together with the user’s Province of Domicile. [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md) and [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md) describe how these data are collected while protecting user privacy.
 
-The data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). Without sensible countermeasures, it would be easy for an attacker to pollute the data at scale, making them unreliable and, therefore, useless. The mitigations we have put in place are described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). They differ for iOS and Android, as the relevant technologies available for the two operating systems—namely Apple’s [DeviceCheck](https://developer.apple.com/documentation/devicecheck) and Google’s [SafetyNet Attestation](https://developer.android.com/training/safetynet/attestation)—are distinct.
+The data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). Without sensible countermeasures, it would be easy for an attacker to pollute the data at scale, making them unreliable and, therefore, useless. The mitigations we have put in place are described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). They differ for iOS and Android, as the relevant technologies available for the two operating systems—namely Apple’s [DeviceCheck](https://developer.apple.com/documentation/devicecheck) and Google’s [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation)—are distinct.
 
 Finally, the Analytics Service also receives Province of Domicile and Epidemiological Info from the Exposure Ingestion Service.
 
@@ -746,7 +746,7 @@ The Mobile Client requests the authorisation of an analytics token. Such authori
 **Request Body**
 ```
 {
-  “analytics_token”: <128-byte-string>
+  “analytics_token”: <128-byte-string>,
   “device_token”: string  
 }
 ```
@@ -777,18 +777,48 @@ Right after an Exposure Detection completes, the Mobile Client may compute and u
 **Request body**
 ```
 {
-  “province”: string
-  “exposure_permission”: int
-  “bluetooth_active”: int
-  “notification_permission”: int
-  “exposure_notification”: int
-  “last_risky_exposure_on”: date,
-  “padding”: string
+  “province”: string,
+  “exposure_permission”: int,
+  “bluetooth_active”: int,
+  “notification_permission”: int,
+  “exposure_notification”: int,
+  “last_risky_exposure_on”: date
 }
 ```
 
 #### API - Upload Operational Info (Android)
-*This section is under construction.*
+
+**Caller**  
+Mobile Client
+
+**Description**  
+This endpoint behaves like its iOS counterpart, but uses Google’s [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation) to validate the uploaded data.
+
+_salt_ is a random string the client generates each time it uploads data, whereas _signed_attestation_ is provided by the SafetyNet Attestation API. The Analytics Service uses this string to verify that the data comes from a device running a genuine version of Android and of the Android App. It is the Android Mobile Client that enforces a rate limit over the upload of Operational Info. _signed_attestation_ changes at every request and it is impossible for Immuni to link it to a specific device. Using the dedicated request header, the Android Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
+
+**Resource hostname**  
+`analytics.immuni.gov.it`
+
+**Resource path**  
+`POST /v1/analytics/google/operational-info`
+
+**Request headers**  
+`Content-Type: application/json; charset=utf-8`   
+`Immuni-Dummy-Data: <0|1>`  
+
+**Request body**
+```
+{
+  “province”: string,
+  “exposure_permission”: int,
+  “bluetooth_active”: int,
+  “notification_permission”: int,
+  “exposure_notification”: int,
+  “last_risky_exposure_on”: date,
+  “salt”: string,
+  “signed_attestation”: string
+}
+```
 
 #### Data model - Exposures
 
