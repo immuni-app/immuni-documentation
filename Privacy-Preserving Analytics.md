@@ -277,7 +277,7 @@ On Android, the solution we adopted to minimise the risk of data pollution lever
 ##### Google’s SafetyNet Attestation API
 The [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation) is an anti-abuse measure designed to assess the integrity of an app and the Android device it runs on.
 
-An app can call the SafetyNet Attestation API locally, passing it a _nonce_ (an arbitrary string that the caller app provides, which can be used for different purposes depending on what the app needs to validate). The API evaluates the device software and hardware environment and returns a cryptographically-signed attestation in the form of a JSON Web Signature (JWS). This JWS contains the following: 
+An app can call the SafetyNet Attestation API locally, passing it a _nonce_ (an arbitrary string that the caller app provides, which can be used for different purposes depending on what the app needs to validate). The API evaluates the device software and hardware environment and returns a cryptographically-signed attestation in the form of a _JSON Web Signature_ (_JWS_). This JWS contains the following: 
 - The result of the attestation
 - The nonce that the API has been called with
 - The timestamp of the JWS generation

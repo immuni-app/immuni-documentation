@@ -761,7 +761,7 @@ The Mobile Client requests the authorisation of an analytics token. Such authori
 Mobile Client
 
 **Description**  
-Right after an Exposure Detection completes, the Mobile Client may compute and upload the Operational Info, together with the user’s Province of Domicile. A valid analytics token is needed to complete the operation successfully. The Operational Info fields use integers instead of booleans to ensure that the size of the payloads does not depend, among other things, on sensitive information such as whether the user was notified of a Risky Exposure. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls. Padding bytes are added as described in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
+Right after an Exposure Detection completes, the Mobile Client may compute and upload the Operational Info, together with the user’s Province of Domicile. A valid analytics token is needed to complete the operation successfully. The Operational Info fields use integers instead of booleans to ensure that the size of the payloads does not depend, among other things, on sensitive information such as whether the user was notified of a Risky Exposure. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
 
 **Resource hostname**  
 `analytics.immuni.gov.it`
@@ -792,9 +792,7 @@ Right after an Exposure Detection completes, the Mobile Client may compute and u
 Mobile Client
 
 **Description**  
-This endpoint behaves like its iOS counterpart, but uses Google’s [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation) to validate the uploaded data.
-
-_salt_ is a random string the client generates each time it uploads data, whereas _signed_attestation_ is provided by the SafetyNet Attestation API. The Analytics Service uses this string to verify that the data comes from a device running a genuine version of Android and of the Android App. It is the Android Mobile Client that enforces a rate limit over the upload of Operational Info. _signed_attestation_ changes at every request and it is impossible for Immuni to link it to a specific device. Using the dedicated request header, the Android Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
+This endpoint behaves like its iOS counterpart, but uses Google’s [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation) to validate the uploaded data. _salt_ is a random string the client generates each time it uploads data, whereas _signed_attestation_ is provided by the SafetyNet Attestation API. The Analytics Service uses this string to verify that the data comes from a device running a genuine version of Android and of the Android App. It is the Android Mobile Client that enforces a rate limit over the upload of Operational Info. _signed_attestation_ changes at every request and it is impossible for Immuni to link it to a specific device. Using the dedicated request header, the Android Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
 
 **Resource hostname**  
 `analytics.immuni.gov.it`
