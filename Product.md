@@ -38,7 +38,7 @@ I use the app in my preferred system language. If the app does not offer that la
 
 ### Required update
 
-I am notified if my version of iOS or Google Play Services does not support the Apple and Google Exposure Notifications framework. I am given the most straightforward way to update it, if necessary.
+I am notified if my version of iOS or Google Play Services does not support the Apple and Google Exposure Notification framework. I am given the most straightforward way to update it, if necessary.
 
 - Immediately upon being opened, if the app detects that an iOS or Google Play Services update is needed, a non-dismissible screen appears, inviting the user to perform the update.
 - As soon as the user returns to the app after the update is complete, the screen disappears.
@@ -93,7 +93,7 @@ I state the province in which I live, with full awareness of the purpose for whi
 
 I provide all the permissions and I activate the device services required for the app to work correctly.
 
-- The app asks for the user’s permission to use the Apple and Google Exposure Notifications framework.
+- The app asks for the user’s permission to use the Apple and Google Exposure Notification framework.
 - If Bluetooth is inactive, the app notifies the user that it cannot work and provides simple instructions on how to reactivate it.
 - The app asks for the user’s permission to send them push notifications.
 

@@ -15,9 +15,13 @@
 		- [Operational Info without Exposure](#operational-info-without-exposure)
 	- [Uses for the data](#uses-for-the-data-1)
 	- [Data integrity](#data-integrity)
-		- [Apple’s DeviceCheck](#apple-s-devicecheck)
-		- [Data integrity solution](#data-integrity-solution)
-		- [Preventing race conditions](#preventing-race-conditions)
+		- [iOS](#ios)
+			- [Apple’s DeviceCheck](#apples-devicecheck)
+			- [Data integrity solution](#data-integrity-solution)
+			- [Preventing race conditions](#preventing-race-conditions)
+		- [Android](#android)
+			- [Google’s SafetyNet Attestation API](#googles-safetynet-attestation-api)
+			- [Data integrity solution](#data-integrity-solution-1)
 	- [Privacy and security](#privacy-and-security-1)
 - [Configurability](#configurability)
 
@@ -78,7 +82,7 @@ Some privacy and security considerations concerning the collection of Epidemiolo
 - The duration of each Exposure is measured in five-minute increments and capped at 30 minutes. As such, Immuni cannot infer whether, on the day of the Exposure, the user’s Mobile Client was in close proximity with the Mobile Client of a potentially contagious user for 30 minutes or for several hours.
 - Immuni has no way to determine that Exposures occurring on different days may have involved the same Mobile Client.
 - When the App attempts to access the Exposure Info, the operating system alerts the user that this is happening. The App cannot bypass this measure.
-- It is difficult for an attacker to upload fake Epidemiological Info at scale. To do so, they would need to access OTPs that have been authorised by Healthcare Operators. Moreover, the OTPs expire 2 minutes and 30 seconds after they are authorised. Finally, for each OTP, only a limited amount of Epidemiological Info can be uploaded.
+- It is difficult for an attacker to upload unreliable Epidemiological Info at scale. To do so, they would need to access OTPs that have been authorised by Healthcare Operators. Moreover, the OTPs expire 2 minutes and 30 seconds after they are authorised. Finally, for each OTP, only a limited amount of Epidemiological Info can be uploaded.
 - The risk that an attacker may infer any sensitive information about the user by analysing the traffic related to the validation of the OTP or the upload of Epidemiological Info is mitigated by a number of measures. Please refer to [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
 ## Operational Info
@@ -93,7 +97,7 @@ The Operational Info includes:
 - Whether the user was notified of a Risky Exposure after the last Exposure Detection
 - The date on which the last Risky Exposure took place, if any
 
-Let us define these data as Operational Info *with Exposure* when the user was notified of a Risky Exposure after the last Exposure Detection, and as Operational Info *without Exposure* when they were not.
+Let us define these data as Operational Info _with Exposure_ when the user was notified of a Risky Exposure after the last Exposure Detection, and as Operational Info _without Exposure_ when they were not.
 
 ### Upload triggers
 
@@ -107,9 +111,9 @@ Uploads are directed to the Analytics Service.
 
 After an Exposure Detection completes and identifies a Risky Exposure, the Mobile Client may attempt the upload of Operational Info with Exposure to the Analytics Service.
 
-The Mobile Client starts by carrying out a *sampling test.* This involves the generation of a uniformly distributed random number between 0 and 1. If the value is less than a parameter *p<sub>OWE</sub>,* then the Mobile Client attempts the upload. Otherwise, it does not. In any case, the Mobile Client refrains from performing another sampling test and, therefore, attempting another upload of Operational Info with Exposure until the next calendar month.
+The Mobile Client starts by carrying out a _sampling test._ This involves the generation of a uniformly distributed random number between 0 and 1. If the value is less than a parameter _p<sub>OWE</sub>,_ then the Mobile Client attempts the upload. Otherwise, it does not. In any case, the Mobile Client refrains from performing another sampling test and, therefore, attempting another upload of Operational Info with Exposure until the next calendar month.
 
-In practice, we expect to do minimal or no sampling of Operational Info with Exposure, as the information regarding how many users are being notified is important for the management of the epidemic. This means that *p<sub>OWE</sub>* should be as close to 1 as possible.
+In practice, we expect to do minimal or no sampling of Operational Info with Exposure, as the information regarding how many users are being notified is important for the management of the epidemic. This means that _p<sub>OWE</sub>_ should be as close to 1 as possible.
 
 With the approach described above, no more than one upload of Operational Info may occur during the same calendar month. This means that the Analytics Service would not know if a user had been notified of multiple Risky Exposures within the same calendar month. This is not a material problem. Once a user is notified, they should contact their general practitioner. From that point forward, based on the current procedures, the response by the National Healthcare Service will be largely independent of whether or not the user is notified of a Risky Exposure again in the short term. Therefore, collecting additional Operational Info with Exposure from that user’s Mobile Client, while certainly useful, is not critical. We believe it wise to sacrifice the small potential benefit of an additional data upload in favour of better data integrity and privacy protection.
 
@@ -120,11 +124,11 @@ In all likelihood, an upload of Operational Info without Exposure will occur mor
 
 The rate limit imposed on analytics data applies to the calendar month. This makes it necessary to schedule uploads in a way that prevents the Mobile Clients from generating a spike in analytics uploads on the first day of each calendar month.
 
-To solve this issue, the first time the App activates during the current calendar month, it generates a random number *dT<sub>OWOE</sub>* uniformly distributed between 0 and (*n<sub>days</sub>*-1) * 86400, where *n<sub>days</sub>* represents the number of days in the current calendar month and 86400 is the number of seconds in a day. Let us call *T<sub>OWOE</sub>* the timestamp (measured in seconds) corresponding to 00:00:00 UTC of the first day of the current month. The value of *dT<sub>OWOE</sub>* represents after how many seconds from *T<sub>OWOE</sub>* the window of opportunity will open for the App to send its monthly Operational Info without Exposure. The upload will happen no later than 24 hours after *T<sub>OWOE</sub>*+*dT<sub>OWOE</sub>.*
+To solve this issue, the first time the App activates during the current calendar month, it generates a random number _dT<sub>OWOE</sub>_ uniformly distributed between 0 and (_n<sub>days</sub>_-1) * 86400, where _n<sub>days</sub>_ represents the number of days in the current calendar month and 86400 is the number of seconds in a day. Let us call _T<sub>OWOE</sub>_ the timestamp (measured in seconds) corresponding to 00:00:00 UTC of the first day of the current month. The value of _dT<sub>OWOE</sub>_ represents after how many seconds from _T<sub>OWOE</sub>_ the window of opportunity will open for the App to send its monthly Operational Info without Exposure. The upload will happen no later than 24 hours after _T<sub>OWOE</sub>_+_dT<sub>OWOE</sub>._
 
-We must consider that the user may install the App in the middle of a calendar month. In such a case, *dT<sub>OWOE</sub>* may represent a point in time in the past (i.e., earlier in the calendar month). This is by design, as it ensures that the rate of sampling remains constant, no matter the distribution of installs within the month.
+We must consider that the user may install the App in the middle of a calendar month. In such a case, _dT<sub>OWOE</sub>_ may represent a point in time in the past (i.e., earlier in the calendar month). This is by design, as it ensures that the rate of sampling remains constant, no matter the distribution of installs within the month.
 
-After performing the Exposure Detection, the Mobile Client verifies if the current time is between *T<sub>OWOE</sub>*+*dT<sub>OWOE</sub>* and *T<sub>OWOE</sub>*+*dT<sub>OWOE</sub>*+86400. If so, the Mobile Client performs a sampling test similar to the one described for Operational Info with Exposure. It generates a uniformly distributed random number between 0 and 1. If the value is less than a parameter *p<sub>OWOE</sub>,* the Mobile Client attempts to perform the upload. Note that, if a sampling test for Operational Info without Exposure has previously been performed in the calendar month, the Mobile Client refrains from performing it again. It does not attempt to upload Operational Info without Exposure more than once in the same calendar month. If, after performing an Exposure Detection, the current time is beyond *T<sub>OWOE</sub>*+*dT<sub>OWOE</sub>*+86400, then the Mobile Client does nothing. Instead, it waits for the next calendar month before again attempting an upload of Operational Info without Exposure.
+After performing the Exposure Detection, the Mobile Client verifies if the current time is between _T<sub>OWOE</sub>_+_dT<sub>OWOE</sub>_ and _T<sub>OWOE</sub>_+_dT<sub>OWOE</sub>_+86400. If so, the Mobile Client performs a sampling test similar to the one described for Operational Info with Exposure. It generates a uniformly distributed random number between 0 and 1. If the value is less than a parameter _p<sub>OWOE</sub>,_ the Mobile Client attempts to perform the upload. Note that, if a sampling test for Operational Info without Exposure has previously been performed in the calendar month, the Mobile Client refrains from performing it again. It does not attempt to upload Operational Info without Exposure more than once in the same calendar month. If, after performing an Exposure Detection, the current time is beyond _T<sub>OWOE</sub>_+_dT<sub>OWOE</sub>_+86400, then the Mobile Client does nothing. Instead, it waits for the next calendar month before again attempting an upload of Operational Info without Exposure.
 
 It follows that a Mobile Client will not perform more than one upload of Operational Info without Exposure in a calendar month. Although frequent uploads would improve the accuracy of the estimates of adoption and correct usage of the App by the population, we believe that the added accuracy would not justify the detriment to user privacy.
 
@@ -137,14 +141,16 @@ The data would also help with optimising the allocation of resources. By notifyi
 
 To protect user privacy, the data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). This exposes the Analytics Service to attacks intended to pollute the collected data. This is a major problem, because if the data cannot be trusted to be free of substantial inaccuracies, no reliable insight can be extracted from them. It follows that, if we cannot ensure the integrity of the Operational Info collected by the Analytics Service, the data should not be collected in the first place.
 
-Below, we describe our solution for iOS Mobile Clients. Gathering reliable data from iOS Mobile Clients is sufficient to provide estimates for the population as a whole, as long as the penetration of iOS and Android devices in different Italian provinces is known. A solution that will support certain Android Mobile Clients is being developed. We will share it as soon as possible.
+Below, we describe our solutions for iOS and Android Mobile Clients.
+
+#### iOS
 
 Before we describe our solution for the iOS Mobile Client in detail, we must describe Apple’s DeviceCheck, a technology that is a key component of our method.
 
-#### Apple’s DeviceCheck
+##### Apple’s DeviceCheck
 Apple’s [DeviceCheck](https://developer.apple.com/documentation/devicecheck) is composed of an iOS API and a server API.
 
-**DeviceCheck iOS API.** The DeviceCheck iOS API of a genuine iOS device can be locally queried by an app to obtain a *DeviceCheck token* from the operating system. A new DeviceCheck token is generated and returned by the operating system at every query. The DeviceCheck token contains encrypted information about the specific device, the app’s developer, and the time of generation. Only Apple can decrypt such information, which is, therefore, inaccessible to Immuni.
+**DeviceCheck iOS API.** The DeviceCheck iOS API of a genuine iOS device can be locally queried by an app to obtain a _DeviceCheck token_ from the operating system. A new DeviceCheck token is generated and returned by the operating system at every query. The DeviceCheck token contains encrypted information about the specific device, the app’s developer, and the time of generation. Only Apple can decrypt such information, which is, therefore, inaccessible to Immuni.
 
 **DeviceCheck server API.** The DeviceCheck server API can be queried with a given DeviceCheck token. Doing so permits the following to take place:
 
@@ -158,31 +164,31 @@ The naming convention used by Apple for the data that can be bound to a specific
 
 * **bit1.** The value of the second bit (boolean). This bit is readable and writable if a valid DeviceCheck token is available.
 
-* **last\_update\_time.** The month of the last modification of any of the 2 bits, in *YYYY-MM* UTC format (string). This is read-only and automatically updated whenever any of the 2 bits is set. It is *null* if the bits were never set.
+* **last\_update\_time.** The month of the last modification of any of the 2 bits, in _YYYY-MM_ UTC format (string). This is read-only and automatically updated whenever any of the 2 bits is set. It is _null_ if the bits were never set.
 
-*bit0* and *bit1* are also called the *per-device bits.*
+_bit0_ and _bit1_ are also called the _per-device bits._
 
 Please note that, since the DeviceCheck token changes every time it is requested from the DeviceCheck iOS API, it cannot be used to uniquely identify the iOS device.
 
-#### Data integrity solution
-Our solution to mitigate the risk of an attacker successfully uploading fake Operational Info at scale is based on the use of *analytics tokens*. An analytics token is a random identifier generated by an iOS Mobile Client to authenticate the requests to upload Operational Info. Analytics tokens are valid for at most two calendar months, including the calendar month during which they are authorised (more on this below). For better privacy protection, the analytics token does not contain any information on the iOS Mobile Client and changes once each calendar month.
+##### Data integrity solution
+Our solution to mitigate the risk of an attacker successfully uploading unreliable Operational Info at scale is based on the use of _analytics tokens_. An analytics token is a random identifier generated by an iOS Mobile Client to authenticate the requests to upload Operational Info. Analytics tokens are valid for at most two calendar months, including the calendar month during which they are authorised (more on this below). For better privacy protection, the analytics token does not contain any information on the iOS Mobile Client and changes once each calendar month.
 
 The solution works as follows:
 - **A genuine iOS device is needed to authorise an analytics token.** This is accomplished by requiring that a request to the Analytics Service to authorise an analytics token includes a valid DeviceCheck token. Therefore, the only way for an attacker to authorise an analytics token is to control a genuine iOS device. The number of possible analytics tokens is high enough to make brute-force attacks aimed at hitting upon a valid analytics token practically impossible.
 - **Operational Info can only be uploaded with an authorised analytics token.** If uploading Operational Info did not require any authentication, an attacker could easily pollute the analytics data at scale. Therefore, the Analytics Service only accepts the upload of Operational Info with a valid analytics token. This approach to authenticating requests is particularly privacy-friendly, as it does not require the user to provide and verify information such as a phone number or an email address.
-- **The number of analytics tokens that can be authorised with a genuine iOS device is rate-limited.** It is possible for an attacker to authorise an analytics token. Therefore, we must ensure that an attacker cannot authorise an arbitrarily large number of them. This is accomplished by using the DeviceCheck server per-device bits and *last\_update\_time* to rate-limit the creation of analytics tokens to—at most—one per calendar month for each genuine iOS device that the attacker controls. Because *last\_update\_time* is expressed as *YYYY-MM,* the rate-limiting is synchronised with the passing of calendar months.
+- **The number of analytics tokens that can be authorised with a genuine iOS device is rate-limited.** It is possible for an attacker to authorise an analytics token. Therefore, we must ensure that an attacker cannot authorise an arbitrarily large number of them. This is accomplished by using the DeviceCheck server per-device bits and _last\_update\_time_ to rate-limit the creation of analytics tokens to—at most—one per calendar month for each genuine iOS device that the attacker controls. Because _last\_update\_time_ is expressed as _YYYY-MM,_ the rate-limiting is synchronised with the passing of calendar months.
 - **The amount of uploads of Operational Info that can be performed with an analytics token is limited.** It is possible for an attacker to authorise one analytics token per calendar month for each genuine iOS device that they control. Therefore, without a cap on the number of uploads of Operational Info that an attacker could perform with one such token, they would be able to pollute the analytics data at scale. Instead, the Analytics Service does not accept more than four uploads of Operational Info (two with Exposure and two without Exposure) for any given token.
 
 
-This solution helps to make uploading fake Operational Info at scale more impractical and expensive. Below, we describe it in greater detail.
+This solution helps to make uploading unreliable Operational Info at scale more impractical and expensive. Below, we describe it in greater detail.
 
-The iOS App generates its first analytics token when it is launched for the first time. At the same time, it generates a random number *dT<sub>AT</sub>* uniformly distributed between 0 and (*n<sub>days</sub>*-1) * 86400, where *n<sub>days</sub>* represents the number of days in the next calendar month and 86400 is the number of seconds in a day. Let us call *T<sub>AT</sub>* the timestamp (measured in seconds) corresponding to 00:00:00 UTC of the first day of the next calendar month. The value of *dT<sub>AT</sub>* represents after how many seconds from *T<sub>AT</sub>* the iOS App will begin to be allowed to pick a new analytics token. The iOS App computes *T<sub>AT</sub>* + *dT<sub>AT</sub>* and stores this value as *T<sub>ATN</sub>.* The first time that the iOS App performs an Exposure Detection after *T<sub>ATN</sub>,* it generates a new analytics token and sets a new value for *T<sub>ATN</sub>.*
+The iOS App generates its first analytics token when it is launched for the first time. At the same time, it generates a random number _dT<sub>AT</sub>_ uniformly distributed between 0 and (_n<sub>days</sub>_-1) * 86400, where _n<sub>days</sub>_ represents the number of days in the next calendar month and 86400 is the number of seconds in a day. Let us call _T<sub>AT</sub>_ the timestamp (measured in seconds) corresponding to 00:00:00 UTC of the first day of the next calendar month. The value of _dT<sub>AT</sub>_ represents after how many seconds from _T<sub>AT</sub>_ the iOS App will begin to be allowed to pick a new analytics token. The iOS App computes _T<sub>AT</sub>_ + _dT<sub>AT</sub>_ and stores this value as _T<sub>ATN</sub>._ The first time that the iOS App performs an Exposure Detection after _T<sub>ATN</sub>,_ it generates a new analytics token and sets a new value for _T<sub>ATN</sub>._
 
 Figure 1 shows a plausible timeline for the generation and subsequent modifications of the analytics token throughout four months:
-1. The iOS App is launched in June for the first time. This being the first launch, it generates its first analytics token and sets a value for *T<sub>ATN</sub>,* which must be at a point in July.
-2. The first time the iOS App performs an Exposure Detection after *T<sub>ATN</sub>,* it generates a new analytics token and sets a new value for *T<sub>ATN</sub>,* which must be at a point in the following month, August.
-3. In August, a corner case occurs: no Exposure Detections take place between *T<sub>ATN</sub>* and the end of the month.
-4. The first Exposure Detection after *T<sub>ATN</sub>* occurs in the new month (September). Again, the iOS App generates a new analytics token and sets a new value for *T<sub>ATN</sub>.*
+1. The iOS App is launched in June for the first time. This being the first launch, it generates its first analytics token and sets a value for _T<sub>ATN</sub>,_ which must be at a point in July.
+2. The first time the iOS App performs an Exposure Detection after _T<sub>ATN</sub>,_ it generates a new analytics token and sets a new value for _T<sub>ATN</sub>,_ which must be at a point in the following month, August.
+3. In August, a corner case occurs: no Exposure Detections take place between _T<sub>ATN</sub>_ and the end of the month.
+4. The first Exposure Detection after _T<sub>ATN</sub>_ occurs in the new month (September). Again, the iOS App generates a new analytics token and sets a new value for _T<sub>ATN</sub>._
 
 ![Figure 1](/Figures/Privacy-Preserving%20Analytics%20-%20Figure%201.png)
 <p align="center"><b>Figure 1.</b> Analytics tokens generation timeline.</p>
@@ -195,8 +201,8 @@ The iOS Mobile Client includes a DeviceCheck token in each analytics token autho
 1. It checks if the received analytics token has already been authorised. 
 2. It sends a response to the iOS Mobile Client that generated the request, indicating whether the provided analytics token has already been authorised. If it has already been authorised, no further steps are required. Otherwise, it will subsequently attempt authorisation.
 3. It checks if the DeviceCheck token comes from a genuine iOS device by contacting the DeviceCheck server API. If not, it ignores the request to authorise the analytics token.
-4. It checks if the current calendar month is after the *last\_update\_time* reported by the DeviceCheck server API, or if *last\_update\_time* is *null.* If not, it ignores the request to authorise the analytics token.
-5. It contacts the DeviceCheck server API and arbitrarily sets both per-device bits to 0 to ensure that the DeviceCheck server updates *last\_update\_time* to the current calendar month.
+4. It checks if the current calendar month is after the _last\_update\_time_ reported by the DeviceCheck server API, or if _last\_update\_time_ is _null._ If not, it ignores the request to authorise the analytics token.
+5. It contacts the DeviceCheck server API and arbitrarily sets both per-device bits to 0 to ensure that the DeviceCheck server updates _last\_update\_time_ to the current calendar month.
 6. It stores the received—and now authorised—analytics token and the current date and time.
 
 The authorisation of an analytics token by the Analytics Service is performed asynchronously. This means that the iOS Mobile Client has to send at least two requests with the same analytics token to the Analytics Service—one to request the authorisation of the analytics token and another to verify that it has been authorised.
@@ -223,19 +229,19 @@ As explained, the iOS Mobile Client leverages DeviceCheck to authorise analytics
 - The integrity of the analytics data would not be substantially improved.
 - We would create a correlation between requests to the DeviceCheck server API and the upload of Operational Info with Exposure. This may allow an entity with access to the DeviceCheck server to infer some information about certain users potentially having been infected.
 
-#### Preventing race conditions
-During the process of authorising an analytics token, the Analytics Service reads and writes the per-device bits and reads *last\_update\_time.* These operations are not atomic. Therefore, multiple authorisations of analytics tokens may take place concurrently. It follows that an attacker could exploit the time between a read and a write to send many requests to the Analytics Service using the same genuine iOS device.
+##### Preventing race conditions
+During the process of authorising an analytics token, the Analytics Service reads and writes the per-device bits and reads _last\_update\_time._ These operations are not atomic. Therefore, multiple authorisations of analytics tokens may take place concurrently. It follows that an attacker could exploit the time between a read and a write to send many requests to the Analytics Service using the same genuine iOS device.
 
 We devised a mitigation strategy to address this issue. It leverages DeviceCheck’s per-device bits to allow the Analytics Service’s workers to spot concurrent operations.
 
 When one of the Analytics Service’s workers processes an analytics token authorisation request, it performs the following steps:
 1. **First read.** It reads the DeviceCheck per-device bits, expecting to find them both set to 0.
-2. **Second read.** If the condition is met, the worker pauses for a random amount of time (*read\_time*), then reads the per-device bits again.
-3. **First write.** If the condition continues to be met, the worker changes *bit0* to 1.
-4. **Third read.** Then, the worker pauses for another period of time (*check\_time*). It reads the per-device bits one last time.
-5. **Authorisation and second write.** If the *bit0* is set to 1 and *bit1* to 0, the worker authorises the analytics token and sets *bit0* back to 0.
+2. **Second read.** If the condition is met, the worker pauses for a random amount of time (_read\_time_), then reads the per-device bits again.
+3. **First write.** If the condition continues to be met, the worker changes _bit0_ to 1.
+4. **Third read.** Then, the worker pauses for another period of time (_check\_time_). It reads the per-device bits one last time.
+5. **Authorisation and second write.** If the _bit0_ is set to 1 and _bit1_ to 0, the worker authorises the analytics token and sets _bit0_ back to 0.
 
-If during either the first or the second read the per-device bits are not both set to 0, or if during the third and last read they are set to values other then *bit0* to 1 and *bit1* to 0, the worker will know that an attacker sent more than one request in a short time window including DeviceCheck tokens generated with the same iOS device (and possibly the same DeviceCheck token).
+If during either the first or the second read the per-device bits are not both set to 0, or if during the third and last read they are set to values other then _bit0_ to 1 and _bit1_ to 0, the worker will know that an attacker sent more than one request in a short time window including DeviceCheck tokens generated with the same iOS device (and possibly the same DeviceCheck token).
 
 The worker, therefore, rejects the Operational Info and records the abusive behaviour by setting both per-device bits to 1, a configuration reserved for marking malicious iOS devices. From that moment on, if a worker reads the per-device bits and finds both set to 1, it will know that the iOS device that was used to generate the DeviceCheck token included in the request is controlled by an attacker, and it will not authorise the analytics token.
 
@@ -252,28 +258,66 @@ In table 1, we present a brief recap of the meaning that the Analytics Service a
 
 
 
-Figure 3 shows what happens when an attacker sends two analytics token authorisation requests directly after one another in an attempt to exploit the race condition. *Worker 1,* the worker that processes the first request, reads the DeviceCheck per-device bits, then waits a while before reading them again. The per-device bits do not change, so it writes *bit0* to 1 and *bit1* to 0 and then waits. In the meantime, another worker, *Worker 2,* processes the second request, but by the time the worker reads the per-device bits again, they have changed. Worker 2 knows that another analytics token authorisation request has been made using a DeviceCheck token generated by the same iOS device, so it discards the request and sets both per-device bits to 1 to blacklist the iOS device. When Worker 1 reads the per-device bits for the last time, it detects that they are both set to 1, from which it infers that an attacker has made multiple requests in a short span of time. It discards the request.
+Figure 3 shows what happens when an attacker sends two analytics token authorisation requests directly after one another in an attempt to exploit the race condition. _Worker 1,_ the worker that processes the first request, reads the DeviceCheck per-device bits, then waits a while before reading them again. The per-device bits do not change, so it writes _bit0_ to 1 and _bit1_ to 0 and then waits. In the meantime, another worker, _Worker 2,_ processes the second request, but by the time the worker reads the per-device bits again, they have changed. Worker 2 knows that another analytics token authorisation request has been made using a DeviceCheck token generated by the same iOS device, so it discards the request and sets both per-device bits to 1 to blacklist the iOS device. When Worker 1 reads the per-device bits for the last time, it detects that they are both set to 1, from which it infers that an attacker has made multiple requests in a short span of time. It discards the request.
 
 ![Figure 3](/Figures/Privacy-Preserving%20Analytics%20-%20Figure%203.png)
 <p align="center"><b>Figure 3.</b> Sequence diagram representing the race condition attack mitigation in action.</p>
 
 
 
-*read\_time* should be drawn from a uniformly distributed random variable with [0, *max\_read\_time*] support.
+_read\_time_ should be drawn from a uniformly distributed random variable with [0, _max\_read\_time_] support.
 
-To choose *check\_time* so that it is as short as possible while reliably preventing any attack of this kind, let us analyse the worst-case scenario. Worker 1 reads the per-device bits in their original configuration right before Worker 2 changes them to a different value. This means that, for Worker 2 to determine that this is an attack and thus avoid authorising the analytics token, it will have to wait at least until Worker 1 has read the per-device bits again and set them both to 1. This takes place after *read\_time.* Therefore, *check\_time* should be at least *max\_read\_time*+ 2\**device\_check\_server\_timeout,* where *device\_check\_server\_timeout* is the maximum time a worker will wait before timing out if a response from Apple’s DeviceCheck server is not received.
+To choose _check\_time_ so that it is as short as possible while reliably preventing any attack of this kind, let us analyse the worst-case scenario. Worker 1 reads the per-device bits in their original configuration right before Worker 2 changes them to a different value. This means that, for Worker 2 to determine that this is an attack and thus avoid authorising the analytics token, it will have to wait at least until Worker 1 has read the per-device bits again and set them both to 1. This takes place after _read\_time._ Therefore, _check\_time_ should be at least _max\_read\_time_+2\*_device\_check\_server\_timeout,_ where _device\_check\_server\_timeout_ is the maximum time a worker will wait before timing out if a response from Apple’s DeviceCheck server is not received.
 
 The described mitigation against attackers attempting to exploit race conditions exposes the system to a replay attack. An attacker could intercept a legitimate analytics token authorisation request and replay it very quickly, leading to the blacklisting of the legitimate iOS Mobile Client. Since a blacklisting does not really entail any loss of functionality for the user, and given that it is challenging to stage such an attack on a large scale, we think that it is pragmatic to accept this inherent vulnerability. Moreover, pinning the certificate authority on the iOS Mobile Client’s side makes a man-in-the-middle attack—a prerequisite for a replay attack—much harder to carry out.
+
+#### Android
+On Android, the solution we adopted to minimise the risk of data pollution leverages Google’s SafetyNet Attestation API. We describe this technology before detailing how we utilise it.
+
+##### Google’s SafetyNet Attestation API
+The [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation) is an anti-abuse measure designed to assess the integrity of an app and the Android device it runs on.
+
+An app can call the SafetyNet Attestation API locally, passing it a _nonce_ (an arbitrary string that the caller app provides, which can be used for different purposes depending on what the app needs to validate). The API evaluates the device software and hardware environment and returns a cryptographically-signed attestation in the form of a _JSON Web Signature_ (_JWS_). This JWS contains the following: 
+- The result of the attestation
+- The nonce that the API has been called with
+- The timestamp of the JWS generation
+- Other information required to verify the attestation integrity
+
+The app can then send the JWS to any third party, which can autonomously validate the certificate included in it.
+
+The SafetyNet Attestation API also indicates whether the process leveraged the [hardware attestation security feature](https://developer.android.com/training/articles/security-key-attestation) that some Android devices offer. Hardware-based attestation is more secure than its software-based counterpart. As of today, there are no publicly known ways to bypass or counterfeit this hardware-based check. Furthermore, Google is committed to revoking certificates coming from the hardware attestation as soon as they become compromised. Therefore, the indication that hardware-based attestation was used increases the degree of certainty that the attestation can be trusted.
+
+##### Data integrity solution
+The solution adopted for Android Mobile Clients to mitigate the risk of an attacker uploading unreliable Operational Info at scale substantially differs from the one already described for iOS, as it does not leverage the use of an analytics token.
+
+The SafetyNet Attestation API allows us to verify that the App that runs on the Android Mobile Client has not been tampered with. For this reason, we do not need a server-side mechanism for rate-limiting the number of calls. We can instead trust that the Android Mobile Client will limit the number of calls to the Analytics Service. Whenever the Android Mobile Client has to upload Operational Info with or without Exposure, it proceeds as follows:
+1. It generates a random string, used as a _salt_
+2. It generates a _SHA256 digest_ of the Operational Info (which also includes the salt)
+3. It calls the SafetyNet Attestation API to receive a signed attestation from Google’s servers, using the SHA256 digest as the nonce
+4. If it has passed the SafetyNet Attestation API hardware attestation, it sends both the salt and the signed attestation to the Analytics Service, along with the Operational Info
+
+Upon receiving an Operational Info upload request, the Analytics Service proceeds as follows:
+1. It verifies that it has not received an Operational Info upload request with the same salt in the previous 10 minutes. If it has received one, it ignores the upload request.
+2. It verifies that the signed attestation has been generated within the previous 10 minutes. If not, it ignores the upload request.
+3. It checks the signed attestation and determines whether the request comes from a genuine device and an untampered Mobile Client. If not, it ignores the upload request.
+4. It stores the received information, the value of the salt, and the time that it received the request.
+
+The salt generated by the Android Mobile Client and the checks performed during the first two steps mitigate the risk of replay attacks. Without them, the Analytics Service would otherwise be able to accept multiple identical requests, potentially from an untampered Mobile Client on a genuine device, which would result in unreliable data.
+
+As an additional security measure, the Android Mobile Client refrains from sending any Operational Info within the first 24 hours from its installation. Without such a measure, through a series of App reinstalls and date and time changes, an attacker would otherwise be able to successfully send a high volume of Operational Info without Exposure, which—although genuine—would pollute the statistics. The Android Mobile Client cannot leverage the system date and time to perform this check, as users can easily modify these. Instead, it uses the server date and time, returned along with the Configuration Settings. The first time that the Android Mobile Client fetches the Configuration Settings, it stores the retrieved server date and time. Every subsequent time that it retrieves the Configuration Settings, if it has to send Operational Info, it first verifies if at least 24 hours have passed since the previously stored timestamp. This solution limits the possible instances of Operational Info without Exposure that a malicious user can send with an Android Mobile Client to a maximum of one per day. At the same time, it prevents correctly used Android Mobile Clients from sending genuine Operational Info without Exposure within the first 24 hours from the install. This can be taken into account when deriving statistics from the collected data.
+
+The Analytics Service separately stores Operational Info received from Android and from iOS Mobile Clients. This way, we can derive more accurate statistics related to the App usage.
 
 ### Privacy and security
 
 Some privacy and security considerations on the collection of Operational Info follow:
-- The integrity of the Operational Info stored by the Analytics Service is protected with the methodology described in [Data integrity solution](#data-integrity-solution) above, which is based on Apple’s DeviceCheck and on analytics tokens.
+- Operational Info includes the bare minimum amount of information that the National Healthcare Service needs to monitor Immuni’s working condition and allocate resources effectively. Only one upload of Operational Info with Exposure and one of Operational Info without Exposure are performed by a Mobile Client per calendar month, at most.
+- The integrity of the Operational Info stored by the Analytics Service is protected with the methodologies described in [Data integrity solution](#data-integrity-solution) (iOS) and [Data integrity solution](#data-integrity-solution-1) (Android), which are based on Apple’s DeviceCheck and analytics tokens, and on Google’s SafetyNet Attestation API, respectively.
 - Immuni cannot extract any information on the user’s iOS device from the DeviceCheck tokens. Moreover, the DeviceCheck token changes every time it is requested from the DeviceCheck iOS API. Therefore, it cannot be used to uniquely identify the device.
 - The DeviceCheck server only receives requests from Immuni when a new iOS App is launched for the first time and then, for each iOS Mobile Client, once per month on random days. These requests carry with them no sensitive information whatsoever, either directly or indirectly. It follows that an entity with access to the DeviceCheck server cannot infer any sensitive information about the user solely based on these requests.
 - The analytics token is generated randomly and contains no information on the device. Moreover, it is replaced after no more than two months. The Analytics Service cannot associate the uploads of Operational Info from multiple analytics tokens to the same iOS Mobile Client.
-- Operational Info includes the bare minimum amount of information that the National Healthcare Service needs to monitor Immuni’s working condition and allocate resources effectively. Only one upload of Operational Info with Exposure and one of Operational Info without Exposure are performed by a Mobile Client per calendar month, at most.
 - The risk of an attacker exploiting race conditions to circumvent the rate-limits we impose on the authorisation of analytics tokens is mitigated with the methodology described in [Preventing race conditions](#preventing-race-conditions) above.
+- Immuni cannot extract any information on the user’s Android device from the SafetyNet Attestation API signed attestation. Moreover, a different salt is generated by the Android Mobile Client every time it has to send new Operational Info. Therefore, this cannot be used to uniquely identify a device.
 - The risk of an attacker inferring any sensitive information about the user by analysing the traffic related to the upload of Operational Info is mitigated by a number of measures. Please refer to [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
 ## Configurability

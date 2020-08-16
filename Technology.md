@@ -43,7 +43,7 @@
     - [API - Authorise analytics token (iOS)](#api---authorise-analytics-token-ios)
     - [API - Upload Operational Info (iOS)](#api---upload-operational-info-ios)
     - [API - Upload Operational Info (Android)](#api---upload-operational-info-android)
-    - [Data model - Exposure](#data-model---exposure)
+    - [Data model - Exposures](#data-model---exposures)
     - [Data model - Operational Info](#data-model---operational-info)
 
 ## Introduction
@@ -346,7 +346,7 @@ The source code is implemented leveraging native technologies offered by the And
 
 The architecture is built on [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/). When it comes to the project’s structure, Immuni is implemented using a data-driven MVVM architecture that follows the recommendations laid out in the [Android guide to app architecture](https://developer.android.com/jetpack/docs/guide). To achieve this, the Android App is based on the following technologies:
 
-- **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured*concurrency). Support for these functionalities is supplied by the \_kotlinx.coroutines* library, which is released as an open-source project under the Apache 2.0 licence.
+- **[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines), [Channels](https://kotlinlang.org/docs/reference/coroutines/channels.html), and [Flows](https://kotlinlang.org/docs/reference/coroutines/flow.html).** Kotlin Coroutines, Channels, and Flows are used for asynchronous programming, reactive streams of data, and [structured concurrency](https://en.wikipedia.org/wiki/Structured*concurrency). Support for these functionalities is supplied by the _kotlinx.coroutines_ library, which is released as an open-source project under the Apache 2.0 licence.
 - **[LiveData](https://developer.android.com/topic/libraries/architecture/livedata) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel).** LiveData are observable data holders, while ViewModels are designed to store and manage user interface related data in a lifecycle-conscious way. They both are part of the Android Jetpack set of libraries, and are released as open-source projects under the Apache 2.0 licence.
 - **[Navigation Component](https://developer.android.com/guide/navigation).** Navigation Component is used to create single activity apps, reducing complexity and ensuring a consistent and predictable user experience by adhering to an established set of [principles of navigation](https://developer.android.com/guide/navigation/navigation-principles). It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
 - **[Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager).** The Work Manager API makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the Android App exits or the device restarts. It is part of the Android Jetpack set of libraries, and is released as an open-source project under the Apache 2.0 licence.
@@ -527,8 +527,8 @@ The API is only accessible by the HIS
 
 ```
 {
-  "otp": string,
-  "symptoms_started_on": date
+  “otp”: string,
+  “symptoms_started_on”: date
 }
 ```
 
@@ -593,34 +593,34 @@ Once it has validated the OTP, the Mobile Client uploads its TEKs for the past 1
 
 ```
 {
-  "teks": [ 
+  “teks”: [ 
     {
-      "key_data": string,
-      "rolling_start_number": int,
-      "rolling_period" : int
+      “key_data”: string,
+      “rolling_start_number”: int,
+      “rolling_period”: int
     }, ...
   ],
-  "province": string, 
-  "exposure_detection_summaries": [
+  “province”: string, 
+  “exposure_detection_summaries”: [
     {
-      "date": date
-      "matched_key_count": int,
-      "days_since_last_exposure": int,
-      "attenuation_durations": array[int],
-      "maximum_risk_score": int,
-      "exposure_info": [
+      “date”: date
+      “matched_key_count”: int,
+      “days_since_last_exposure”: int,
+      “attenuation_durations”: array[int],
+      “maximum_risk_score”: int,
+      “exposure_info”: [
         {
-          "date": date,
-          "duration": int,
-          "attenuation_value": int,
-          "attenuation_durations": array[int],
-          "transmission_risk_level": int,
-          "total_risk_score": int
+          “date”: date,
+          “duration”: int,
+          “attenuation_value”: int,
+          “attenuation_durations”: array[int],
+          “transmission_risk_level”: int,
+          “total_risk_score”: int
         }, ...
       ]
     }, ...
   ],
-  "padding": string
+  “padding”: string
 }
 ```
 
@@ -695,8 +695,8 @@ Return the index of the oldest relevant TEK Chunk (no older than 14 days) and th
 
 ```
 {
-  "oldest": int,
-  "newest": int
+  “oldest”: int,
+  “newest”: int
 }
 ```
 
@@ -722,7 +722,7 @@ Given a specific TEK Chunk index, the Mobile Client downloads the associated TEK
 
 The Analytics Service exposes an API that makes it possible for the Mobile Client to upload Operational Info, together with the user’s Province of Domicile. [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md) and [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md) describe how these data are collected while protecting user privacy.
 
-The data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). Without sensible countermeasures, it would be easy for an attacker to pollute the data at scale, making them unreliable and, therefore, useless. The mitigations we have put in place are described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). They differ for iOS and Android, as the relevant technologies available for the two operating systems—namely Apple’s [DeviceCheck](https://developer.apple.com/documentation/devicecheck) and Google’s [SafetyNet Attestation](https://developer.android.com/training/safetynet/attestation)—are distinct.
+The data are uploaded without requiring the user to authenticate in any way (e.g., no phone number or email verification). Without sensible countermeasures, it would be easy for an attacker to pollute the data at scale, making them unreliable and, therefore, useless. The mitigations we have put in place are described in [Privacy-Preserving Analytics](/Privacy-Preserving%20Analytics.md). They differ for iOS and Android, as the relevant technologies available for the two operating systems—namely Apple’s [DeviceCheck](https://developer.apple.com/documentation/devicecheck) and Google’s [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation)—are distinct.
 
 Finally, the Analytics Service also receives Province of Domicile and Epidemiological Info from the Exposure Ingestion Service.
 
@@ -746,7 +746,7 @@ The Mobile Client requests the authorisation of an analytics token. Such authori
 **Request Body**
 ```
 {
-  “analytics_token”: <128-byte-string>
+  “analytics_token”: <128-byte-string>,
   “device_token”: string  
 }
 ```
@@ -761,7 +761,7 @@ The Mobile Client requests the authorisation of an analytics token. Such authori
 Mobile Client
 
 **Description**  
-Right after an Exposure Detection completes, the Mobile Client may compute and upload the Operational Info, together with the user’s Province of Domicile. A valid analytics token is needed to complete the operation successfully. The Operational Info fields use integers instead of booleans to ensure that the size of the payloads does not depend, among other things, on sensitive information such as whether the user was notified of a Risky Exposure. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls. Padding bytes are added as described in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
+Right after an Exposure Detection completes, the Mobile Client may compute and upload the Operational Info, together with the user’s Province of Domicile. A valid analytics token is needed to complete the operation successfully. The Operational Info fields use integers instead of booleans to ensure that the size of the payloads does not depend, among other things, on sensitive information such as whether the user was notified of a Risky Exposure. Using the dedicated request header, the Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
 
 **Resource hostname**  
 `analytics.immuni.gov.it`
@@ -777,18 +777,46 @@ Right after an Exposure Detection completes, the Mobile Client may compute and u
 **Request body**
 ```
 {
-  “province”: string
-  “exposure_permission”: int
-  “bluetooth_active”: int
-  “notification_permission”: int
-  “exposure_notification”: int
-  “last_risky_exposure_on”: date,
-  “padding”: string
+  “province”: string,
+  “exposure_permission”: int,
+  “bluetooth_active”: int,
+  “notification_permission”: int,
+  “exposure_notification”: int,
+  “last_risky_exposure_on”: date
 }
 ```
 
 #### API - Upload Operational Info (Android)
-*This section is under construction.*
+
+**Caller**  
+Mobile Client
+
+**Description**  
+This endpoint behaves like its iOS counterpart, but uses Google’s [SafetyNet Attestation API](https://developer.android.com/training/safetynet/attestation) to validate the uploaded data. _salt_ is a random string the client generates each time it uploads data, whereas _signed_attestation_ is provided by the SafetyNet Attestation API. The Analytics Service uses this string to verify that the data comes from a device running a genuine version of Android and of the Android App. It is the Android Mobile Client that enforces a rate limit over the upload of Operational Info. _signed_attestation_ changes at every request and it is impossible for Immuni to link it to a specific device. Using the dedicated request header, the Android Mobile Client can indicate to the server that the call it is making is a dummy one. The server will ignore the content of such calls.
+
+**Resource hostname**  
+`analytics.immuni.gov.it`
+
+**Resource path**  
+`POST /v1/analytics/google/operational-info`
+
+**Request headers**  
+`Content-Type: application/json; charset=utf-8`   
+`Immuni-Dummy-Data: <0|1>`  
+
+**Request body**
+```
+{
+  “province”: string,
+  “exposure_permission”: int,
+  “bluetooth_active”: int,
+  “notification_permission”: int,
+  “exposure_notification”: int,
+  “last_risky_exposure_on”: date,
+  “salt”: string,
+  “signed_attestation”: string
+}
+```
 
 #### Data model - Exposures
 
@@ -815,9 +843,9 @@ The _Exposures_ collection stores the Province of Domicile and the Epidemiologic
           attenuation_durations: array[int],
           transmission_risk_level: int,
           total_risk_score: int
-        }, …
+        }, ...
       ]
-    }, …
+    }, ...
   ]
 }
 ```
@@ -837,6 +865,6 @@ The _OperationalInfo_ collection holds the Operational Info sent by the Mobile C
   bluetooth_active: boolean,
   notification_permission: boolean,
   exposure_notification: boolean,
-  last_risky_exposure_on: date,
+  last_risky_exposure_on: date
 }
 ```

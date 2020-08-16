@@ -8,7 +8,7 @@
   - [Dummy TEK upload sequences](#dummy-tek-upload-sequences)
     - [Individual request simulation](#individual-request-simulation)
     - [TEK upload sequence simulation](#tek-upload-sequence-simulation)
-    - [Traffic pattern modulation](#traffic-pattern-modulation)
+    - [Traffic pattern simulation](#traffic-pattern-simulation)
       - [iOS](#ios)
       - [Android](#android)
 - [Analytics Service](#analytics-service)
