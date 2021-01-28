@@ -111,7 +111,7 @@ To be as effective as possible in fighting the COVID-19 epidemic, Immuni needs t
 ### Data signing
 Immuni signs the TEKs available for download from the Exposure Reporting Service with the ECDSA using Curve P-256 and SHA-256. The OID is 1.2.840.10045.4.3.2.
 
-The associated public key has been shared with Apple and Google and is used by the Mobile Clients to verify the downloaded data and guarantee its authenticity and integrity.
+The associated public key has been shared with Apple, Google and Huawei and is used by the Mobile Clients to verify the downloaded data and guarantee its authenticity and integrity.
 
 Immuni will also implement a signing mechanism for other types of data served through the CDN, such as the Configuration Settings. This is not ready for Immuni’s initial release, but it will be available in a future version of the App.
 
