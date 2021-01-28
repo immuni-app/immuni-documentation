@@ -27,7 +27,7 @@ Immuni is the Italian Government’s exposure notification solution, realised by
   - When a user tests positive for SARS-CoV-2, the virus causing COVID-19, they have the option to upload to a server their recent temporary exposure keys. This operation can only happen with the validation of a **healthcare operator.**
   - The app periodically downloads the new temporary exposure keys and uses them to derive the infected users’ rolling proximity identifiers for the recent past. It then matches the identifiers against those stored in the device’s memory and **notifies the user** if a risky exposure has occurred.
   - The system uses **no geolocation data** whatsoever, including GPS data. So, the app cannot tell where the contact with a potentially contagious user took place, nor the identities of those involved.
-- To implement its exposure notification functionality, Immuni leverages **the Apple, Google and HMS Core Exposure Notification framework.** This allows Immuni to be more reliable than otherwise would be possible.
+- To implement its exposure notification functionality, Immuni leverages **the Apple, Google Exposure Notification framework and Huawei Contact Shield framework.** This allows Immuni to be more reliable than otherwise would be possible.
 - Besides the temporary exposure keys, the Immuni app also sends to the server some analytics data. These include **epidemiological and operational information,** and are sent for the purpose of helping the National Healthcare Service (_Servizio Sanitario Nazionale_) to provide effective assistance to users.
 - Immuni is being developed while paying a lot of attention to user privacy and a number of measures have been taken to protect it. For example, the app collects **no personal data that would disclose the user’s identity,** such as the user’s name, age, address, email, or phone number.
 
@@ -86,7 +86,7 @@ As stated, Immuni’s exposure notification system leverages Bluetooth Low Energ
 - **The battery is used more efficiently.** Bluetooth Low Energy excels when it comes to energy efficiency. This is important because it is reasonable to expect that the app’s uninstall rate will be correlated with battery consumption.
 - **No geolocation data are required.** Thanks to Bluetooth Low Energy, contact is traced without tracking the users’ location. This may result in the app being more welcomed by the public and could facilitate wider adoption, increasing Immuni’s utility.
 
-To implement its exposure notification functionality, Immuni leverages the Apple, Google and HMS Core Exposure Notification framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). This allows Immuni to overcome certain technical limitations, thus being more reliable than otherwise would be possible.
+To implement its exposure notification functionality, Immuni leverages the Apple, Google Exposure Notification framework and Huawei Contact Shield framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing), [Google’s documentation](https://www.google.com/covid19/exposurenotifications/) and [Huawei’s documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides-V5/contactshield--0000001057494465-V5)). This allows Immuni to overcome certain technical limitations, thus being more reliable than otherwise would be possible.
 
 ### How it works
 
@@ -134,7 +134,7 @@ Collecting these data helps the National Healthcare Service to optimise the app�
 In addition to the above, some data on device activity and exposure notifications may be collected and uploaded. These data include:
 
 - Whether the device runs iOS or Android
-- Whether permission to leverage the Apple, Google and HMS Core Exposure Notification framework is granted
+- Whether permission to leverage the Apple and Google Exposure Notification framework is granted
 - Whether the device’s Bluetooth is enabled
 - Whether permission to send local notifications is granted
 - Whether the user was notified of a risky exposure after the last exposure detection (i.e., after the app has downloaded new temporary exposure keys from the server and detected if the user has been exposed to SARS-CoV-2-positive users)
