@@ -12,7 +12,7 @@
     - [Exposure Detection](#exposure-detection)
     - [TEKs upload](#teks-upload)
     - [Analytics](#analytics)
-  - [A/G Framework](#ag-framework)
+  - [A/G Framework and Huawei Framework](#ag-huawei-framework)
   - [iOS App](#ios-app)
     - [iOS App technologies](#ios-app-technologies)
     - [iOS App security](#ios-app-security)
@@ -113,6 +113,8 @@ Note that the Exposure Info does not contain either the TEK for which it was com
 
 **Healthcare Operator.** An employee of the National Healthcare Service who is authorised to facilitate the upload of the user’s TEKs by authorising an OTP generated on the Mobile Client.
 
+**Huawei Contact Shield Framework.** See [Architecture](#architecture).
+
 **Immuni.** The sum of all the parts underlying the exposure detection and notification system described in this document, including Mobile Clients, Backend Services, Healthcare Operators, and HIS.
 
 **Match.** The Mobile Client can determine whether an RPI which was stored locally after an Exposure has been generated from a given TEK. When this is the case, for simplicity, we will say that 'the TEK Matches the RPI', 'the RPI Matches the TEK', 'there is a Match for the TEK', or we will use similar expressions.
@@ -191,8 +193,8 @@ Immuni’s architecture includes Mobile Client and Backend Services.
 
 The Mobile Client includes the following parts:
 
-- **A/G Framework.** The Exposure Notification framework made available by Apple and Google to help developers implement Exposure notification apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)). Immuni leverages this framework. The A/G Framework is responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
-- **App (iOS App and Android App).** The Immuni iOS or Android apps that users download from the App Store and Google Play respectively. The App is responsible for handling user interactions (including notifying users that they may be at risk) and for implementing the business logic (including all communications with the Backend Services).
+- **A/G Framework or Huawei Framework.** The Exposure Notification framework made available by Apple and Google and the Contact Shield framework made available by Huawei to help developers implement Exposure notification apps (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing), [Google’s documentation](https://www.google.com/covid19/exposurenotifications/) and [Huawei’s documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides-V5/contactshield--0000001057494465-V5)). Immuni leverages these frameworks. Both Frameworks are responsible for generating and storing the TEKs and RPIs, controlling the BLE interface, and providing Exposure Detection Summaries and Exposure Infos.
+- **App (iOS App and Android App).** The Immuni iOS or Android apps that users download from the App Store and Google Play/AppGallery respectively. The App is responsible for handling user interactions (including notifying users that they may be at risk) and for implementing the business logic (including all communications with the Backend Services).
 
 **Backend Services.** Immuni’s backend software and infrastructure, which include the following services:
 
@@ -217,9 +219,9 @@ The onboarding process has been designed to limit the information asked of the u
 The onboarding process guides the user through the following steps:
 
 - **Terms of use, privacy notice, and minimum age.** If they wish to use the App, the user must read and accept the terms of use, read the privacy notice, and confirm they are 14 or older.
-- **A/G Framework.** The A/G Framework requires the user’s permission before it can be used.
-- **Location (Android only).** On Android devices, _Location_ needs to be on at the operating system level to detect nearby devices, although the A/G Framework’s documentation explicitly states that it does not actually use location data. This may be quite confusing for the user, but unfortunately it is outside of the Android App’s control. Please note that the Android App will not request the Location permission, nor will it have access to location data. However, Location needs to be activated at the operating system level for the A/G Framework to work properly.
-- **Bluetooth.** Understandably, the A/G Framework requires the device’s Bluetooth to be turned on.
+- **A/G Framework or Huawei Framework.** The A/G Framework and Huawei Framework require the user’s permission before they can be used.
+- **Location (Android only).** On Android devices, _Location_ needs to be on at the operating system level to detect nearby devices, although both Frameworks' documentations explicitly state that they do not actually use location data. This may be quite confusing for the user, but unfortunately it is outside of the Android App’s control. Please note that the Android App will not request the Location permission, nor will it have access to location data. However, Location needs to be activated at the operating system level for the Frameworks to work properly.
+- **Bluetooth.** Understandably, both Frameworks require the device’s Bluetooth to be turned on.
 - **Push notifications (iOS only).** The user is asked to give permission to the iOS App for it to show a notification whenever it detects that the user is at risk of having been infected with SARS-CoV-2. On Android this permission is on by default, so the Android App does not need to ask for it during the onboarding. Note that these notifications are generated locally, not sent from a server.
 
 #### Exposure Detection
@@ -227,10 +229,10 @@ The onboarding process guides the user through the following steps:
 The Mobile Client periodically checks whether Exposure to a SARS-CoV-2-positive user has taken place and computes an assessment of the risk that a transmission ensued by executing the following steps:
 
 1. The App downloads the new TEK Chunks made available by the Exposure Reporting Service.
-2. The A/G Framework verifies whether there is a Match between one or more TEKs in the TEK Chunks and the locally stored RPIs.
-3. For each Exposure for these TEKs, the A/G Framework computes a Total Risk Score using a simple, publicly available risk model with parameters set by the App.
-4. The A/G Framework generates an Exposure Detection Summary, which includes the maximum Total Risk Score across all Exposures for the TEKs.
-5. If the maximum Total Risk Score exceeds a certain threshold, the App has the A/G Framework provide the Exposure Info for each of these Exposures (this triggers an operating system alert to the user) and notifies the user that they may be at risk.
+2. The A/G Framework or Huawei Framework verifies whether there is a Match between one or more TEKs in the TEK Chunks and the locally stored RPIs.
+3. For each Exposure for these TEKs, the A/G Framework or Huawei Framework computes a Total Risk Score using a simple, publicly available risk model with parameters set by the App.
+4. The A/G Framework or Huawei Framework generates an Exposure Detection Summary, which includes the maximum Total Risk Score across all Exposures for the TEKs.
+5. If the maximum Total Risk Score exceeds a certain threshold, the App has the A/G Framework or Huawei Framework provide the Exposure Info for each of these Exposures (this triggers an operating system alert to the user) and notifies the user that they may be at risk.
 
 #### TEKs upload
 
@@ -258,16 +260,16 @@ We devised a system to allow the Mobile Client to upload such data without requi
 
 The Mobile Client periodically generates dummy traffic to mitigate the risk that information about the user (chiefly whether a Risky Exposure was detected) may be inferred by an attacker through traffic analysis. Details can be found in [Traffic Analysis Mitigation](/Traffic%20Analysis%20Mitigation.md).
 
-### A/G Framework <a name="ag-framework" />
+### A/G Framework and Huawei Framework <a name="ag-huawei-framework" />
 
-For the implementation of the [core flow](#core-flow), Immuni leverages the A/G Framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing) and [Google’s documentation](https://www.google.com/covid19/exposurenotifications/)).
+For the implementation of the [core flow](#core-flow), Immuni leverages the A/G Framework and Huawei Framework (see [Apple’s documentation](https://www.apple.com/covid19/contacttracing), [Google’s documentation](https://www.google.com/covid19/exposurenotifications/) and [Huawei’s documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides-V5/contactshield--0000001057494465-V5)).
 
 Part of the functionality is provided directly by the operating system, which results in enhanced user privacy:
 
 - The RPI Database is handled by the operating system. As such, the App does not have access to information such as which specific TEK triggered a Match, if any. Without notifying the user, the App can only access the Exposure Detection Summary for a set of TEKs. This offers high-level information on the Exposures for those TEKs. To access the Exposure Info—which offers a bit more detail—the App has to trigger a notification to the user that is handled by the operating system and cannot be bypassed. Moreover, the operating system limits the App’s access to this information in various ways, including through aggregations and rate limits on the relevant API.
 - The App must obtain the user’s permission to get their TEKs so that it can upload them to the Exposure Ingestion Service. The entire authorisation flow is triggered by the App and handled by the operating system. The App has no way to bypass this security measure.
 
-On top of the privacy enhancements mentioned above, electing to leverage the A/G Framework unlocks a number of other advantages that we do not believe would be achievable in a custom implementation. These include:
+On top of the privacy enhancements mentioned above, electing to leverage the A/G Framework or Huawei Framework unlocks a number of other advantages that we do not believe would be achievable in a custom implementation. These include:
 
 - Allowing reliable background broadcasting and detection of RPIs, especially between two iOS Mobile Clients, which is severely constrained by iOS’s [Core Bluetooth API](https://developer.apple.com/library/archive/documentation/NetworkingInternetWeb/Conceptual/CoreBluetooth_concepts/CoreBluetoothBackgroundProcessingForIOSApps/PerformingTasksWhileYourAppIsInTheBackground.html). There are several workarounds to mitigate this limitation. In our view, however, most of them are ineffective, energy inefficient, not compliant with Apple’s [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), or all of the above.
 - Synchronising the RPI rotation with the Bluetooth MAC address rotation, so these two pieces of information cannot be cross-referenced to identify a user.
@@ -329,6 +331,7 @@ Finally, every communication with the server is established using HTTPS. The Mob
 This section discusses the Android-specific aspects of the App.
 
 The Android App is available for devices running Android 6 (Marshmallow, API 23) or above. For the A/G Framework to work, the user needs to have updated Google Play Services to version 20.18.13 or above. Therefore, the Android App prevents the user from completing the onboarding if they do not have a sufficiently recent version of Google Play Services.
+For the Huawei Framework to work, the user needs to have Huawei Mobile Services (HMS) core to version 5.1.0.300 or above.
 
 #### Android App technologies
 
