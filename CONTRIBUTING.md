@@ -14,7 +14,7 @@ Before proceeding, please review our [Code of Conduct](CODE_OF_CONDUCT.md).
     
 ## Issues
 
-> :warning: In order to make an effective contribution, please avoid any topic related to the Apple & Google protocol. These are considered to be beyond the scope of the current implementation. :warning:
+> :warning: In order to make an effective contribution, please avoid any topic related to the Apple, Google and Huawei protocol. These are considered to be beyond the scope of the current implementation. :warning:
 
 Browse the issues section and use the search functionality to discover whether the issue you encountered has already been filed by someone else.
 - If this is the case, please avoid opening a new issue. Instead, you can add more information to the existing issue. If the appropriate information is already present, you can add the :+1: symbol to the first message. Doing so helps the developers to identify and prioritize the relevant issues. Otherwise, add a comment with the relevant information.
