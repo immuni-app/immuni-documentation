@@ -1,6 +1,6 @@
 # Immuni: visione d'insieme
 
-Immuni è la soluzione di notifiche di esposizione del Governo Italiano, realizzata dal Commissario straordinario per l'emergenza COVID-19 (Presidenza del Consiglio dei Ministri), in collaborazione con il Ministero della Salute e il Ministero per l'innovazione tecnologica e la digitalizzazione. Il sistema usa esclusivamente infrastrutture pubbliche situate all'interno dei confini nazionali. È gestito nella sua interezza dall'azienda pubblica Sogei S.p.A. Il codice sorgente è stato sviluppato per la Presidenza del Consiglio dei Ministri da parte di Bending Spoons S.p.A. ed è reso disponibile sotto licenza GNU Affero General Public License versione 3.
+Immuni è la soluzione di notifiche di esposizione del Governo Italiano, realizzata dal Commissario straordinario per l'emergenza COVID-19 (Presidenza del Consiglio dei Ministri), in collaborazione con il Ministero della Salute e il Ministero per l'innovazione tecnologica e la digitalizzazione. Il sistema usa esclusivamente infrastrutture pubbliche situate all'interno dei confini nazionali. È gestito nella sua interezza dall'azienda pubblica Sogei S.p.A. Il codice sorgente antecedente al 13 ottobre 2020 è stato sviluppato per la Presidenza del Consiglio dei Ministri da parte di Bending Spoons S.p.A. ed è reso disponibile sotto licenza GNU Affero General Public License versione 3.
 
 ## Sommario
 
