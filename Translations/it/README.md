@@ -24,7 +24,7 @@ Immuni è la soluzione di notifiche di esposizione del Governo Italiano, realizz
 	- Quando un utente risulta positivo al SARS-CoV-2, il virus che causa il COVID-19, gli viene data la possibilità di caricare su un server le più recenti chiavi temporanee di esposizione. Questa operazione richiede l'assistenza di un **operatore sanitario**.
 	- L'app scarica periodicamente nuovi chiavi temporanee di esposizione e le usa per ricavare i codici casuali trasmessi dai dispositivi di utenti infetti. Questi codici vengono confrontati con quelli presenti nella memoria del dispositivo e, nel caso di in cui sia avvenuta un'esposizione a rischio, l'utente **viene avvertito mediante una notifica**.
 	- Il sistema **non fa uso di dati di geolocalizzazione** di alcun tipo, inclusi i dati del GPS. Per questo motivo l'app non può sapere dove sia avvenuto il contatto a rischio, né può sapere chi fossero gli utenti coinvolti.
- - Per implementare la funzionalità delle notifiche di esposizione, Immuni sfrutta **il framework per le notifiche di esposizione di Apple e Google**. Questo consente a Immuni di essere più affidabile di quanto non consentirebbe un qualsiasi altro approccio.
+ - Per implementare la funzionalità delle notifiche di esposizione, Immuni sfrutta **il framework per le notifiche di esposizione di Apple e Google ed il framework Contact Shield di Huawei**. Questo consente a Immuni di essere più affidabile di quanto non consentirebbe un qualsiasi altro approccio.
  - Oltre alle chiavi temporanee di esposizione, l'app Immuni invia al server alcuni dati statistici. Questi includono **informazioni epidemiologiche e operative** e sono inviati al fine di aiutare il Servizio Sanitario Nazionale a curare i propri assistiti in modo efficace.
  - Immuni è stato sviluppato prestando grande attenzione alla privacy degli utenti e diverse misure sono state adottate per proteggerla al meglio. Ad esempio l'app **non raccoglie alcun dato personale che permetta l'identificazione dell'utente**, come il nome, l'età, l'indirizzo, l'email o il numero di telefono.
 
@@ -82,7 +82,7 @@ Come già detto, il sistema di notifiche di esposizione di Immuni sfrutta il Blu
 - **L'uso della batteria è più efficiente.** Il Bluetooth Low Energy è eccellente dal punto di vista dell'efficienza energetica. Questo è importante perché ci si può aspettare che un consumo di batteria più alto causi un maggior numero di disinstallazioni.
 - **Non è necessario alcun dato di geolocalizzazione.** Grazie al Bluetooth Low Energy, i contatti sono catturati senza tracciare la posizione degli utenti. Questo può migliorare il gradimento pubblico dell'app e facilitarne la diffusione, aumentandone l'utilità.
 
-Per l'implementazione della funzionalità delle notifiche di esposizione, Immuni sfrutta il framework di notifiche di esposizione di Apple e Google (qui [la documentazione di Apple](https://www.apple.com/covid19/contacttracing) e [la documentazione di Google](https://www.google.com/covid19/exposurenotifications/)). Questo permette a Immuni di superare alcune limitazioni tecniche e di essere più affidabile.
+Per l'implementazione della funzionalità delle notifiche di esposizione, Immuni sfrutta il framework di notifiche di esposizione di Apple e Google ed il framework Contact Shield di Huawei (qui [la documentazione di Apple](https://www.apple.com/covid19/contacttracing), [la documentazione di Google](https://www.google.com/covid19/exposurenotifications/) e [la documentazione di Huawei](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides-V5/contactshield--0000001057494465-V5)). Questo permette a Immuni di superare alcune limitazioni tecniche e di essere più affidabile.
 
 ### Come funziona
 
@@ -158,6 +158,6 @@ Forniamo qui una lista di alcune delle misure adottate da Immuni per proteggere 
 - L'app effettua periodicamente caricamenti fittizi per mitigare il rischio che qualcuno ottenga informazioni sensibili sulla base dell'analisi del traffico di rete.
 - I dati memorizzati sul dispositivo sono crittografati.
 - Tutte le connessioni tra dispositivo e server sono crittografate.
-- Tutti i dati, sia che siano memorizzati sul dispositivo o sul server, sono eliminati quando non più necessari e in ogni caso non oltre il 31 dicembre 2020.
+- Tutti i dati, sia che siano memorizzati sul dispositivo o sul server, sono eliminati quando non più necessari e in ogni caso non oltre il 31 dicembre 2021.
 - Il Ministero della Salute sarà il titolare del trattamento. I dati saranno utilizzati solo allo scopo di contenere l'epidemia di COVID-19 o per la ricerca scientifica.
 - I dati saranno archiviati su server situati in Italia e gestiti da entità a controllo pubblico.
