@@ -158,6 +158,6 @@ Forniamo qui una lista di alcune delle misure adottate da Immuni per proteggere 
 - L'app effettua periodicamente caricamenti fittizi per mitigare il rischio che qualcuno ottenga informazioni sensibili sulla base dell'analisi del traffico di rete.
 - I dati memorizzati sul dispositivo sono crittografati.
 - Tutte le connessioni tra dispositivo e server sono crittografate.
-- Tutti i dati, sia che siano memorizzati sul dispositivo o sul server, sono eliminati quando non più necessari e in ogni caso non oltre il 31 dicembre 2020.
+- Tutti i dati, sia che siano memorizzati sul dispositivo o sul server, sono eliminati quando non più necessari e in ogni caso non oltre il 31 dicembre 2021.
 - Il Ministero della Salute sarà il titolare del trattamento. I dati saranno utilizzati solo allo scopo di contenere l'epidemia di COVID-19 o per la ricerca scientifica.
 - I dati saranno archiviati su server situati in Italia e gestiti da entità a controllo pubblico.

@@ -162,6 +162,6 @@ Below, we provide a list of some of the measures by which Immuni protects the us
 - The app performs periodic dummy uploads to mitigate the risk of someone gaining sensitive information about the user through traffic analysis.
 - The data stored on the device are encrypted.
 - All connections between the device and the server are encrypted.
-- All data, whether stored on the device or on the server, are deleted when no longer needed, and in any case no later than December 31, 2020.
+- All data, whether stored on the device or on the server, are deleted when no longer needed, and in any case no later than December 31, 2021.
 - The Ministry of Health will be the data controller. The data will be used solely with the aim of containing the COVID-19 epidemic or for scientific research.
 - The data will be stored on servers located in Italy and managed by publicly controlled bodies.
