@@ -1,5 +1,5 @@
 NOTE: This README is also available [in Italian](/Translations/it/README.md).  
-NOTA: Questo README è disponibile [in italiano](/Translations/it/README.md).
+NOTA: Questo README è disponibile anche [in italiano](/Translations/it/README.md).
 
 # Immuni's High-Level Description
 
